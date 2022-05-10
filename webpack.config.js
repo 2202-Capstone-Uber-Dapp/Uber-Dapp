@@ -1,4 +1,11 @@
+
+const Dotenv = require('dotenv-webpack');
+
 module.exports = {
+  target: 'node', 
+  plugins: [
+    new Dotenv()
+  ],
   entry: [
     './client/index.js'
   ],
