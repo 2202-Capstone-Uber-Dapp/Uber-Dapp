@@ -29,11 +29,11 @@ router.get('/:userId', async (req, res, next) => {
     next(err);
   }
 });
-// PUT /api/user/:userId
 router.put('/:userId', async (req, res, next) => {
   try {
     const userUpdate = await User.findByPk(req.params.userId);
-    res.send(await userUpdate.update(req.body));
+    const { email, role, wallet } = req.body;
+    res.send(await userUpdate.update({ email, role, wallet }));
   } catch (err) {
     next(err);
   }
