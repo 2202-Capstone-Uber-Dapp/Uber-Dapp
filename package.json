@@ -21,19 +21,29 @@
   "license": "MIT",
   "dependencies": {
     "@chakra-ui/react": "^1.8.8",
+
     "@reach/combobox": "^0.17.0",
     "@react-google-maps/api": "^2.10.2",
+
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+
     "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "compression": "^1.7.3",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
+    "framer-motion": "^6.3.3",
     "history": "^4.9.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "pg": "^8.5.1",
+
     "sequelize": "^6.3.5",
     "use-places-autocomplete": "^3.0.0"
+
+    "react-icons": "^4.3.1",
+    
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
