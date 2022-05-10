@@ -1,9 +1,11 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
-import {logout} from '../store'
+import { logout } from '../store'
+import Blockchain from "./Blockchain";
+import DriverDashboard from './DriverDashboard';
 
-const Navbar = ({handleClick, isLoggedIn}) => (
+const Navbar = ({ handleClick, isLoggedIn }) => (
   <div>
     <h1>FS-App-Template</h1>
     <nav>
@@ -14,6 +16,8 @@ const Navbar = ({handleClick, isLoggedIn}) => (
           <a href="#" onClick={handleClick}>
             Logout
           </a>
+          <Link to="/blockchain">Blockchain</Link>
+          <Link to="/driverdashboard">Driver Dashboard</Link>
         </div>
       ) : (
         <div>
@@ -25,7 +29,7 @@ const Navbar = ({handleClick, isLoggedIn}) => (
     </nav>
     <hr />
   </div>
-)
+);
 
 /**
  * CONTAINER
