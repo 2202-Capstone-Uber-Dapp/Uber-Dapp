@@ -1,35 +1,34 @@
-
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
 import {
   GoogleMap,
   useLoadScript,
   Marker,
   InfoWindow,
-} from "@react-google-maps/api";
+} from '@react-google-maps/api';
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
-} from "use-places-autocomplete";
+} from 'use-places-autocomplete';
 import {
   Combobox,
   ComboboxInput,
   ComboboxPopover,
   ComboboxList,
   ComboboxOption,
-} from "@reach/combobox";
+} from '@reach/combobox';
 
-
+import { Box } from '@chakra-ui/react';
 
 /**
  * COMPONENT
  */
 
-const libraries = ["places"];
+const libraries = ['places'];
 const center = { lat: 40.7812, lng: -73.9665 };
 const containerStyle = {
-  width: "100vw",
-  height: "100vh ",
+  width: '90vw',
+  height: '90vh ',
 };
 const options = {
   disableDefaultUI: true,
@@ -53,16 +52,12 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
-  if (loadError) return "Error Loading Map";
+  if (loadError) return 'Error Loading Map';
 
-  if (!isLoaded) return "Loading ...";
+  if (!isLoaded) return 'Loading ...';
 
   return (
-    <div>
-      <div>
-        <h3>Welcome, {username}</h3>
-      </div>
-
+    <Box>
       <Search panTo={panTo} />
       <Locate panTo={panTo} />
 
@@ -73,7 +68,7 @@ export const Home = (props) => {
         options={options}
         onLoad={onMapLoad}
       ></GoogleMap>
-    </div>
+    </Box>
   );
 };
 
@@ -89,10 +84,11 @@ function Locate({ panTo }) {
               lng: position.coords.longitude,
             });
           },
-          () => null,
+          () => null
         );
-      }} 
-    >My Location
+      }}
+    >
+      My Location
       <img src="compass.svg" alt="compass - locate me" />
     </button>
   );
@@ -126,7 +122,6 @@ function Search({ panTo }) {
           } catch (error) {
             console.log(error);
           }
-          
         }}
       >
         <ComboboxInput
@@ -139,7 +134,7 @@ function Search({ panTo }) {
         />
         <ComboboxPopover>
           <ComboboxList>
-            {status === "OK" &&
+            {status === 'OK' &&
               data.map(({ id, description }) => (
                 <ComboboxOption key={id} value={description} />
               ))}
