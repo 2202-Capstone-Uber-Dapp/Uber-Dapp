@@ -23,9 +23,9 @@ class Routes extends Component {
         {isLoggedIn ? (
           <Switch>
             <Route path="/blockchain" component={Blockchain} />
-            <Route path="/home" component={Home} />
             <Route path="/user/:userid" component={SingleRider} />
             <Route path="/edit" component={EditSingleRider} />
+            <Route path="/home" component={Home} />
           </Switch>
         ) : (
           <Switch>

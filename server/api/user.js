@@ -19,9 +19,9 @@ router.get('/', async (req, res, next) => {
 // GET /api/user/:userId
 router.get('/:userId', async (req, res, next) => {
   try {
-    const profile = await Profile.findOne({
+    const profile = await User.findOne({
       where: {
-        userId: req.params.userId,
+        id: req.params.userId,
       },
     });
     res.json(profile);
@@ -31,6 +31,7 @@ router.get('/:userId', async (req, res, next) => {
 });
 router.put('/:userId', async (req, res, next) => {
   try {
+    console.log(req.body);
     const userUpdate = await User.findByPk(req.params.userId);
     const { email, role, wallet } = req.body;
     res.send(await userUpdate.update({ email, role, wallet }));
