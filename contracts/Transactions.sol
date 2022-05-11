@@ -34,7 +34,7 @@ contract Transactions {
     //Public ==> everyone can access this function
     function addToBlockchain(address payable reciever, uint amount, string memory message, string memory keyword) public {
         //Increment counter 
-        transactionCounter++;
+        transactionCounter += 1;
             //Pushing a specific transaction into our transaction array 
             //Event is a way for us to send info to front end 
         transactions.push(TransferStruct(msg.sender, reciever, amount, message, block.timestamp, keyword));

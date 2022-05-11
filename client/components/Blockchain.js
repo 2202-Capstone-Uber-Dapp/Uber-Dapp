@@ -25,7 +25,7 @@ const companyCommonStyles =
 
 
 const Blockchain = (props) => {
-  const { connectWallet, currentAccount, formData, sendTransaction, handleChange } = useContext(TransactionContext);
+  const { connectWallet, currentAccount, formData, sendTransaction, handleChange, ransactions } = useContext(TransactionContext);
   // const connectWallet = () => { };
 
   const handleSubmit = (e) => {
