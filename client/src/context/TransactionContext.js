@@ -44,7 +44,6 @@ export const TransactionsProvider = ({ children }) => {
   const [transactions, setTransactions] = useState([]);
 
   const handleChange = (e, name) => {
-    console.log("EEEEEEEEEEEEEEEEEEEE", e.target.value);
     e.persist();
     setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
   };
@@ -65,7 +64,6 @@ export const TransactionsProvider = ({ children }) => {
         //this async method call will return all the transactions associated with a user
         const availableTransactions =
           await transactionsContract.getAllTransactions();
-        console.log("ALL TRANSACTIONS", availableTransactions);
 
         //Fixing formatting returned by availableTransactions
         //Formats all transactions into a new object that is more digestable
@@ -84,7 +82,7 @@ export const TransactionsProvider = ({ children }) => {
           })
         );
 
-        console.log('NEW FORMAT YALL', structuredTransactions);
+        console.log('ALL TRANSACTIONS FORMATTED', structuredTransactions);
 
         setTransactions(structuredTransactions);
       } else {
