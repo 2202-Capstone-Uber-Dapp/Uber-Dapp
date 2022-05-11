@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from '../../store/User'
 
 export const EditSingleRider = () => {
@@ -7,12 +7,13 @@ export const EditSingleRider = () => {
   const user = useRef();
   const password = useRef();
   const email = useRef();
-  console.log("Hello");
+
+  const auth =  useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     //dispatch values
-    dispatch(updateUser(1, email.current.value));
+    dispatch(updateUser(auth.id , email.current.value));
   }
 
   return (

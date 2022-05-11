@@ -2,13 +2,13 @@ import axios from 'axios';
 
 const initialState = {};
 
-const SET_RIDER = "SET_RIDER";
+const SET_USER = "SET_USER";
 const UPDATE_USER = "UPDATE_USER";
 
-const _setRider = (rider) => {
+const _setRider = (user) => {
   return {
-    type: SET_RIDER,
-    rider
+    type: SET_USER,
+    rider: user
   }
 }
 
@@ -18,11 +18,11 @@ const _updateUser = (user) => {
     user
   }
 }
-export const fetchRider = (riderId) => {
+export const fetchUser = (userId) => {
   return async (dispatch) => {
     try {
-      const {data} = await axios.get(`/api/user/${riderId}`);
-      dispatch(_setRider(data));
+      const {data} = await axios.get(`/api/user/${userId}`);
+      dispatch(_setUser(data));
     } catch (err) {
       console.log(err);
     }
@@ -42,8 +42,8 @@ export const updateUser = (userId, email) => {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case SET_RIDER: {
-      return action.rider;
+    case SET_USER: {
+      return action.user;
     }
     case UPDATE_USER: {
       return action.user
