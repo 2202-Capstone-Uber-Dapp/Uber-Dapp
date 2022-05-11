@@ -30,11 +30,13 @@ contract Transacttions {
     //transactions will be an array of TransferStruct, thus an array of objects
     TransferStruct[] transactions;
 
+    //might need a payable function 
     //Public ==> everyone can access this function
     function addToBlockchain(address payable reciever, uint amount, string memory message, string memory keyword) public {
         //Increment counter 
         transactionCounter++;
             //Pushing a specific transaction into our transaction array 
+            //Event is a way for us to send info to front end 
         transactions.push(TransferStruct(msg.sender, reciever, amount, message, block.timestamp, keyword));
         emit Transfer(msg.sender, reciever, amount, message, block.timestamp, keyword);
 
@@ -48,7 +50,6 @@ contract Transacttions {
     {
         //return transactions;
     }
-
 
         //returns our variable storing amount of transactions 
     function getTransactionCount() public view returns (uint256) {

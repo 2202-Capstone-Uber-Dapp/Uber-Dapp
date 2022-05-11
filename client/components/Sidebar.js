@@ -30,6 +30,8 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
+import { FaWallet, FaUber } from 'react-icons/fa';
+import { useDispatch, useSelector } from "react-redux";
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
@@ -39,7 +41,68 @@ const LinkItems = [
   { name: 'Settings', icon: FiSettings },
 ];
 
-export default function SidebarWithHeader({ children }) {
+
+//Link Acc to single acc 
+//Link wallet to maybe metamask?
+//dashboard to home 
+//rest are placeholders 
+//consider getting rid of navbar since the dropdown for the user also has settings/logout ?
+//both could be fine 
+
+const DriverItems = [
+  { name: "Dash", icon: FiHome },
+  { name: "Trending", icon: FiTrendingUp },
+  { name: "Dashboard", icon: FaUber },
+  { name: "Wallet", icon: FaWallet },
+  { name: "Account", icon: FiSettings },
+];
+
+const RiderItems = [
+  { name: "Home", icon: FiHome },
+  { name: "Trending", icon: FiTrendingUp },
+  { name: "Dashboard", icon: FaUber },
+  { name: "Wallet", icon: FaWallet },
+  { name: "Account", icon: FiSettings },
+];
+//  path={link.path}
+
+
+// const CreateNavItem = (role) => {
+//    console.log(role); 
+//   return (role.map((link) => {
+//     <NavItem key={link.name} icon={link.icon}>
+//       {link.name}
+//     </NavItem>;
+//   }))
+// };
+
+// function CreateNavItem(role) {
+//   console.log('being called', role)
+//   // console.log('ROLE', role)
+//     return role.map((link) => {
+//     <NavItem key={link.name} icon={link.icon}>
+//       {link.name}
+//     </NavItem>;
+//   })
+// }
+
+
+//Not Sure why this isnt working 
+const CreateNavItem = ({ role }) => {
+  console.log('YEO', role)
+  return role.map((link) => {
+    <NavItem key={link.name} icon={link.icon}>
+      {link.name}
+    </NavItem>;
+  })
+}
+
+
+
+
+
+
+export default function SidebarWithHeader({ children }) {  
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -70,13 +133,15 @@ export default function SidebarWithHeader({ children }) {
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
+    const auth = useSelector((state) => state.auth);
+    let isDriver = "DRIVER " === auth.role 
   return (
     <Box
       transition="3s ease"
-      bg={useColorModeValue('white', 'gray.900')}
+      bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
-      borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-      w={{ base: 'full', md: 60 }}
+      borderRightColor={useColorModeValue("gray.200", "gray.700")}
+      w={{ base: "full", md: 60 }}
       pos="fixed"
       h="full"
       {...rest}
@@ -85,16 +150,28 @@ const SidebarContent = ({ onClose, ...rest }) => {
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           Logo
         </Text>
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
-      ))}
+      {isDriver
+        ? DriverItems.map((link) => (
+            <NavItem key={link.name} icon={link.icon}>
+              {link.name}
+            </NavItem>
+          ))
+        : RiderItems.map((link) => (
+            <NavItem key={link.name} icon={link.icon}>
+              {link.name}
+            </NavItem>
+          ))}
+      {/* {isDriver ? <CreateNavItem role={DriverItems}/> : <CreateNavItem role={RiderItems}/>} */}
     </Box>
   );
 };
+
+
+
+
+
 
 const NavItem = ({ icon, children, ...rest }) => {
   return (

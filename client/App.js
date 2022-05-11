@@ -1,14 +1,14 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Routes from './Routes';
-import Dashboard from './components/Dashboard';
+import Sidebar from './components/Sidebar';
 const App = () => {
   return (
     <div>
       <Navbar />
-      <Dashboard>
+      <Sidebar>
         <Routes />
-      </Dashboard>
+      </Sidebar>
     </div>
   );
 };
