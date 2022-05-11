@@ -34,6 +34,7 @@ import {
 } from 'react-icons/fi';
 import { FaWallet, FaUber } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import { useAuth } from '../context/AuthContext';
 
 const DriverItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -50,16 +51,6 @@ const RiderItems = [
   { name: 'Wallet', icon: FaWallet, path: 'wallet' },
   { name: 'Settings', icon: FiSettings, path: '/setting' },
 ];
-
-//Not Sure why this isnt working
-// const CreateNavItem = ({ role }) => {
-//   console.log('YEO', role);
-//   return role.map((link) => {
-//     <NavItem key={link.name} icon={link.icon}>
-//       {link.name}
-//     </NavItem>;
-//   });
-// };
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -129,6 +120,8 @@ const SidebarContent = ({ onClose, ...rest }) => {
 };
 
 const LogoutComponent = () => {
+  const { logout } = useAuth();
+
   return (
     <Flex
       align="center"
@@ -141,6 +134,7 @@ const LogoutComponent = () => {
         bg: 'cyan.400',
         color: 'white',
       }}
+      onClick={() => logout()}
     >
       <Icon
         mr="4"

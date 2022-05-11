@@ -20,6 +20,7 @@
   "author": "Fullstack Academy of Code",
   "license": "MIT",
   "dependencies": {
+    "@chakra-ui/icons": "^1.1.7",
     "@chakra-ui/react": "^1.8.8",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
@@ -41,7 +42,6 @@
     "sequelize": "^6.3.5",
     "use-places-autocomplete": "^3.0.0",
     "web3": "^1.7.3"
-
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
