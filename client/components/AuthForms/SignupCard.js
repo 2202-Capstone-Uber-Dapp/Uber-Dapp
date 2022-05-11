@@ -25,7 +25,7 @@ export default function SignupCard() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signUp } = useAuth();
+  const { signup } = useAuth();
   const history = useHistory();
 
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
@@ -39,12 +39,13 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      await signUp(emailRef.current.value, passwordConfirmRef.current.value);
+      await signup(emailRef.current.value, passwordConfirmRef.current.value);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
+      history.push('/');
     }
-    setLoading(false);
-    history.push('/');
   }
   return (
     <Flex
