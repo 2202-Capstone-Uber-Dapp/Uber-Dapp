@@ -7,29 +7,34 @@ const {
 
 const users = [
   {
-    username: 'mark',
-    password: 'mark_pw',
-    email: 'mark@gmail.com',
+    username: "mark",
+    password: "mark_pw",
+    email: "mark@gmail.com",
+    role: "DRIVER",
   },
   {
-    username: 'brian',
-    email: 'brian@gmail.com',
-    password: 'brian_pw',
+    username: "brian",
+    email: "brian@gmail.com",
+    password: "brian_pw",
+    role: "RIDER",
   },
   {
-    username: 'frank',
-    email: 'frank@gmail.com',
-    password: 'frank_pw',
+    username: "frank",
+    email: "frank@gmail.com",
+    password: "frank_pw",
+    role: "DRIVER",
   },
   {
-    username: 'john',
-    email: 'john@gmail.com',
-    password: 'john_pw',
+    username: "john",
+    email: "john@gmail.com",
+    password: "john_pw",
+    role: "RIDER",
   },
   {
-    username: 'erik',
-    email: 'erik@gmail.com',
-    password: 'erik_pw',
+    username: "erik",
+    email: "erik@gmail.com",
+    password: "erik_pw",
+    role: "DRIVER",
   },
 ];
 

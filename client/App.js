@@ -1,16 +1,16 @@
 import React from 'react';
 import Navbar from './components/Navbar';
 import Routes from './Routes';
-import Dashboard from './components/Dashboard';
 import { AuthProvider } from './context/AuthContext';
+import Sidebar from './components/Sidebar';
 
 const App = () => {
   return (
     <AuthProvider>
       <Navbar />
-      <Dashboard>
+      <Sidebar>
         <Routes />
-      </Dashboard>
+      </Sidebar>
     </AuthProvider>
   );
 };
