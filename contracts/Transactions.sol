@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 //USED TO TRANSFER THE AMOUNT AND STORE THE TRANSACTION GOING THROUGH IT 
-contract Transacttions {
+contract Transactions {
     //Initialize transactionCounter variable
     uint256 transactionCounter;
 
@@ -48,11 +48,11 @@ contract Transacttions {
         view
         returns (TransferStruct[] memory)
     {
-        //return transactions;
+        return transactions;
     }
 
         //returns our variable storing amount of transactions 
     function getTransactionCount() public view returns (uint256) {
-        //return transactionCounter
+        return transactionCounter;
     }
 }

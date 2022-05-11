@@ -6,3 +6,12 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 .env
+node_modules
+.env
+coverage
+coverage.json
+typechain
+
+#Hardhat files
+cache
+artifacts
