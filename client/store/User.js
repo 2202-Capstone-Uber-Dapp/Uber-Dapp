@@ -32,9 +32,7 @@ export const fetchRider = (riderId) => {
 export const updateUser = (userId, email) => {
   return async (dispatch) => {
     try {
-      console.log(email);
       const { data } = await axios.put(`/api/user/${userId}`, {"email": email})
-      console.log(data);
       dispatch(_updateUser(data));
     } catch (err) {
       console.log(err);
