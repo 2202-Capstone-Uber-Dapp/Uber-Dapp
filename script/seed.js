@@ -6,35 +6,40 @@ const {
 } = require('../server/db');
 
 const users = [
+  // password: "mark_pw",
+  // email: "mark@gmail.com",
   {
-    username: "mark",
-    password: "mark_pw",
-    email: "mark@gmail.com",
-    role: "DRIVER",
+    user_id: 'BWKMhdnhpbT47CJgLUMV6D7e4p03',
+    // username: 'mark',
+    role: 'DRIVER',
   },
+  // email: "brian@gmail.com",
+  // password: "brian_pw",
   {
-    username: "brian",
-    email: "brian@gmail.com",
-    password: "brian_pw",
-    role: "RIDER",
+    user_id: 'Lf8DneODtBU9ewrw11LXUA8tguE2',
+    // username: 'brian',
+    role: 'RIDER',
   },
+  // email: 'frank@gmail.com',
+  // password: 'frank_pw',
   {
-    username: "frank",
-    email: "frank@gmail.com",
-    password: "frank_pw",
-    role: "DRIVER",
+    user_id: 'sCyaWWTnJEYAqBW9v1YvSwWY6wK2',
+    // username: 'frank',
+    role: 'DRIVER',
   },
+  // email: 'john@gmail.com',
+  // password: 'john_pw',
   {
-    username: "john",
-    email: "john@gmail.com",
-    password: "john_pw",
-    role: "RIDER",
+    user_id: 'pOty1mOnGAbj69EfYO3QB5K3EyN2',
+    // username: 'john',
+    role: 'RIDER',
   },
+  // email: 'erik@gmail.com',
+  // password: 'erik_pw',
   {
-    username: "erik",
-    email: "erik@gmail.com",
-    password: "erik_pw",
-    role: "DRIVER",
+    user_id: 'fJamLiMrByUrgh5s6dkeXSTP3GU2',
+    // username: 'erik',
+    role: 'DRIVER',
   },
 ];
 
@@ -46,21 +51,6 @@ async function seed() {
       return User.create(user);
     })
   );
-
-  const rider1 = await User.create({
-    username: 'testingRide',
-    email: 'rider@gmail.com',
-    password: 'rider_pw',
-    role: 'DRIVER',
-  });
-  const driver1 = await User.create({
-    username: 'testingdriver',
-    email: 'driver@gmail.com',
-    password: 'driver_pw',
-  });
-  const ride1 = await Ride.create();
-  await ride1.setDriver(driver1);
-  await ride1.setRider(rider1);
 
   console.log('db synced!');
   console.log(`seeded successfully`);
