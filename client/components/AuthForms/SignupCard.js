@@ -45,7 +45,6 @@ export default function SignupCard() {
       setError(error.message);
     } finally {
       setLoading(false);
-      history.push('/');
     }
   }
   return (

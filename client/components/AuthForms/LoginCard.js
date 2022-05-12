@@ -38,7 +38,6 @@ export default function SignupCard() {
       setError(error.message);
     }
     setLoading(false);
-    history.push('/');
   }
   return (
     <Flex

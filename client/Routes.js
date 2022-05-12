@@ -17,9 +17,10 @@ export default function Routes() {
         <UserProvider>
           <Sidebar>
             <Switch>
+              <Route path="/" component={Home} />
               <Route path="/blockchain" component={Blockchain} />
               <Route path="/home" component={Home} />
-              <Redirect to="/home" />
+              <Redirect to="/" />
             </Switch>
           </Sidebar>
         </UserProvider>
@@ -27,9 +28,10 @@ export default function Routes() {
         <React.Fragment>
           <Navbar />
           <Switch>
+            <Route exact path="/" component={LoginCard} />
             <Route path="/login" component={LoginCard} />
             <Route path="/signup" component={SignupCard} />
-            <Redirect to="/login" />
+            <Redirect to="/" />
           </Switch>
         </React.Fragment>
       )}
