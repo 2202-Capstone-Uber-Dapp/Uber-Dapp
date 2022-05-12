@@ -13,10 +13,11 @@ import {
   Heading,
   Text,
   useColorModeValue,
+  Link,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -101,7 +102,10 @@ export default function SignupCard() {
               </Stack>
               <Stack pt={6}>
                 <Text align={'center'}>
-                  Don't have an account yet? <Link to="/signup"> Sign up!</Link>
+                  Don't have an account yet?{' '}
+                  <Link as={RouterLink} color="blue.500" to="/signup">
+                    Sign up!
+                  </Link>
                 </Text>
               </Stack>
             </Stack>
