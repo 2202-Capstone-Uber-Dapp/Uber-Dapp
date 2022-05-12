@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { auth } from '../auth/firebase';
 const AuthContext = React.createContext();
+const TOKEN = 'token';
 
 export function useAuth() {
   return useContext(AuthContext);
 }
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
@@ -12,11 +14,24 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      SetLocalStorage(user);
       setLoading(false);
     });
 
     return unsubscribe;
   }, []);
+
+  function SetLocalStorage(user) {
+    try {
+      user
+        ? user.getIdToken().then((token) => {
+            window.localStorage.setItem(TOKEN, token);
+          })
+        : window.localStorage.removeItem(TOKEN);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password);
@@ -29,11 +44,7 @@ export function AuthProvider({ children }) {
     return auth.signOut();
   }
 
-  function getToken() {
-    return currentUser.getIdToken(false);
-  }
-
-  const value = { currentUser, signup, login, logout, getToken };
+  const value = { currentUser, signup, login, logout };
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
