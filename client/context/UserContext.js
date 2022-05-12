@@ -12,12 +12,22 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
-  useEffect(() => {
-    dispatch(fetchUserInfo());
-    setLoading(false);
-  }, []);
+  const { currentUser } = useAuth();
 
-  const value = { username: user.username, role: user.role };
+  useEffect(() => {
+    async function fetchData() {
+      const token = await currentUser.getIdToken();
+      window.localStorage.setItem('token', token);
+      dispatch(fetchUserInfo());
+    }
+
+    fetchData();
+    setLoading(false);
+    return function cleanup() {
+      window.localStorage.removeItem('token');
+    };
+  }, []);
+  const value = { ...user };
   return (
     <UserInfoContext.Provider value={value}>
       {!loading && children}
