@@ -12,13 +12,6 @@ import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from "use-places-autocomplete";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from "@reach/combobox";
 
 // import { Box } from '@chakra-ui/react';
 import {
@@ -34,19 +27,22 @@ import {
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 
-// Constants
+// Constants: These will be passed in as props to the <GoogleMap> Component 
+
+// const initialCenter = { lat: 40.7812, lng: -73.9665 };
+const initialCenter = { lat: 40.7347, lng: -74.0048 };
 const libraries = ["places"];
-const center = { lat: 40.7812, lng: -73.9665 };
-const containerStyle = { 
-  width: "90vw", 
-  height: "90vh" 
+const containerStyle = {
+  width: "82%",
+  height: "90%",
 };
 const options = {
   disableDefaultUI: true,
   zoomControl: true,
 };
 
-// Home Component
+// ***Home Component***
+
 export const Home = (props) => {
   const { username } = props;
   const { isLoaded, loadError } = useLoadScript({
@@ -54,6 +50,7 @@ export const Home = (props) => {
     libraries,
   });
 
+  const [center, setCenter] = React.useState(initialCenter);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
   const [distance, setDistance] = React.useState("");
@@ -75,10 +72,11 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
-  // if (loadError) return 'Error Loading Map';
+  if (loadError) return 'Error Loading Map';
   if (!isLoaded) return <SkeletonText />;
 
   async function calculateRoute() {
+    // If either the origin or destination fields are empty, cannot calculate a route
     if (originRef.current.value === "" || destinationRef.current.value === "") {
       return;
     }
@@ -103,11 +101,12 @@ export const Home = (props) => {
 
   return (
     <Flex
-      position="relative"
+      position="absolute"
       flexDirection="column"
       alignItems="center"
       h="100vh"
       w="100vw"
+  
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
@@ -116,22 +115,30 @@ export const Home = (props) => {
           zoom={15}
           mapContainerStyle={containerStyle}
           options={options}
-          // onLoad={map => setMap(map)}
           onLoad={onMapLoad}
         >
-          {/* <Marker position={center} /> */}
           <Marker
             position={marker}
             onClick={() => {
               setSelected(marker);
             }}
           />
+          {selected ? (
+            <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
+              <div>
+                <h2>Clicked!</h2>
+                <p>Coordinates: ({selected.lat} , {selected.lng})</p>
+              </div>
+              {/* figure out way to provide address of marker that was clicked on  */}
+            </InfoWindow>
+          ) : null}
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
         </GoogleMap>
       </Box>
       <Box
+        position="absolute"
         p={4}
         borderRadius="lg"
         m={4}
@@ -143,7 +150,7 @@ export const Home = (props) => {
         <HStack spacing={2} justifyContent="space-between">
           <Box flexGrow={1}>
             <Autocomplete>
-              <Input type="text" placeholder="Origin" ref={originRef} />
+              <Input type="text" placeholder="Pickup Location" ref={originRef} />
             </Autocomplete>
           </Box>
           <Box flexGrow={1}>
@@ -158,7 +165,6 @@ export const Home = (props) => {
 
           <ButtonGroup>
             <Button colorScheme="pink" type="submit" onClick={calculateRoute}>
-              {/* <Button colorScheme='pink' type='submit'> */}
               Calculate Route
             </Button>
             <IconButton
@@ -186,6 +192,10 @@ export const Home = (props) => {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                   });
+                  setCenter({
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                  });
                 },
                 () => null
               )
@@ -206,123 +216,6 @@ export const Home = (props) => {
   );
 };
 
-// const mapRef = React.useRef();
-// const onMapLoad = React.useCallback((map) => {
-//   mapRef.current = map;
-// });
-
-// const panTo = React.useCallback(({ lat, lng }) => {
-//   mapRef.current.panTo({ lat, lng });
-//   mapRef.current.setZoom(15);
-// }, []);
-
-// const [marker, setMarker] = React.useState(center);
-// const [selected, setSelected] = React.useState(null);
-
-// if (loadError) return 'Error Loading Map';
-// if (!isLoaded) return 'Loading ...';
-
-// return (
-//   <Box>
-//     <Search panTo={panTo} setMarker={setMarker}/>
-//     <Locate panTo={panTo} setMarker={setMarker}/>
-
-//     <GoogleMap
-//       mapContainerStyle={containerStyle}
-//       zoom={15}
-//       center={center}
-//       options={options}
-//       onLoad={onMapLoad}
-//     >
-//     <Marker position={marker} onClick={()=> { setSelected(marker)}} />
-//     {selected ? (<InfoWindow position={{lat: selected.lat, lng: selected.lng}}>
-//       <div><h2>Clicked!</h2></div>
-//       {/* figure out way to provide address of marker that was clicked on  */}
-//     </InfoWindow>) : null }
-//     </GoogleMap>
-//   </Box>
-// );
-// };
-
-// function Locate({ panTo, setMarker }) {
-//   return (
-//     <button
-//       className="locate"
-//       onClick={() => {
-//         navigator.geolocation.getCurrentPosition(
-//           (position) => {
-//             panTo({
-//               lat: position.coords.latitude,
-//               lng: position.coords.longitude,
-//             }); setMarker({
-//             lat: position.coords.latitude,
-//             lng: position.coords.longitude,
-//           })
-//           },
-//           () => null
-//         );
-
-//       }}
-//     >
-//       My Location
-//       <img src="compass.svg" alt="compass - locate me" />
-//     </button>
-//   );
-// }
-
-// function Search({ panTo, setMarker }) {
-//   const {
-//     ready,
-//     value,
-//     suggestions: { status, data },
-//     setValue,
-//     clearSuggestions,
-//   } = usePlacesAutocomplete({
-//     requestOptions: {
-//       location: { lat: () => 40.7812, lng: () => -73.9665 },
-//       radius: 200 * 1000 /*convert km to m */,
-//     },
-//   });
-
-//   return (
-//     <div className="search">
-//       <Combobox
-//         onSelect={async (address) => {
-//           setValue(address, false);
-//           clearSuggestions();
-
-//           try {
-//             const results = await getGeocode({ address });
-//             const { lat, lng } = await getLatLng(results[0]);
-//             panTo({ lat, lng });
-//             setMarker({
-//               lat: lat, lng: lng
-//             })
-//           } catch (error) {
-//             console.log(error);
-//           }
-//         }}
-//       >
-//         <ComboboxInput
-//           value={value}
-//           onChange={(event) => {
-//             setValue(event.target.value);
-//           }}
-//           disabled={!ready}
-//           placeholder="Enter an address"
-//         />
-//         <ComboboxPopover>
-//           <ComboboxList>
-//             {status === 'OK' &&
-//               data.map(({ id, description }) => (
-//                 <ComboboxOption key={id} value={description} />
-//               ))}
-//           </ComboboxList>
-//         </ComboboxPopover>
-//       </Combobox>
-//     </div>
-//   );
-// }
 
 /**
  * CONTAINER
