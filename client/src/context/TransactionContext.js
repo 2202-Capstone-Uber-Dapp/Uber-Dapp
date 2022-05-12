@@ -53,7 +53,7 @@ export const TransactionsProvider = ({ children }) => {
   //And allows us to use methods that we declared on our smartcontract such as getallTransactions
   //A couple confusinng this
   //1.) createEthereumContract ==> appropriate nomenclature is getEthereumContract
-  //2.) getAllTransactions is not recursive! it just happens to have the same name as our function declared in our smart contract 
+  //2.) getAllTransactions is not recursive! it just happens to have the same name as our function declared in our smart contract
   const getAllTransactions = async () => {
     try {
       //Check if MetaMask is installed
@@ -67,7 +67,7 @@ export const TransactionsProvider = ({ children }) => {
 
         //Fixing formatting returned by availableTransactions
         //Formats all transactions into a new object that is more digestable
-        //Also includes converting time and date represent as ==> ex.) 12/21/2021 4:33:21PM 
+        //Also includes converting time and date represent as ==> ex.) 12/21/2021 4:33:21PM
         //Converts the amount out of wei to decimal   10^18 wei = 1 eth
         const structuredTransactions = availableTransactions.map(
           (transaction) => ({
@@ -82,7 +82,7 @@ export const TransactionsProvider = ({ children }) => {
           })
         );
 
-        console.log('ALL TRANSACTIONS FORMATTED', structuredTransactions);
+        console.log("ALL TRANSACTIONS FORMATTED", structuredTransactions);
 
         setTransactions(structuredTransactions);
       } else {
@@ -221,6 +221,7 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
+  //ComponentDidUpdate
   useEffect(() => {
     checkIfWalletIsConnect();
     checkIfTransactionsExists();
