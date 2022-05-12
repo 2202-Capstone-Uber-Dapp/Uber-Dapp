@@ -35,7 +35,7 @@ import {
 import { FaWallet, FaUber } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '../context/AuthContext';
-
+import { Link as RouterLink } from 'react-router-dom';
 const DriverItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
@@ -85,7 +85,7 @@ export default function SidebarWithHeader({ children }) {
 
 const SidebarContent = ({ onClose, ...rest }) => {
   const auth = useSelector((state) => state.auth);
-  let isDriver = 'DRIVER ' === auth.role;
+  let isDriver = 'DRIVER' === auth.role;
   return (
     <Box
       transition="3s ease"
@@ -149,10 +149,12 @@ const LogoutComponent = () => {
     </Flex>
   );
 };
+
 const NavItem = ({ icon, path, children, ...rest }) => {
   return (
     <Link
-      href={path}
+      as={RouterLink}
+      to={path}
       style={{ textDecoration: 'none' }}
       _focus={{ boxShadow: 'none' }}
     >
