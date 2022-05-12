@@ -1,39 +1,29 @@
 const router = require('express').Router();
-// const decodeToken = require('../auth');
+const decodeToken = require('../auth');
 const {
   models: { User },
 } = require('../db/');
 
 module.exports = router;
 
-//GET /api/user
-router.get('/', async (req, res, next) => {
+// GET /api/user/
+router.get('/', decodeToken, async (req, res, next) => {
   try {
-    const users = await User.findAll();
-    res.json(users);
+    const [user, hasCreatedUser] = await User.findOrCreate({
+      where: { user_id: req.user },
+      attributes: { exclude: ['user_id'] },
+    });
+    res.json(user);
   } catch (err) {
-    next(err);
+    res.next(err);
   }
 });
 
-// GET /api/user/:userId
-router.get('/:userId', async (req, res, next) => {
+router.put('/', decodeToken, async (req, res, next) => {
   try {
-    const profile = await Profile.findOne({
-      where: {
-        userId: req.params.userId,
-      },
-    });
-    res.json(profile);
-  } catch (err) {
-    next(err);
-  }
-});
-router.put('/:userId', async (req, res, next) => {
-  try {
-    const userUpdate = await User.findByPk(req.params.userId);
+    const user = await User.findByPk(req.user);
     const { email, role, wallet } = req.body;
-    res.send(await userUpdate.update({ email, role, wallet }));
+    res.send(await user.update({ email, role, wallet }));
   } catch (err) {
     next(err);
   }

@@ -1,33 +1,18 @@
-const router = require('express').Router()
-const { models: {User }} = require('../db')
-module.exports = router
+const admin = require('./firebase-config');
 
-router.post('/login', async (req, res, next) => {
+async function decodeToken(req, res, next) {
+  const token = req.headers.authorization
+    ? req.headers.authorization.split(' ')[1]
+    : '';
   try {
-    res.send({ token: await User.authenticate(req.body)}); 
-  } catch (err) {
-    next(err)
-  }
-})
-
-
-router.post('/signup', async (req, res, next) => {
-  try {
-    const user = await User.create(req.body)
-    res.send({token: await user.generateToken()})
-  } catch (err) {
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      res.status(401).send('User already exists')
-    } else {
-      next(err)
+    const decodeValue = await admin.auth().verifyIdToken(token);
+    if (decodeValue) {
+      req.user = decodeValue.user_id;
+      return next();
     }
+    return res.json({ message: 'Unauthorize Request' });
+  } catch (e) {
+    return res.json({ message: 'Internal Error' });
   }
-})
-
-router.get('/me', async (req, res, next) => {
-  try {
-    res.send(await User.findByToken(req.headers.authorization))
-  } catch (ex) {
-    next(ex)
-  }
-})
+}
+module.exports = decodeToken;
