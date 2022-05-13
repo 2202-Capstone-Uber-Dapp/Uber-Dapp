@@ -24,10 +24,8 @@ import {
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 
-// Constants: These will be passed in as props to the <GoogleMap> Component 
-
+// Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
-// const initialCenter = { lat: 40.7347, lng: -74.0048 };
 const libraries = ["places"];
 const containerStyle = {
   width: "83%",
@@ -38,8 +36,6 @@ const options = {
   zoomControl: true,
 };
 
-GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
-
 // ***Home Component***
 
 export const Home = (props) => {
@@ -49,6 +45,9 @@ export const Home = (props) => {
     libraries,
   });
 
+  GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+
+  // Hooks to manage state
   const [center, setCenter] = React.useState(initialCenter);
   const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
@@ -58,7 +57,7 @@ export const Home = (props) => {
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
-  const [pickupLocation, setPickupLocation] = React.useState('')
+  const [pickupLocation, setPickupLocation] = React.useState("");
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -74,27 +73,21 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
-
   function calculateAddress() {
-    GeoCode.fromLatLng(marker.lat, marker.lng).then(
-      (response) => {
-        const address = response.results[0].formatted_address;
-        console.log(address)
-        setAddress(address)
-        setPickupLocation(address)
-      }
-    )
+    GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
+      const address = response.results[0].formatted_address;
+      console.log(address);
+      setAddress(address);
+      setPickupLocation(address);
+    });
   }
 
   function handleTitleChange(event) {
-    setPickupLocation(event.target.value)
+    setPickupLocation(event.target.value);
   }
 
-  if (loadError) return 'Error Loading Map';
-  if (!isLoaded) return <SkeletonText />;
-
   async function calculateRoute() {
-    // If either the origin or destination fields are empty, cannot calculate a route
+    // If either origin or destination fields are empty, cannot calculate a route
     if (originRef.current.value === "" || destinationRef.current.value === "") {
       return;
     }
@@ -113,9 +106,13 @@ export const Home = (props) => {
     setDirectionsResponse(null);
     setDistance("");
     setDuration("");
+    setPickupLocation("");
     originRef.current.value = "";
     destinationRef.current.value = "";
   }
+
+  if (loadError) return "Error Loading Map";
+  if (!isLoaded) return <SkeletonText />;
 
   return (
     <Flex
@@ -124,7 +121,6 @@ export const Home = (props) => {
       alignItems="center"
       h="100vh"
       w="100vw"
-  
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         {/* Google Map Box */}
@@ -137,20 +133,19 @@ export const Home = (props) => {
           onClick={(event) => {
             setMarker({
               lat: event.latLng.lat(),
-              lng: event.latLng.lng()
-            })
+              lng: event.latLng.lng(),
+            });
             calculateAddress();
             setNewCenter({
               lat: event.latLng.lat(),
-              lng: event.latLng.lng()
-            })
+              lng: event.latLng.lng(),
+            });
           }}
         >
           <Marker
             position={marker}
             onClick={() => {
               setSelected(marker);
-              // calculateAddress();
             }}
           />
           {selected && selected !== initialCenter ? (
@@ -172,15 +167,23 @@ export const Home = (props) => {
         m={4}
         bgColor="white"
         shadow="base"
-        minW="container.md"
+        // minW="container.md"
         zIndex="1"
       >
         <HStack spacing={2} justifyContent="space-between">
           <Box flexGrow={1}>
             <Autocomplete>
-              <Input type="text" placeholder="Pickup Location" value={pickupLocation} onChange={handleTitleChange} ref={originRef} />
+              <Input
+                type="text"
+                placeholder="Pickup Location"
+                value={pickupLocation}
+                onChange={handleTitleChange}
+                ref={originRef}
+              />
             </Autocomplete>
           </Box>
+        </HStack>
+        <HStack spacing={4} mt={4} justifyContent="space-between">
           <Box flexGrow={1}>
             <Autocomplete>
               <Input
@@ -190,7 +193,8 @@ export const Home = (props) => {
               />
             </Autocomplete>
           </Box>
-
+        </HStack>
+        <HStack spacing={4} mt={4} justifyContent="space-between">
           <ButtonGroup>
             <Button colorScheme="pink" type="submit" onClick={calculateRoute}>
               Calculate Route
@@ -224,7 +228,7 @@ export const Home = (props) => {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                   });
-                  calculateAddress()
+                  calculateAddress();
                 },
                 () => null
               )
@@ -244,7 +248,6 @@ export const Home = (props) => {
     </Flex>
   );
 };
-
 
 /**
  * CONTAINER
