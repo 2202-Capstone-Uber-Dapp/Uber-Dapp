@@ -11,6 +11,8 @@ node_modules
 coverage
 coverage.json
 typechain
+devFirebaseAuthKey.json
+
 
 #Hardhat files
 cache

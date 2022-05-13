@@ -24,14 +24,13 @@ import "./RDTransactions.sol";
 // Extending our transaction contract?    
 //Where does onlyOwner come into play in this contract?
 //What functions will go in this contract?
-//How does this interact with our RD transactions contract?                
-contract Require is RDTransactions {
-    uint public request_owner;
-    address public riderAddress;
+//How does this interact with our RD transactions contract?   
+//Because i need to add these values to our mapping              
+contract RequestRide is RDTransactions {
+    
+    address riderAddress;
 
-
-    constructor(uint _request_owner, address _riderAddress) {
-        request_owner = _request_owner;
+    constructor( address _riderAddress) {
         riderAddress = msg.sender;
     }
 
