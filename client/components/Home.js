@@ -8,12 +8,9 @@ import {
   InfoWindow,
   DirectionsRenderer,
 } from "@react-google-maps/api";
-import usePlacesAutocomplete, {
-  getGeocode,
-  getLatLng,
-} from "use-places-autocomplete";
 
-// import { Box } from '@chakra-ui/react';
+import GeoCode from "react-geocode";
+
 import {
   Box,
   Button,
@@ -29,17 +26,19 @@ import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 
 // Constants: These will be passed in as props to the <GoogleMap> Component 
 
-// const initialCenter = { lat: 40.7812, lng: -73.9665 };
-const initialCenter = { lat: 40.7347, lng: -74.0048 };
+const initialCenter = { lat: 40.7812, lng: -73.9665 };
+// const initialCenter = { lat: 40.7347, lng: -74.0048 };
 const libraries = ["places"];
 const containerStyle = {
-  width: "82%",
-  height: "90%",
+  width: "83%",
+  height: "88%",
 };
 const options = {
   disableDefaultUI: true,
   zoomControl: true,
 };
+
+GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
 
 // ***Home Component***
 
@@ -51,12 +50,15 @@ export const Home = (props) => {
   });
 
   const [center, setCenter] = React.useState(initialCenter);
+  const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
   const [distance, setDistance] = React.useState("");
   const [duration, setDuration] = React.useState("");
   const [marker, setMarker] = React.useState(center);
-  const [selected, setSelected] = React.useState(null);
+  const [selected, setSelected] = React.useState(center);
+  const [address, setAddress] = React.useState(center);
+  const [pickupLocation, setPickupLocation] = React.useState('')
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -71,6 +73,22 @@ export const Home = (props) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(15);
   }, []);
+
+
+  function calculateAddress() {
+    GeoCode.fromLatLng(marker.lat, marker.lng).then(
+      (response) => {
+        const address = response.results[0].formatted_address;
+        console.log(address)
+        setAddress(address)
+        setPickupLocation(address)
+      }
+    )
+  }
+
+  function handleTitleChange(event) {
+    setPickupLocation(event.target.value)
+  }
 
   if (loadError) return 'Error Loading Map';
   if (!isLoaded) return <SkeletonText />;
@@ -116,20 +134,30 @@ export const Home = (props) => {
           mapContainerStyle={containerStyle}
           options={options}
           onLoad={onMapLoad}
+          onClick={(event) => {
+            setMarker({
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            })
+            calculateAddress();
+            setNewCenter({
+              lat: event.latLng.lat(),
+              lng: event.latLng.lng()
+            })
+          }}
         >
           <Marker
             position={marker}
             onClick={() => {
               setSelected(marker);
+              // calculateAddress();
             }}
           />
-          {selected ? (
+          {selected && selected !== initialCenter ? (
             <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
               <div>
-                <h2>Clicked!</h2>
-                <p>Coordinates: ({selected.lat} , {selected.lng})</p>
+                <p>{JSON.stringify(address)}</p>
               </div>
-              {/* figure out way to provide address of marker that was clicked on  */}
             </InfoWindow>
           ) : null}
           {directionsResponse && (
@@ -150,7 +178,7 @@ export const Home = (props) => {
         <HStack spacing={2} justifyContent="space-between">
           <Box flexGrow={1}>
             <Autocomplete>
-              <Input type="text" placeholder="Pickup Location" ref={originRef} />
+              <Input type="text" placeholder="Pickup Location" value={pickupLocation} onChange={handleTitleChange} ref={originRef} />
             </Autocomplete>
           </Box>
           <Box flexGrow={1}>
@@ -196,6 +224,7 @@ export const Home = (props) => {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                   });
+                  calculateAddress()
                 },
                 () => null
               )
@@ -206,7 +235,7 @@ export const Home = (props) => {
             icon={<FaLocationArrow />}
             isRound
             onClick={() => {
-              map.panTo(center);
+              map.panTo(newCenter);
               map.setZoom(15);
             }}
           />
