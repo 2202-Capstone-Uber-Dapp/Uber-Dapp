@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "dev-uber-dapp",
+  "private_key_id": "3fbac1922669a69b8ae91a21c45d5c987c0ff1a9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC21AhCQCOfQYNC\n+y1lKO0W25nZe9gMknSR798HqKhpPGeQ0c0EiPCWGqxLERjKZIr3BMNsnUy8bCIc\nDJhKTxQAiCRyiLWVz3YsLnfnkHE7R72UfMnaWbk4MTa9jXfttYj7rGh9VlpaOWpe\nVaho7nOw5DVJMZsiVIBpfMdDtGN5Dmm0vVxh8YM54ko/dK/vdKExLEvddG5B6RpY\nhChped0U2ZsI9AW2rsfFrEFQUtSX1OXhsquEyBgUNMwI2HNXw23BrfPi+Q3T7w1A\nwzKguPYRA1djT5Hf2S8JVUpaJziZ8MWqrPZw0K5NufTNTv8+b/i90pth0UkVc450\n5rfI+Pb7AgMBAAECggEAEAgrdI/GRTlL8YGFZgj+3VHCvcZKgt5hgsiQ0KLyqE5n\n2ymikOK8jL+9sFQeozofe3C7Uu4U5AhBZ3SX8sWDa1aE3QGYQWZF+7LUHdtV1TfB\nwTW+HOZgQ7QBE6xw7J3OFhpKDATt+wUXiuUiVZfkpN7QvgsvtNofFouet5T9DLOC\nF/I7NnBrCmJw31DPigz1Fg+MmXJPCOg14A+Vq1aSD4hg0g2UD33RbMLo9wMLa2Ie\nzI7xdNw8xoFaz8AR7tO0348QZmyVcjrJIYy3NoIyCW8DJMbbz4aoUPj7R6Qk+z1R\ndwkTqFJEGmAAEEOhL47WGyhu6HmCOHD68pnrLPBZuQKBgQD18wN2SHc2hOnN+vZB\n/Frd/JNeWsEyksMV/bFvAgFKDVpf/xnOokWuJDtiwE5W4DugWE6X8T2viKptszaM\nuYa6mOrzgalcLEJMg3qLOCJMF3FsenZKwmxmR1sNah1VaoXVfm0S+fpC53U5Pq71\nJwtgsQGf7H7lvYEIGYwOsaXyAwKBgQC+TK5kMeuea8ZHGuEmhp2iuvzJNJ1W6D0M\nuY11mcwvTOkFC0ZkBhgl/wC6mjQP6AqACGdhMS5oJ9cT8enXo+sAH5Sfi2LPYhGA\nH/ufKjhsnxoMLiAh1bjB6gD/cYfUQo1GNKUJfxUAw6e3ml6NG8PRs1u2FOIC6v47\nCGwgCx4RqQKBgQDm46AYZqcjk1s6d6K/B3z2cKqYJXLBW22xM1xi7erv7eEtxXog\ntc3cUT8+0XG5tP/E46HEmkBijVYRbfCD45dLjUrkFpE7aoFC+xsLn0LzU/6y67Qp\nMqQ40Dv2N+wZx8qkRe93pRz/ufIeL25nzqOrvf/cdlQasPB0/iaxlKxIqQKBgGdr\nwyce3j+FsQd5uz010bvbxYAQASZ3Jp6gxRlRkV9vfABKxWGc0kjsElhXb83pPLOi\nXZS7ps3iQQhM49pW8mNpxlsC5JtyX7JzL0usJWga+4v9EWdyAGwaoZox+DDKTn8G\nI19K2n5E1wR4d8RWf5Ca2k/Vf5M4ZRxuEl1DzX6pAoGAeihUTT9C2b5qQIeQ4Bvl\nWkInykDC+haEe2HTVFOMNVL4QVo/iqVwKuv3LFifd4OsJEdQEXluoJLlsg1ICHH3\nUfK/uTZE1RKby0fORE4pK1tXgiZQendb2zeWZqmpT43QraYOf5089Gfsmc5x11EB\nsZ3ddtrhu0Ndj/TMLeFH4qA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-2utq4@dev-uber-dapp.iam.gserviceaccount.com",
+  "client_id": "107408502665734274148",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-2utq4%40dev-uber-dapp.iam.gserviceaccount.com"
+}
