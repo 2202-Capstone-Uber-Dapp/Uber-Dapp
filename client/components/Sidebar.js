@@ -19,6 +19,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Spacer,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -29,18 +30,31 @@ import {
   FiMenu,
   FiBell,
   FiChevronDown,
+  FiLogOut,
 } from 'react-icons/fi';
+import { FaWallet, FaUber } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAuth } from '../context/AuthContext';
+import { Link as RouterLink } from 'react-router-dom';
+const DriverItems = [
+  { name: 'Home', icon: FiHome, path: '/' },
+  { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
+  { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
+  { name: 'Wallet', icon: FaWallet, path: 'wallet' },
+  { name: 'Settings', icon: FiSettings, path: '/setting' },
+];
 
-const LinkItems = [
-  { name: 'Home', icon: FiHome },
-  { name: 'Trending', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
+const RiderItems = [
+  { name: 'Home', icon: FiHome, path: '/' },
+  { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
+  { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
+  { name: 'Wallet', icon: FaWallet, path: 'wallet' },
+  { name: 'Settings', icon: FiSettings, path: '/setting' },
 ];
 
 export default function SidebarWithHeader({ children }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -70,6 +84,8 @@ export default function SidebarWithHeader({ children }) {
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
+  const auth = useSelector((state) => state.auth);
+  let isDriver = 'DRIVER' === auth.role;
   return (
     <Box
       transition="3s ease"
@@ -87,19 +103,58 @@ const SidebarContent = ({ onClose, ...rest }) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
-          {link.name}
-        </NavItem>
-      ))}
+
+      {isDriver
+        ? DriverItems.map((link) => (
+            <NavItem key={link.name} icon={link.icon} path={link.path}>
+              {link.name}
+            </NavItem>
+          ))
+        : RiderItems.map((link) => (
+            <NavItem key={link.name} icon={link.icon} path={link.path}>
+              {link.name}
+            </NavItem>
+          ))}
+      <LogoutComponent />
     </Box>
   );
 };
 
-const NavItem = ({ icon, children, ...rest }) => {
+const LogoutComponent = () => {
+  const { logout } = useAuth();
+
+  return (
+    <Flex
+      align="center"
+      p="4"
+      mx="4"
+      borderRadius="lg"
+      role="group"
+      cursor="pointer"
+      _hover={{
+        bg: 'cyan.400',
+        color: 'white',
+      }}
+      onClick={() => logout()}
+    >
+      <Icon
+        mr="4"
+        fontSize="16"
+        _groupHover={{
+          color: 'white',
+        }}
+        as={FiLogOut}
+      />
+      Log Out
+    </Flex>
+  );
+};
+
+const NavItem = ({ icon, path, children, ...rest }) => {
   return (
     <Link
-      href="#"
+      as={RouterLink}
+      to={path}
       style={{ textDecoration: 'none' }}
       _focus={{ boxShadow: 'none' }}
     >

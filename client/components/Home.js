@@ -1,5 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
 import {
   useLoadScript,
   GoogleMap,
@@ -7,8 +7,8 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-} from "@react-google-maps/api";
 
+} from "@react-google-maps/api";
 import GeoCode from "react-geocode";
 
 import {
@@ -21,8 +21,8 @@ import {
   Input,
   SkeletonText,
   Text,
-} from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+} from '@chakra-ui/react';
+import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
@@ -35,8 +35,6 @@ const options = {
   disableDefaultUI: true,
   zoomControl: true,
 };
-
-// ***Home Component***
 
 export const Home = (props) => {
   const { username } = props;
@@ -52,8 +50,8 @@ export const Home = (props) => {
   const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState("");
-  const [duration, setDuration] = React.useState("");
+  const [distance, setDistance] = React.useState('');
+  const [duration, setDuration] = React.useState('');
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
