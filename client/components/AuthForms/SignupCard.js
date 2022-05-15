@@ -26,6 +26,7 @@ export default function SignupCard() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
+  const displayNameRef = useRef();
   const { signup } = useAuth();
   const history = useHistory();
 
@@ -40,7 +41,12 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      await signup(emailRef.current.value, passwordConfirmRef.current.value);
+      signup(emailRef.current.value, passwordConfirmRef.current.value).then(function(user) {
+        user.updateProfile({
+          displayName: displayNameRef.current.value
+         })
+      })
+      console.log(displayNameRef.current.value);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -110,6 +116,10 @@ export default function SignupCard() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+              </FormControl>
+              <FormControl id="displayName" isRequired>
+                <FormLabel>Username</FormLabel>
+                <Input ref={displayNameRef} type="text" />
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button

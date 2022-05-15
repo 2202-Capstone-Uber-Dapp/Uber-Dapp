@@ -7,11 +7,11 @@ const User = db.define('user', {
     primaryKey: true,
     allowNull: false,
   },
-  // username: {
-  //   type: Sequelize.STRING,
-  //   unique: true,
-  //   allowNull: false,
-  // },
+  username: {
+    type: Sequelize.STRING,
+    unique: true,
+    allowNull: true,
+  },
   role: {
     type: Sequelize.ENUM('RIDER', 'DRIVER'),
     defaultValue: 'RIDER',
