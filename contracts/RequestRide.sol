@@ -26,13 +26,40 @@ import "./RDTransactions.sol";
 //What functions will go in this contract?
 //How does this interact with our RD transactions contract?   
 //Because i need to add these values to our mapping              
+//want this contract to be ownable , ownable is requester 
+//delete function 
 contract RequestRide is RDTransactions {
     
-    address riderAddress;
+    address driverAddress;
+    string status = 'requested'; 
 
-    constructor( address _riderAddress) {
-        riderAddress = msg.sender;
+    // constructor( address _riderAddress) {
+    //     riderAddress = msg.sender;
+    // }
+
+    //driver acceses request 
+    //driver picks up owner to fufill request 
+    //if the address is one of the driver s
+    function assignDriver(address _driverAddress) external {
+            //Driver is viable check 
+        // require(driverMap(_driverAddress))
+        driverAddress = _driverAddress;
+        status = 'pending';
     }
+
+    
+    //take rider address 
+    //initialize new request Ride contract, use msg.sender as the _riderAddress 
+    //only one person can cancel the ride, the person that requested it 
+
+    // new Contract Request Ride add to mapping of Request Ride 
+    //Request ride will just pair the addresses
+    function initiateRide() external {
+
+
+    }
+
+
 
 }
 

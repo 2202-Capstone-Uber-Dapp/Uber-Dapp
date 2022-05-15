@@ -36,11 +36,22 @@ contract RDTransactions is Ownable{
         uint256 amount;
     }
 
+    
+     struct RequestStruct {
+         address driver;
+    }
+
+
     // struct RideStruct {
     //     uint rideId;
     //     uint distanceTraveled;
     //     uint256 tripCompleteTime;
     // }
+
+
+
+    //need a mapping of verified drivers, drivers ready to go 
+
 
     //The key would be the transactionId and the value would be the rideId
     // mapping (uint => uint) transactionToRide;
@@ -68,13 +79,6 @@ contract RDTransactions is Ownable{
 
     }
 
-    //take rider address 
-    //initialize new request Ride contract, use msg.sender as the _riderAddress 
-    function initiateRide() external {
-
-
-
-    }
 
     //Returns a TransferStruct array 
     function getAllTransactions()
