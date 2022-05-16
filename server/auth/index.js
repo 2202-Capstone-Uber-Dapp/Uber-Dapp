@@ -1,18 +1,29 @@
-const admin = require('./firebase-config');
+const router = require('express').Router();
+const { createSession, verifySessionCookie } = require('./AuthSession');
+const {
+  models: { User },
+} = require('../db');
 
-async function decodeToken(req, res, next) {
-  const token = req.headers.authorization
-    ? req.headers.authorization.split(' ')[1]
-    : '';
+module.exports = router;
+
+// GET /api/user/
+router.get('/', async (req, res, next) => {
   try {
-    const decodeValue = await admin.auth().verifyIdToken(token);
-    if (decodeValue) {
-      req.user = decodeValue.user_id;
-      return next();
-    }
-    return res.json({ message: 'Unauthorize Request' });
-  } catch (e) {
-    return res.json({ message: 'Internal Error' });
+    const [user, hasCreatedUser] = await User.findOrCreate({
+      where: { user_id: req.user },
+    });
+    res.json(user);
+  } catch (err) {
+    res.next(err);
   }
-}
-module.exports = decodeToken;
+});
+
+router.put('/', async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user);
+    const { email, role, wallet } = req.body;
+    res.send(await user.update({ email, role, wallet }));
+  } catch (err) {
+    next(err);
+  }
+});

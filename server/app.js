@@ -3,29 +3,37 @@ const express = require('express');
 const morgan = require('morgan');
 const http = require('http');
 const socketio = require('socket.io');
-
+const cookieParser = require('cookie-parser');
 const app = express();
 const server = http.createServer(app);
 const io = socketio();
+const session = require('express-session');
 module.exports = server;
 
 // logging middleware
 app.use(morgan('dev'));
-
 // body parsing middleware
 app.use(express.json());
-
+// static file-serving middleware
+app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(cookieParser());
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      name: 'FIREBASE',
+      maxAge: 1000 * 60 * 60 * 24 * 5,
+      secure: false,
+    },
+  })
+);
 // auth and api routes
-app.use('/auth', require('./auth'));
 app.use('/api', require('./api'));
-
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '..', 'public/index.html'))
 );
-
-// static file-serving middleware
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
 // any remaining requests with an extension (.js, .css, etc.) send 404
 app.use((req, res, next) => {
   if (path.extname(req.path).length) {

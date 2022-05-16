@@ -21,8 +21,11 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  function signup(email, password) {
-    return auth.createUserWithEmailAndPassword(email, password);
+  async function signup(email, password) {
+    const user = await auth.createUserWithEmailAndPassword(email, password);
+    const token = await user.getIdToken();
+    const data = { token, username };
+    dispatch(signUpThunk(data));
   }
 
   async function login(email, password) {

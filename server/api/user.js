@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const decodeToken = require('../auth');
+const { createSession, verifySessionCookie } = require('../auth/AuthSession');
 const {
   models: { User },
 } = require('../db/');
@@ -7,7 +7,7 @@ const {
 module.exports = router;
 
 // GET /api/user/
-router.get('/', decodeToken, async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const [user, hasCreatedUser] = await User.findOrCreate({
       where: { user_id: req.user },
@@ -18,7 +18,7 @@ router.get('/', decodeToken, async (req, res, next) => {
   }
 });
 
-router.put('/', decodeToken, async (req, res, next) => {
+router.put('/', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.user);
     const { email, role, wallet } = req.body;
