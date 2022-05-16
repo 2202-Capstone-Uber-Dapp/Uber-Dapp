@@ -15,7 +15,7 @@ const main = async ()  => {
 
   // We get the contract to deploy
   const RideDapp = await hre.ethers.getContractFactory("RideDapp");
-  const ridedapp = await RideDapp.deploy();
+  const ridedapp = await RideDapp.deploy({ nonce: 33, gasPrice: 20000000000 });
 
   await ridedapp.deployed();
 
