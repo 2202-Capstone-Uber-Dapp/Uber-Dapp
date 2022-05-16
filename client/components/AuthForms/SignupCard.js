@@ -18,6 +18,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from "firebase/auth";
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,9 +28,9 @@ export default function SignupCard() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const displayNameRef = useRef();
-  const { signup } = useAuth();
+  const { signup , setUsername } = useAuth();
   const history = useHistory();
-
+  
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
     return passwordRef.current.value !== passwordConfirmRef.current.value;
   }
@@ -41,12 +42,10 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      signup(emailRef.current.value, passwordConfirmRef.current.value).then(function(user) {
-        user.updateProfile({
-          displayName: displayNameRef.current.value
-         })
-      })
-      console.log(displayNameRef.current.value);
+      const username = displayNameRef.current.value;
+      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value);
+      await setUsername(newUser.user, username);
+
     } catch (error) {
       setError(error.message);
     } finally {
