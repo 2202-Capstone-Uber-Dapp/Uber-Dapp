@@ -12,33 +12,6 @@ module.exports = server;
 // logging middleware
 app.use(morgan('dev'));
 
-const users = {};
-io.on('connection', (socket) => {
-  socket.on('userConnected', () => {
-    const { uid } = socket.handshake.query;
-    if (users.hasOwnProperty(uid)) {
-      rejoinRoom(uid);
-    } else {
-      SetUserInfo(uid, role, location);
-    }
-    console.log(users);
-  });
-  socket.on('userDisconnected', socket.leave(users[uid].role));
-  socket.on('set-location', (uid, location) => {
-    users[uid].location = location;
-  });
-
-  function SetUserInfo(uid) {
-    const { role, location } = socket.handshake.query;
-    users[uid] = { role, location };
-    users[uid].room = role;
-    socket.join(users[uid].room);
-  }
-  function rejoinRoom(uid) {
-    socket.join(users[uid].room);
-  }
-});
-
 // body parsing middleware
 app.use(express.json());
 

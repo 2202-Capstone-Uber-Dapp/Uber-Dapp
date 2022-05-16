@@ -19,21 +19,20 @@ import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function SignupCard() {
+export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);
   const emailRef = useRef();
   const passwordRef = useRef();
   const { login } = useAuth();
-  const history = useHistory();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      await login(emailRef.current.value, passwordRef.current.value);
+      login(emailRef.current.value, passwordRef.current.value);
     } catch (error) {
       setError(error.message);
     }

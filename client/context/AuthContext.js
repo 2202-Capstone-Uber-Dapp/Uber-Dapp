@@ -24,8 +24,10 @@ export function AuthProvider({ children }) {
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
+  async function login(email, password) {
+    const { user } = await auth.signInWithEmailAndPassword(email, password);
+    const token = await user.getIdToken();
+    dispatch(login('Bearer ' + token));
   }
   function logout() {
     return auth.signOut();
