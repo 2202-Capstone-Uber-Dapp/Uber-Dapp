@@ -44,7 +44,7 @@ export default function SignupCard() {
     try {
       const username = displayNameRef.current.value;
       const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value);
-      await setUsername(newUser.user, username);
+      setUsername(newUser.user, username);
 
     } catch (error) {
       setError(error.message);
