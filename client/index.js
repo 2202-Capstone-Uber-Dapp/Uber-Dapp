@@ -6,13 +6,23 @@ import history from './history';
 import store from './store';
 import App from './App';
 import { ChakraProvider } from '@chakra-ui/react';
+import { TransactionsProvider } from './src/context/TransactionContext'
+import * as serviceWorker from "../serviceWorkerRegistration";
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={history}>
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    </Router>
-  </Provider>,
-  document.getElementById('app')
+  <React.Fragment>
+  <TransactionsProvider>
+    <Provider store={store}>
+      <Router history={history}>
+        <ChakraProvider>
+          <App />
+        </ChakraProvider>
+      </Router>
+    </Provider>
+  </TransactionsProvider>
+  </React.Fragment>,
+  document.getElementById("app")
 );
+
+//If you want your app to work offline and load faster, you can change
+//unregister() to register() below. 
+serviceWorker.register();

@@ -6,4 +6,12 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 .env
+coverage
+coverage.json
+typechain
 devFirebaseAuthKey.json
+
+#Hardhat files
+cache
+artifacts
+
