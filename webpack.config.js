@@ -1,17 +1,11 @@
-
 const Dotenv = require('dotenv-webpack');
 
 module.exports = {
-  target: 'node', 
-  plugins: [
-    new Dotenv()
-  ],
-  entry: [
-    './client/index.js'
-  ],
+  plugins: [new Dotenv()],
+  entry: ['./client/index.js'],
   output: {
     path: __dirname,
-    filename: './public/bundle.js'
+    filename: './public/bundle.js',
   },
   devtool: 'source-map',
   module: {
@@ -21,11 +15,9 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          presets: [
-            '@babel/preset-react'
-          ]
-        }
-      }
-    ]
-  }
-}
+          presets: ['@babel/preset-react'],
+        },
+      },
+    ],
+  },
+};

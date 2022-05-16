@@ -1,16 +1,14 @@
 import React from 'react';
-import Navbar from './components/Navbar';
+
 import Routes from './Routes';
-import Sidebar from './components/Sidebar';
+import { AuthProvider } from './context/AuthContext';
+
 const App = () => {
       // {registerSW()}
   return (
-    <div>
-      <Navbar />
-      <Sidebar>
-        <Routes />
-      </Sidebar>
-    </div>
+    <AuthProvider>
+      <Routes />
+    </AuthProvider>
   );
 };
 // async function registerSW() {

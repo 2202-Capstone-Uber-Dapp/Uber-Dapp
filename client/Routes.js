@@ -1,60 +1,40 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { withRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { Login, Signup } from './components/AuthForm';
+import React from 'react';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import Home from './components/Home';
-import { me } from './store';
 import Blockchain from './components/Blockchain';
-/**
- * COMPONENT
- */
-class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData();
-  }
+import { useAuth } from './context/AuthContext';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+import SignupCard from './components/AuthForms/SignupCard';
+import LoginCard from './components/AuthForms/LoginCard';
+import { UserProvider } from './context/UserContext';
+export default function Routes() {
+  const { currentUser } = useAuth();
 
-  render() {
-    const { isLoggedIn } = this.props;
-
-    return (
-      <div>
-        {isLoggedIn ? (
+  return (
+    <div>
+      {currentUser ? (
+        <UserProvider>
+          <Sidebar>
+            <Switch>
+              <Route path="/" component={Home} />
+              <Route path="/blockchain" component={Blockchain} />
+              <Route path="/home" component={Home} />
+              <Redirect to="/" />
+            </Switch>
+          </Sidebar>
+        </UserProvider>
+      ) : (
+        <React.Fragment>
+          <Navbar />
           <Switch>
-            <Route path="/blockchain" component={Blockchain} />
-            <Route path="/home" component={Home} />
-            <Redirect to="/home" />
+            <Route exact path="/" component={LoginCard} />
+            <Route path="/login" component={LoginCard} />
+            <Route path="/signup" component={SignupCard} />
+            <Redirect to="/" />
           </Switch>
-        ) : (
-          <Switch>
-            <Route path="/" exact component={Login} />
-            <Route path="/login" component={Login} />
-            <Route path="/signup" component={Signup} />
-          </Switch>
-        )}
-      </div>
-    );
-  }
+        </React.Fragment>
+      )}
+    </div>
+  );
 }
-
-/**
- * CONTAINER
- */
-const mapState = (state) => {
-  return {
-    // Being 'logged in' for our purposes will be defined has having a state.auth that has a truthy id.
-    // Otherwise, state.auth will be an empty object, and state.auth.id will be falsey
-    isLoggedIn: !!state.auth.id,
-  };
-};
-
-const mapDispatch = (dispatch) => {
-  return {
-    loadInitialData() {
-      dispatch(me());
-    },
-  };
-};
-
-// The `withRouter` wrapper makes sure that updates are not blocked
-// when the url changes
-export default withRouter(connect(mapState, mapDispatch)(Routes));
