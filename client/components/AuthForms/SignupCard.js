@@ -18,6 +18,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
+import { updateProfile } from "firebase/auth";
 
 export default function SignupCard() {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,9 +27,10 @@ export default function SignupCard() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signup } = useAuth();
+  const displayNameRef = useRef();
+  const { signup , setUsername } = useAuth();
   const history = useHistory();
-
+  
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
     return passwordRef.current.value !== passwordConfirmRef.current.value;
   }
@@ -40,7 +42,10 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      await signup(emailRef.current.value, passwordConfirmRef.current.value);
+      const username = displayNameRef.current.value;
+      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value);
+      setUsername(newUser.user, username);
+
     } catch (error) {
       setError(error.message);
     } finally {
@@ -110,6 +115,10 @@ export default function SignupCard() {
                     </Button>
                   </InputRightElement>
                 </InputGroup>
+              </FormControl>
+              <FormControl id="displayName" isRequired>
+                <FormLabel>Username</FormLabel>
+                <Input ref={displayNameRef} type="text" />
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button

@@ -1,3 +1,4 @@
+import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
 import { auth } from '../auth/firebase';
 const AuthContext = React.createContext();
@@ -29,11 +30,16 @@ export function AuthProvider({ children }) {
     const token = await user.getIdToken();
     dispatch(login('Bearer ' + token));
   }
+
+  async function setUsername(user, displayname) {
+    await updateProfile(user, {displayName: displayname});
+  }
+
   function logout() {
     return auth.signOut();
   }
 
-  const value = { currentUser, signup, login, logout };
+  const value = { currentUser, signup, login, logout , setUsername};
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
