@@ -1,8 +1,11 @@
 import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
+import { useDispatch } from "react-redux";
 import { auth } from '../auth/firebase';
 const AuthContext = React.createContext();
 const TOKEN = 'token';
+
+// dispatch = useDispatch();
 
 export function useAuth() {
   return useContext(AuthContext);

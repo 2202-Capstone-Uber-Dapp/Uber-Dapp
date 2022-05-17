@@ -155,6 +155,53 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
+  //Entire Logic for sending and storing ride Requests 
+   const sendRideRequest = async () => {
+     try {
+       if (ethereum) {
+         //First we need to grab all the necessary data before we send any eth
+         //Get form data
+          //GET DISTANCE AND TIME 
+        //  const { addressTo, amount, keyword, message } = formData;
+         //Gets ours contract
+         const RideDappContract = createEthereumContract();
+        //  console.log("FORM DATA", formData);
+         console.log("Contract", RideDappContract);
+
+         //Send Eth thru the blockchain !
+         //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
+
+
+         //Since we executed the transaciton now we want to add the transaction to the Blockchain
+         //Immutable history receipt
+         //Remember that our function requires address, amount, message, and a keyword
+         //transactionHash is a specific transaction ID
+         //asynchronous transation & definitley takes time for it to go through
+         const blockchainHash = await RideDappContract.addRequest(
+           distance,
+           time,
+         );
+
+         //Add a loading feature to add transparency of transaction process
+         setIsLoading(true);
+         console.log(`Loading - ${blockchainHash.hash}`);
+         //This will wait for the transaction to finish
+         await transactionHash.wait();
+         //Notify user for success
+         console.log(`Success - ${blockchainHash.hash}`);
+         setIsLoading(false);
+         window.location.reload();
+       } else {
+         console.log("No ethereum object");
+       }
+     } catch (error) {
+       console.log(error);
+
+       throw new Error("No ethereum object");
+     }
+   };
+
+
   //Entire logic for sending and storing transactions
   const sendTransaction = async () => {
     try {
@@ -238,6 +285,7 @@ export const TransactionsProvider = ({ children }) => {
         sendTransaction,
         handleChange,
         formData,
+        sendRideRequest,
       }}
     >
       {children}
