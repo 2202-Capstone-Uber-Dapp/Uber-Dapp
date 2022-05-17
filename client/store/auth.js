@@ -27,6 +27,16 @@ export const fetchUserInfo = () => async (dispatch) => {
   return dispatch(setAuth(res.data));
 };
 
+export const userSignUp = (user) => async (dispatch) => {
+  try {
+    console.log("Running dispatch", user);
+    const res = await axios.post('/api/user', user)
+    dispatch(setAuth(res.data));
+  } catch (err){
+    console.log(err);
+  }
+}
+
 export const logout = () => {
   window.localStorage.removeItem(TOKEN);
   history.push('/login');

@@ -1,6 +1,8 @@
 import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { auth } from '../auth/firebase';
+import { userSignUp } from '../store/auth'
 const AuthContext = React.createContext();
 const TOKEN = 'token';
 
@@ -11,6 +13,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -21,11 +24,18 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  async function signup(email, password) {
-    const user = await auth.createUserWithEmailAndPassword(email, password);
-    const token = await user.getIdToken();
-    const data = { token, username };
-    dispatch(signUpThunk(data));
+  async function signup(email, password, userName) {
+    try {
+      const newUser = await auth.createUserWithEmailAndPassword(email, password);
+      console.log("User: ", newUser);
+      await updateProfile(newUser.user, {displayName: userName});
+      const token = await newUser.user.getIdToken();
+      const data = { token, user: newUser.user };
+      dispatch(userSignUp(data));
+      return () => unsubscribe()
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async function login(email, password) {

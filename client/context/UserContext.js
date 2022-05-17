@@ -18,7 +18,7 @@ export function UserProvider({ children }) {
     async function fetchData() {
       const token = await currentUser.getIdToken();
       window.localStorage.setItem('token', token);
-      dispatch(fetchUserInfo());
+      //dispatch(fetchUserInfo());
     }
 
     fetchData();

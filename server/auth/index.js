@@ -6,17 +6,17 @@ const {
 
 module.exports = router;
 
-// GET /api/user/
-router.get('/', async (req, res, next) => {
-  try {
-    const [user, hasCreatedUser] = await User.findOrCreate({
-      where: { user_id: req.user },
-    });
-    res.json(user);
-  } catch (err) {
-    res.next(err);
-  }
-});
+// // GET /api/user/
+// router.get('/', async (req, res, next) => {
+//   try {
+//     const [user, hasCreatedUser] = await User.findOrCreate({
+//       where: { user_id: req.user },
+//     });
+//     res.json(user);
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 router.put('/', async (req, res, next) => {
   try {

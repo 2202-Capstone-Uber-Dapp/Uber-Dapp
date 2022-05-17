@@ -43,8 +43,7 @@ export default function SignupCard() {
     setLoading(true);
     try {
       const username = displayNameRef.current.value;
-      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value);
-      setUsername(newUser.user, username);
+      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value);
 
     } catch (error) {
       setError(error.message);
