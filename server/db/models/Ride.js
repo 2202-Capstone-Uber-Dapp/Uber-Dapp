@@ -8,6 +8,7 @@ const db = require("../db")
 // Degrees, minutes, and seconds (DMS): 41°24'12.2"N 2°10'26.5"E
 // Degrees and decimal minutes (DMM): 41 24.2028, 2 10.4418
 
+
 const Ride = db.define("ride", {
   cost: {
     type: Sequelize.INTEGER,
@@ -16,20 +17,44 @@ const Ride = db.define("ride", {
     },
   },
   distanceTraveled: {
-    type: Sequelize.DECIMAL(10, 2),
+    type: Sequelize.INTEGER, //miles
   },
-  startPoint: {
-    type: Sequelize.STRING,
-    // type: Sequelize.GEOGRAPHY("POINT", 4326),
+    estimatedTime: {
+    type: Sequelize.INTEGER // minutes 
   },
-  endPoint: {
-    type: Sequelize.STRING,
-    // type: Sequelize.GEOGRAPHY("POINT", 4326),
-  },
+  
   isCompleted: {
     type: Sequelize.BOOLEAN,
     defaultValue: false,
   },
-})
+});
+
+
+
+
+
+// const Ride = db.define("ride", {
+//   cost: {
+//     type: Sequelize.INTEGER,
+//     validate: {
+//       min: 1, // 0?
+//     },
+//   },
+//   distanceTraveled: {
+//     type: Sequelize.DECIMAL(10, 2),
+//   },
+//   startPoint: {
+//     type: Sequelize.STRING,
+//     // type: Sequelize.GEOGRAPHY("POINT", 4326),
+//   },
+//   endPoint: {
+//     type: Sequelize.STRING,
+//     // type: Sequelize.GEOGRAPHY("POINT", 4326),
+//   },
+//   isCompleted: {
+//     type: Sequelize.BOOLEAN,
+//     defaultValue: false,
+//   },
+// })
 
 module.exports = Ride

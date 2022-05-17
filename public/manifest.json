@@ -1,22 +1,24 @@
 {
   
-  "name": "uberdapp",
+  "name": "UberDapp PWA",
   "short_name": "uberdapp",
   "theme_color": "#2196f3",
   "background_color": "#2196f3",
   "display": "standalone",
   "scope": "/",
-  "start_url": "/",
+  "start_url": ".",
   "description": "Peer to Peer Ridesharing.",
   "icons": [
     {
-      "src": "https://pngimg.com/uploads/uber/uber_PNG13.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "https://savagemessiahzine.com/alt__Y3M1LTMuNHBkYS50bw/14134424.png",
+      "src": "/images/logo192.png",
       "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+      
+    }, 
+    {
+      "src": "/images/logo512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
