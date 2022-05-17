@@ -6,7 +6,9 @@ const {
 
 module.exports = router;
 
-router.get('/', verifySessionCookie, async (req, res, next) => {
+router.use(verifySessionCookie);
+
+router.get('/', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.session.user_id);
     console.log(user);
@@ -26,26 +28,25 @@ router.put('/', async (req, res, next) => {
   }
 });
 
-
-router.get('/', async (req,res,next) => {
+router.get('/', async (req, res, next) => {
   try {
-    const {data} = await User.findOne({
+    const { data } = await User.findOne({
       where: {
-        user_id: req.user
-      }
-    })
+        user_id: req.user,
+      },
+    });
     res.json(data);
   } catch (err) {
     next(err);
   }
-})
+});
 
-router.post('/', async (req,res,next) => {
+router.post('/', async (req, res, next) => {
   try {
     const { uid, displayName } = req.body.user;
-    const user = await User.create({user_id: uid, username: displayName});
+    const user = await User.create({ user_id: uid, username: displayName });
     res.send(user);
   } catch (err) {
     next(err);
   }
-})
+});
