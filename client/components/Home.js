@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 import {
   useLoadScript,
   GoogleMap,
@@ -7,7 +7,6 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-
 } from "@react-google-maps/api";
 import GeoCode from "react-geocode";
 
@@ -21,8 +20,10 @@ import {
   Input,
   SkeletonText,
   Text,
-} from '@chakra-ui/react';
-import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
+} from "@chakra-ui/react";
+import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+
+import mapStyle from "./mapStyle";
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
@@ -32,6 +33,8 @@ const containerStyle = {
   height: "88%",
 };
 const options = {
+  styles:
+    mapStyle /* This line changes the mapstyle; can comment it out to change map back to regular */,
   disableDefaultUI: true,
   zoomControl: true,
 };
@@ -50,12 +53,15 @@ export const Home = (props) => {
   const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState('');
-  const [duration, setDuration] = React.useState('');
+  const [distance, setDistance] = React.useState("");
+  const [duration, setDuration] = React.useState("");
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
   const [pickupLocation, setPickupLocation] = React.useState("");
+  const [isRoute, setIsRoute] = React.useState(false);
+  const [isRideRequest, setIsRideRequest] = React.useState(false);
+  // const [rideCost, setRideCost] = React.useState(0);
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -84,6 +90,11 @@ export const Home = (props) => {
     setPickupLocation(event.target.value);
   }
 
+  function handleRideRequest() {
+    setIsRideRequest(true);
+    console.log("RideRequest status is", isRideRequest);
+  }
+
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
     if (originRef.current.value === "" || destinationRef.current.value === "") {
@@ -98,6 +109,7 @@ export const Home = (props) => {
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
+    setIsRoute(true);
   }
 
   function clearRoute() {
@@ -107,7 +119,25 @@ export const Home = (props) => {
     setPickupLocation("");
     originRef.current.value = "";
     destinationRef.current.value = "";
+    setIsRoute(false);
+    setIsRideRequest(false);
+    console.log("RideRequest status is", isRideRequest);
   }
+
+  function calculateCost(distance, duration) {
+    // const basefare = "2448697131268900"
+    // const basefare = 0.0024486971312689 /* eth*/ 
+    const basefare = 5.00 /*USD*/ 
+    const _distance = Number(distance.split(' ')[0])
+    const _duration = Number(duration.split(' ')[0])
+    const cost = (basefare * ((_distance * _duration) / (_distance + _duration))) / 3
+    return cost.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    })}
+
+  
+  
 
   if (loadError) return "Error Loading Map";
   if (!isLoaded) return <SkeletonText />;
@@ -202,6 +232,17 @@ export const Home = (props) => {
               icon={<FaTimes />}
               onClick={clearRoute}
             />
+            {isRoute === true ? (
+              <Button
+                colorScheme="pink"
+                type="submit"
+                onClick={handleRideRequest}
+              >
+                Request Ride
+              </Button>
+            ) : (
+              <></>
+            )}
           </ButtonGroup>
         </HStack>
         <HStack spacing={4} mt={4} justifyContent="space-between">
@@ -242,6 +283,13 @@ export const Home = (props) => {
             }}
           />
         </HStack>
+        {isRoute===true ? (<HStack spacing={4} mt={4} justifyContent="space-between">
+          <Text>Cost: {calculateCost(distance, duration)} (USD)</Text>
+          {/* {console.log("distance:", distance)}
+          {console.log("duration:", duration)}
+          {console.log("distance again:", Number(distance.split(' ')[0]))}
+          {console.log("duration again:", Number(duration.split(' ')[0]))} */}
+        </HStack>) : (<></>)}
       </Box>
     </Flex>
   );
