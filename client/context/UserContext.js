@@ -27,7 +27,7 @@ export function UserProvider({ children }) {
       window.localStorage.removeItem('token');
     };
   }, []);
-  const value = { ...user };
+  const value = { user };
   return (
     <UserInfoContext.Provider value={value}>
       {!loading && children}

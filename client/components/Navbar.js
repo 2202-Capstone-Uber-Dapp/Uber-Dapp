@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../store';
-import Blockchain from './Blockchain';
+import Blockchain from './Wallet';
 
 const Navbar = ({ handleClick, isLoggedIn }) => (
   <div>

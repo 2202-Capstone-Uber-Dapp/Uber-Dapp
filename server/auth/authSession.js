@@ -4,23 +4,29 @@ async function createSession(req, res, next) {
   const token = req.headers.authorization ? getToken(req) : '';
   try {
     const sessionCookie = await createSessionCookie(token);
-    res.cookie('FIREBASE', sessionCookie);
+    if (!sessionCookie)
+      return res.json({ message: 'Failed to create session' });
+    const session = await admin.auth().verifySessionCookie(sessionCookie);
+    req.session.user_id = session.user_id;
+    req.session.sessionCookie = sessionCookie;
+    return verifySession(req, res, next);
   } catch (e) {
-    console.log(e);
     return res.json({ message: 'Internal Error' });
   }
 }
 
 async function verifySessionCookie(req, res, next) {
-  const sessionCookie = req.cookies.session || '';
-  try {
-    const session = admin.auth().verifySessionCookie(sessionCookie);
-    if (!session) return res.json({ message: 'Not Valid Session' });
-    req.user = session;
-  } catch (e) {
-    console.log(e);
-    return res.json({ message: 'Internal Error' });
+  let sessionCookie = req.session ? req.session.sessionCookie : null;
+  if (sessionCookie) {
+    try {
+      sessionCookie = await admin.auth().verifySessionCookie(sessionCookie);
+      if (!sessionCookie) return res.json({ message: 'Not Valid Session' });
+    } catch (e) {
+      return res.json({ message: 'Internal Error' });
+    }
   }
+  req.user = sessionCookie;
+  return next();
 }
 
 async function decodeToken(req, res, next) {
@@ -38,6 +44,7 @@ async function decodeToken(req, res, next) {
     return res.json({ message: 'Internal Error' });
   }
 }
+
 module.exports = { decodeToken, createSession, verifySessionCookie };
 
 function createSessionCookie(token) {

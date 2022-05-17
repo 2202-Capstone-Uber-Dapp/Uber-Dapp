@@ -20,6 +20,7 @@ import {
   MenuItem,
   MenuList,
   Spacer,
+  Button,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -36,23 +37,25 @@ import { FaWallet, FaUber } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
+import useSocket from './hook/useSocket';
 const DriverItems = [
-  { name: 'Home', icon: FiHome, path: '/' },
-  { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
-  { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
-  { name: 'Wallet', icon: FaWallet, path: 'wallet' },
-  { name: 'Settings', icon: FiSettings, path: '/setting' },
+  { name: "Home", icon: FiHome, path: "/" },
+  { name: "Trending", icon: FiTrendingUp, path: "/trending" },
+  { name: "Dashboard", icon: FaUber, path: "/dashboard" },
+  { name: "Wallet", icon: FaWallet, path: "/wallet" },
+  { name: "Settings", icon: FiSettings, path: "/setting" },
 ];
 
 const RiderItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
   { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
-  { name: 'Wallet', icon: FaWallet, path: 'wallet' },
+    {name: 'Wallet', icon: FaWallet, path: '/wallet' },
   { name: 'Settings', icon: FiSettings, path: '/setting' },
 ];
 
 export default function SidebarWithHeader({ children }) {
+  useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -103,7 +106,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-
       {isDriver
         ? DriverItems.map((link) => (
             <NavItem key={link.name} icon={link.icon} path={link.path}>
