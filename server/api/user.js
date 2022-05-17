@@ -1,15 +1,16 @@
 const router = require('express').Router();
-const { createSession, verifySessionCookie } = require('../auth/AuthSession');
+const { createSession, verifySessionCookie } = require('../auth/authSession');
 const {
   models: { User },
 } = require('../db/');
 
 module.exports = router;
-
+router.use(verifySessionCookie);
 // GET /api/user/
 router.get('/', async (req, res, next) => {
   try {
-    const [user, hasCreatedUser] = await User.findOrCreate({
+    req.session.user_id;
+    req.const[(user, hasCreatedUser)] = await User.findOrCreate({
       where: { user_id: req.user },
     });
     res.json(user);
