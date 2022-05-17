@@ -2,7 +2,7 @@ import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { auth } from '../auth/firebase';
-import { userSignUp } from '../store/auth'
+import { userSignUp } from '../store/auth';
 import axios from 'axios';
 const AuthContext = React.createContext();
 const TOKEN = 'token';
@@ -24,12 +24,15 @@ export function AuthProvider({ children }) {
 
   async function signup(email, password, userName) {
     try {
-      const newUser = await auth.createUserWithEmailAndPassword(email, password);
-      await updateProfile(newUser.user, {displayName: userName});
+      const newUser = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      await updateProfile(newUser.user, { displayName: userName });
       const token = await newUser.user.getIdToken();
       const data = { token, user: newUser.user };
       dispatch(userSignUp(data));
-      return () => unsubscribe()
+      return () => unsubscribe();
     } catch (err) {
       console.log(err);
     }
@@ -41,7 +44,6 @@ export function AuthProvider({ children }) {
     });
     setLoading(false);
   }
-
 
   async function login(email, password) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);

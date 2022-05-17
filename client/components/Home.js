@@ -1,5 +1,5 @@
-import React from "react";
-import { connect } from "react-redux";
+import React from 'react';
+import { connect } from 'react-redux';
 import {
   useLoadScript,
   GoogleMap,
@@ -7,8 +7,8 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-} from "@react-google-maps/api";
-import GeoCode from "react-geocode";
+} from '@react-google-maps/api';
+import GeoCode from 'react-geocode';
 
 import {
   Box,
@@ -20,17 +20,17 @@ import {
   Input,
   SkeletonText,
   Text,
-} from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+} from '@chakra-ui/react';
+import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
 
-import mapStyle from "./mapStyle";
+import mapStyle from './mapStyle';
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
-const libraries = ["places"];
+const libraries = ['places'];
 const containerStyle = {
-  width: "83%",
-  height: "88%",
+  width: '83%',
+  height: '88%',
 };
 const options = {
   styles:
@@ -53,12 +53,12 @@ export const Home = (props) => {
   const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState("");
-  const [duration, setDuration] = React.useState("");
+  const [distance, setDistance] = React.useState('');
+  const [duration, setDuration] = React.useState('');
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
-  const [pickupLocation, setPickupLocation] = React.useState("");
+  const [pickupLocation, setPickupLocation] = React.useState('');
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
   // const [rideCost, setRideCost] = React.useState(0);
@@ -80,7 +80,6 @@ export const Home = (props) => {
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
-      console.log(address);
       setAddress(address);
       setPickupLocation(address);
     });
@@ -92,12 +91,11 @@ export const Home = (props) => {
 
   function handleRideRequest() {
     setIsRideRequest(true);
-    console.log("RideRequest status is", isRideRequest);
   }
 
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
-    if (originRef.current.value === "" || destinationRef.current.value === "") {
+    if (originRef.current.value === '' || destinationRef.current.value === '') {
       return;
     }
     const directionsService = new google.maps.DirectionsService();
@@ -114,32 +112,30 @@ export const Home = (props) => {
 
   function clearRoute() {
     setDirectionsResponse(null);
-    setDistance("");
-    setDuration("");
-    setPickupLocation("");
-    originRef.current.value = "";
-    destinationRef.current.value = "";
+    setDistance('');
+    setDuration('');
+    setPickupLocation('');
+    originRef.current.value = '';
+    destinationRef.current.value = '';
     setIsRoute(false);
     setIsRideRequest(false);
-    console.log("RideRequest status is", isRideRequest);
   }
 
   function calculateCost(distance, duration) {
     // const basefare = "2448697131268900"
-    // const basefare = 0.0024486971312689 /* eth*/ 
-    const basefare = 5.00 /*USD*/ 
-    const _distance = Number(distance.split(' ')[0])
-    const _duration = Number(duration.split(' ')[0])
-    const cost = (basefare * ((_distance * _duration) / (_distance + _duration))) / 3
-    return cost.toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    })}
+    // const basefare = 0.0024486971312689 /* eth*/
+    const basefare = 5.0; /*USD*/
+    const _distance = Number(distance.split(' ')[0]);
+    const _duration = Number(duration.split(' ')[0]);
+    const cost =
+      (basefare * ((_distance * _duration) / (_distance + _duration))) / 3;
+    return cost.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  }
 
-  
-  
-
-  if (loadError) return "Error Loading Map";
+  if (loadError) return 'Error Loading Map';
   if (!isLoaded) return <SkeletonText />;
 
   return (
@@ -283,13 +279,17 @@ export const Home = (props) => {
             }}
           />
         </HStack>
-        {isRoute===true ? (<HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Cost: {calculateCost(distance, duration)} (USD)</Text>
-          {/* {console.log("distance:", distance)}
+        {isRoute === true ? (
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <Text>Cost: {calculateCost(distance, duration)} (USD)</Text>
+            {/* {console.log("distance:", distance)}
           {console.log("duration:", duration)}
           {console.log("distance again:", Number(distance.split(' ')[0]))}
           {console.log("duration again:", Number(duration.split(' ')[0]))} */}
-        </HStack>) : (<></>)}
+          </HStack>
+        ) : (
+          <></>
+        )}
       </Box>
     </Flex>
   );
