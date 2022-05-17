@@ -36,28 +36,30 @@ import {
 import { FaWallet, FaUber } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '../context/AuthContext';
+import { userContext } from '../context/UserContext';
 import { Link as RouterLink } from 'react-router-dom';
 import useSocket from './hook/useSocket';
 const DriverItems = [
-  { name: "Home", icon: FiHome, path: "/" },
-  { name: "Trending", icon: FiTrendingUp, path: "/trending" },
-  { name: "Dashboard", icon: FaUber, path: "/dashboard" },
-  { name: "Wallet", icon: FaWallet, path: "/wallet" },
-  { name: "Settings", icon: FiSettings, path: "/setting" },
+  { name: 'Home', icon: FiHome, path: '/' },
+  { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
+  { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
+  { name: 'Wallet', icon: FaWallet, path: '/wallet' },
+  { name: 'Settings', icon: FiSettings, path: '/setting' },
 ];
 
 const RiderItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
   { name: 'Dashboard', icon: FaUber, path: '/dashboard' },
-    {name: 'Wallet', icon: FaWallet, path: '/wallet' },
+  { name: 'Wallet', icon: FaWallet, path: '/wallet' },
   { name: 'Settings', icon: FiSettings, path: '/setting' },
 ];
 
 export default function SidebarWithHeader({ children }) {
   useSocket();
+  const { user } = userContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  console.log(user);
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent

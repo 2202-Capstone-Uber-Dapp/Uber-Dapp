@@ -5,14 +5,11 @@ const {
 } = require('../db/');
 
 module.exports = router;
-router.use(verifySessionCookie);
-// GET /api/user/
-router.get('/', async (req, res, next) => {
+
+router.get('/', verifySessionCookie, async (req, res, next) => {
   try {
-    req.session.user_id;
-    req.const[(user, hasCreatedUser)] = await User.findOrCreate({
-      where: { user_id: req.user },
-    });
+    const user = await User.findByPk(req.session.user_id);
+    console.log(user);
     res.json(user);
   } catch (err) {
     next(err);

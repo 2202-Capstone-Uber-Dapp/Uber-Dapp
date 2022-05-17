@@ -12,20 +12,10 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
-  const { currentUser } = useAuth();
 
   useEffect(() => {
-    async function fetchData() {
-      const token = await currentUser.getIdToken();
-      window.localStorage.setItem('token', token);
-      //dispatch(fetchUserInfo());
-    }
-
-    fetchData();
+    dispatch(fetchUserInfo());
     setLoading(false);
-    return function cleanup() {
-      window.localStorage.removeItem('token');
-    };
   }, []);
   const value = { user };
   return (
