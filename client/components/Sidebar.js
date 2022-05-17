@@ -36,6 +36,7 @@ import { FaWallet, FaUber } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
+import useSocket from './hook/useSocket';
 const DriverItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
@@ -53,6 +54,7 @@ const RiderItems = [
 ];
 
 export default function SidebarWithHeader({ children }) {
+  useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

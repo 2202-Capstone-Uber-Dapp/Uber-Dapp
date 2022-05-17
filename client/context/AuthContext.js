@@ -1,6 +1,7 @@
 import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
 import { auth } from '../auth/firebase';
+import axios from 'axios';
 const AuthContext = React.createContext();
 const TOKEN = 'token';
 
@@ -9,40 +10,49 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState();
+  const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-
-    return unsubscribe;
+    return verifySession();
   }, []);
 
+  function verifySession() {
+    axios.post('/auth/session').then(({ data }) => {
+      if (data.user) setCurrentUser(data.user);
+    });
+    setLoading(false);
+  }
   async function signup(email, password) {
     const user = await auth.createUserWithEmailAndPassword(email, password);
-    const token = await user.getIdToken();
-    const data = { token, username };
-    dispatch(signUpThunk(data));
+    return user;
   }
 
   async function login(email, password) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);
     const token = await user.getIdToken();
-    dispatch(login('Bearer ' + token));
+    const createSession = await axios.post(
+      '/auth/login/',
+      {},
+      {
+        headers: {
+          authorization: 'Bearer ' + token,
+        },
+      }
+    );
+    verifySession();
   }
 
   async function setUsername(user, displayname) {
-    await updateProfile(user, {displayName: displayname});
+    await updateProfile(user, { displayName: displayname });
   }
 
-  function logout() {
-    return auth.signOut();
+  async function logout() {
+    await axios.post('/auth/logout');
+    setCurrentUser(null);
   }
 
-  const value = { currentUser, signup, login, logout , setUsername};
+  const value = { currentUser, signup, login, logout, setUsername };
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
