@@ -29,7 +29,6 @@ export const fetchUserInfo = () => async (dispatch) => {
 
 export const userSignUp = (user) => async (dispatch) => {
   try {
-    console.log("Running dispatch", user);
     const res = await axios.post('/api/user', user)
     dispatch(setAuth(res.data));
   } catch (err){

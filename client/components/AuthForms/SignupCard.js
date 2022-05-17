@@ -28,7 +28,7 @@ export default function SignupCard() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const displayNameRef = useRef();
-  const { signup , setUsername } = useAuth();
+  const { signup } = useAuth();
   const history = useHistory();
   
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
@@ -42,9 +42,7 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      const username = displayNameRef.current.value;
       const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value);
-
     } catch (error) {
       setError(error.message);
     } finally {

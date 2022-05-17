@@ -27,7 +27,6 @@ export function AuthProvider({ children }) {
   async function signup(email, password, userName) {
     try {
       const newUser = await auth.createUserWithEmailAndPassword(email, password);
-      console.log("User: ", newUser);
       await updateProfile(newUser.user, {displayName: userName});
       const token = await newUser.user.getIdToken();
       const data = { token, user: newUser.user };
@@ -44,15 +43,11 @@ export function AuthProvider({ children }) {
     dispatch(login('Bearer ' + token));
   }
 
-  async function setUsername(user, displayname) {
-    await updateProfile(user, {displayName: displayname});
-  }
-
   function logout() {
     return auth.signOut();
   }
 
-  const value = { currentUser, signup, login, logout , setUsername};
+  const value = { currentUser, signup, login, logout };
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
