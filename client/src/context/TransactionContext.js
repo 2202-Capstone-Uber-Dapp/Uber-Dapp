@@ -177,6 +177,7 @@ export const TransactionsProvider = ({ children }) => {
          //Remember that our function requires address, amount, message, and a keyword
          //transactionHash is a specific transaction ID
          //asynchronous transation & definitley takes time for it to go through
+         //Is this hash necessary IDK, might be handy to check functionality thru the console logs 
          const blockchainHash = await RideDappContract.addRequest(
            distance,
            time,
@@ -186,7 +187,7 @@ export const TransactionsProvider = ({ children }) => {
          setIsLoading(true);
          console.log(`Loading - ${blockchainHash.hash}`);
          //This will wait for the transaction to finish
-         await transactionHash.wait();
+         await blockchainHash.wait();
          //Notify user for success
          console.log(`Success - ${blockchainHash.hash}`);
          setIsLoading(false);
