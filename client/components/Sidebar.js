@@ -57,9 +57,7 @@ const RiderItems = [
 
 export default function SidebarWithHeader({ children }) {
   useSocket();
-  const { user } = userContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log(user);
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <SidebarContent
@@ -192,6 +190,7 @@ const NavItem = ({ icon, path, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
+  const { user } = userContext();
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -248,9 +247,9 @@ const MobileNav = ({ onOpen, ...rest }) => {
                   spacing="1px"
                   ml="2"
                 >
-                  <Text fontSize="sm">Justina Clark</Text>
+                  <Text fontSize="sm">{user.username}</Text>
                   <Text fontSize="xs" color="gray.600">
-                    Admin
+                    {user.role}
                   </Text>
                 </VStack>
                 <Box display={{ base: 'none', md: 'flex' }}>
