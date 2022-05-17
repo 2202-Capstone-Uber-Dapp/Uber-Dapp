@@ -6,6 +6,7 @@ const {
 
 module.exports = router;
 
+
 // GET /api/user/
 router.post('/session', verifySessionCookie, async (req, res, next) => {
   try {
@@ -14,6 +15,7 @@ router.post('/session', verifySessionCookie, async (req, res, next) => {
     res.next(err);
   }
 });
+
 
 router.post('/login', createSession, async (req, res, next) => {
   try {

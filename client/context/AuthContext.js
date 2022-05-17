@@ -1,7 +1,8 @@
 import { updateProfile } from 'firebase/auth';
 import React, { useContext, useState, useEffect } from 'react';
-import { useDispatch } from "react-redux";
+import { useDispatch } from 'react-redux';
 import { auth } from '../auth/firebase';
+import { userSignUp } from '../store/auth'
 import axios from 'axios';
 const AuthContext = React.createContext();
 const TOKEN = 'token';
@@ -15,10 +16,24 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     return verifySession();
   }, []);
+
+  async function signup(email, password, userName) {
+    try {
+      const newUser = await auth.createUserWithEmailAndPassword(email, password);
+      await updateProfile(newUser.user, {displayName: userName});
+      const token = await newUser.user.getIdToken();
+      const data = { token, user: newUser.user };
+      dispatch(userSignUp(data));
+      return () => unsubscribe()
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   function verifySession() {
     axios.post('/auth/session').then(({ data }) => {
@@ -26,10 +41,7 @@ export function AuthProvider({ children }) {
     });
     setLoading(false);
   }
-  async function signup(email, password) {
-    const user = await auth.createUserWithEmailAndPassword(email, password);
-    return user;
-  }
+
 
   async function login(email, password) {
     const { user } = await auth.signInWithEmailAndPassword(email, password);
@@ -46,16 +58,13 @@ export function AuthProvider({ children }) {
     verifySession();
   }
 
-  async function setUsername(user, displayname) {
-    await updateProfile(user, { displayName: displayname });
-  }
-
   async function logout() {
     await axios.post('/auth/logout');
     setCurrentUser(null);
   }
 
-  const value = { currentUser, signup, login, logout, setUsername };
+  const value = { currentUser, signup, login, logout };
+
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}

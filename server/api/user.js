@@ -15,7 +15,7 @@ router.get('/', async (req, res, next) => {
     });
     res.json(user);
   } catch (err) {
-    res.next(err);
+    next(err);
   }
 });
 
@@ -28,3 +28,27 @@ router.put('/', async (req, res, next) => {
     next(err);
   }
 });
+
+
+router.get('/', async (req,res,next) => {
+  try {
+    const {data} = await User.findOne({
+      where: {
+        user_id: req.user
+      }
+    })
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
+})
+
+router.post('/', async (req,res,next) => {
+  try {
+    const { uid, displayName } = req.body.user;
+    const user = await User.create({user_id: uid, username: displayName});
+    res.send(user);
+  } catch (err) {
+    next(err);
+  }
+})
