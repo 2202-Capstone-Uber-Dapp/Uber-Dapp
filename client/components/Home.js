@@ -1,6 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
-
+import React from "react";
+import { connect } from "react-redux";
 import {
   useLoadScript,
   GoogleMap,
@@ -8,8 +7,8 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-} from '@react-google-maps/api';
-import GeoCode from 'react-geocode';
+} from "@react-google-maps/api";
+import GeoCode from "react-geocode";
 
 import {
   Box,
@@ -21,17 +20,17 @@ import {
   Input,
   SkeletonText,
   Text,
-} from '@chakra-ui/react';
-import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
+} from "@chakra-ui/react";
+import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 
-import mapStyle from './mapStyle';
+import mapStyle from "./mapStyle";
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
-const libraries = ['places'];
+const libraries = ["places"];
 const containerStyle = {
-  width: '83%',
-  height: '88%',
+  width: "83%",
+  height: "88%",
 };
 const options = {
   styles:
@@ -40,17 +39,12 @@ const options = {
   zoomControl: true,
 };
 
-export const MapContext = createContext();
-
-
-export const Home = ({children}) => {
-  // const { username } = props;
+export const Home = (props) => {
+  const { username } = props;
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
-
-
 
   GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 
@@ -59,15 +53,14 @@ export const Home = ({children}) => {
   const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState('');
-  const [duration, setDuration] = React.useState('');
+  const [distance, setDistance] = React.useState("");
+  const [duration, setDuration] = React.useState("");
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
-  const [pickupLocation, setPickupLocation] = React.useState('');
+  const [pickupLocation, setPickupLocation] = React.useState("");
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
-  // const [rideCost, setRideCost] = React.useState(0);
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -86,6 +79,7 @@ export const Home = ({children}) => {
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
+      // console.log(address);
       setAddress(address);
       setPickupLocation(address);
     });
@@ -101,7 +95,7 @@ export const Home = ({children}) => {
 
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
-    if (originRef.current.value === '' || destinationRef.current.value === '') {
+    if (originRef.current.value === "" || destinationRef.current.value === "") {
       return;
     }
     const directionsService = new google.maps.DirectionsService();
@@ -116,7 +110,6 @@ export const Home = ({children}) => {
         setMarker({lat, lng})
       }
     )
-    console.log("origin ref", originRef.current.value)
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
@@ -125,11 +118,11 @@ export const Home = ({children}) => {
 
   function clearRoute() {
     setDirectionsResponse(null);
-    setDistance('');
-    setDuration('');
-    setPickupLocation('');
-    originRef.current.value = '';
-    destinationRef.current.value = '';
+    setDistance("");
+    setDuration("");
+    setPickupLocation("");
+    originRef.current.value = "";
+    destinationRef.current.value = "";
     setIsRoute(false);
     setIsRideRequest(false);
   }
@@ -158,12 +151,13 @@ export const Home = ({children}) => {
       currency: "USD",
     })}
 
-  if (loadError) return 'Error Loading Map';
+  
+  
+
+  if (loadError) return "Error Loading Map";
   if (!isLoaded) return <SkeletonText />;
 
-  return (
-    <MapContext.Provider value={{duration, distance}}>
-    
+  return (    
     <Flex
       position="absolute"
       flexDirection="column"
@@ -310,14 +304,10 @@ export const Home = ({children}) => {
           {/* {console.log("duration:", _duration)} */}
           {/* {console.log("duration length:", duration.split(' ').length)} */}
           {/* {console.log("distance again:", Number(distance.split(' ')[0]))}
-          </HStack>
-        ) : (
-          <></>
-        )}
+          {console.log("duration again:", Number(duration.split(' ')[0]))} */}
+        </HStack>) : (<></>)}
       </Box>
     </Flex>
-    {children}
-    </MapContext.Provider>
   );
 };
 
