@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { connect } from "react-redux";
 import {
   useLoadScript,
@@ -24,6 +24,7 @@ import {
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 
 import mapStyle from "./mapStyle";
+import { TransactionContext } from "../src/context/TransactionContext";
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
@@ -40,6 +41,12 @@ const options = {
 };
 
 export const Home = (props) => {
+
+  let { rideData, handleRideData,sendRideRequest } = useContext(TransactionContext);
+  
+
+
+
   const { username } = props;
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -93,6 +100,7 @@ export const Home = (props) => {
   function handleRideRequest() {
     setIsRideRequest(true);
     console.log("RideRequest status is", isRideRequest);
+    sendRideRequest();
   }
 
   async function calculateRoute() {
@@ -110,6 +118,11 @@ export const Home = (props) => {
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
     setIsRoute(true);
+    let rideData = {
+      duration: results.routes[0].legs[0].duration.text,
+      distance: results.routes[0].legs[0].distance.text,
+    };
+    handleRideData(rideData);
   }
 
   function clearRoute() {
