@@ -28,12 +28,21 @@ export const TransactionsProvider = ({ children }) => {
   //Set form data to our local state
   //Pass this to our form on another component via context provider
   //this is how we will gain access to these values
-  const [formData, setformData] = useState({
-    addressTo: "",
-    amount: "",
-    keyword: "",
-    message: "",
+  // const [formData, setformData] = useState({
+  //   addressTo: "",
+  //   amount: "",
+  //   keyword: "",
+  //   message: "",
+  // });
+
+
+  const [rideData, setRideData] = useState({
+    duration: "",
+    distance: "",
   });
+
+  console.log('RIDEDATA', rideData)
+
   const [currentAccount, setCurrentAccount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   //We store in local storage so the count doesnt get wiped every time we re load our browser
@@ -43,10 +52,16 @@ export const TransactionsProvider = ({ children }) => {
   );
   const [transactions, setTransactions] = useState([]);
 
-  const handleChange = (e, name) => {
-    e.persist();
-    setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
-  };
+  // const handleChange = (e, name) => {
+  //   e.persist();
+  //   setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
+  // };
+
+
+  const handleRideData = (data) => {
+     console.log('NEW DATA', data)
+     setRideData((prevState) => ({duration: data.duration, distance: data.distance }));
+   };
 
   //Here we have created a function getAllTransactions on our front end
   //That grabs our contract through our ether.js library
@@ -156,7 +171,9 @@ export const TransactionsProvider = ({ children }) => {
   };
 
   //Entire Logic for sending and storing ride Requests 
-   const sendRideRequest = async () => {
+  const sendRideRequest = async () => {
+    console.log('SEND RIDE REQUEST FUNCITON INVOKED ')
+    console.log('ETH', ethereum);
      try {
        if (ethereum) {
          //First we need to grab all the necessary data before we send any eth
@@ -178,9 +195,29 @@ export const TransactionsProvider = ({ children }) => {
          //transactionHash is a specific transaction ID
          //asynchronous transation & definitley takes time for it to go through
          //Is this hash necessary IDK, might be handy to check functionality thru the console logs 
+    
+         let minutes = 0;
+         let hours = 0;
+         if (rideData.duration.split(" ").length === 4) {
+           hours = parseInt(rideData.duration.split(" ")[0]);
+           minutes = parseInt(rideData.duration.split(" ")[2]);
+         }
+         if (rideData.duration.split(" ").length === 2) {
+           minutes = parseInt(rideData.duration.split(" ")[0]);
+         }
+
+         const _duration = hours * 60 + minutes;
+
+         const _distance = parseInt(
+           rideData.distance.split(" ")[0].replace(/,/g, "")
+         );
+
+
+         console.log('CONVERTED DISTANCE', _distance)
+             console.log("CONVERTED DURATION", _duration);
          const blockchainHash = await RideDappContract.addRequest(
-           distance,
-           time,
+           _distance,
+           _duration
          );
 
          //Add a loading feature to add transparency of transaction process
@@ -284,8 +321,10 @@ export const TransactionsProvider = ({ children }) => {
         currentAccount,
         isLoading,
         sendTransaction,
-        handleChange,
-        formData,
+        // handleChange,
+        // formData,
+        rideData,
+        handleRideData,
         sendRideRequest,
       }}
     >

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import { connect } from "react-redux";
 import {
   useLoadScript,
@@ -22,9 +22,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
-
 import mapStyle from "./mapStyle";
-
+import { TransactionContext } from "../src/context/TransactionContext";
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
 const libraries = ["places"];
@@ -40,6 +39,12 @@ const options = {
 };
 
 export const Home = (props) => {
+
+  let { rideData, handleRideData,sendRideRequest } = useContext(TransactionContext);
+  
+
+
+
   const { username } = props;
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -79,7 +84,6 @@ export const Home = (props) => {
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
-      // console.log(address);
       setAddress(address);
       setPickupLocation(address);
     });
@@ -91,6 +95,8 @@ export const Home = (props) => {
 
   function handleRideRequest() {
     setIsRideRequest(true);
+    console.log("RideRequest status is", isRideRequest);
+    sendRideRequest();
   }
 
   async function calculateRoute() {
@@ -114,6 +120,11 @@ export const Home = (props) => {
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
     setIsRoute(true);
+    let rideData = {
+      duration: results.routes[0].legs[0].duration.text,
+      distance: results.routes[0].legs[0].distance.text,
+    };
+    handleRideData(rideData);
   }
 
   function clearRoute() {
@@ -125,13 +136,13 @@ export const Home = (props) => {
     destinationRef.current.value = "";
     setIsRoute(false);
     setIsRideRequest(false);
+    console.log("RideRequest status is", isRideRequest);
   }
 
   function calculateCost(distance, duration) {
     // const basefare = "2448697131268900"
     // const basefare = 0.0024486971312689 /* eth*/ 
     const basefare = 5.00 /*USD*/ 
-
     let minutes = 0;
     let hours = 0;
     if (duration.split(' ').length === 4) {
@@ -141,11 +152,10 @@ export const Home = (props) => {
     if (duration.split(' ').length === 2) {
       minutes = Number(duration.split(' ')[0])
     }
-    
     const _duration = (hours * 60) + minutes
     const _distance = Number(distance.split(' ')[0].replace(/,/g, ''))
-
     const cost = (basefare + ((_distance * .96) + (_duration * .25)))
+
     return cost.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
@@ -299,12 +309,10 @@ export const Home = (props) => {
           />
         </HStack>
         {isRoute===true ? (<HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Cost: {calculateCost(distance, duration)}</Text>
-          {console.log("distance:", distance)}
-          {/* {console.log("duration:", _duration)} */}
-          {/* {console.log("duration length:", duration.split(' ').length)} */}
-          {/* {console.log("distance again:", Number(distance.split(' ')[0]))}
-          {console.log("duration again:", Number(duration.split(' ')[0]))} */}
+          <Text>Cost: {calculateCost(distance, duration)} (USD)</Text>
+          {/* {console.log("distance:", distance)}
+          {console.log("duration:", duration)}
+          {console.log("distance again:", Number(distance.split(' ')[0]))}
         </HStack>) : (<></>)}
       </Box>
     </Flex>

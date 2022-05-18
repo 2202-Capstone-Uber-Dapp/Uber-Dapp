@@ -1,9 +1,12 @@
 const router = require("express").Router();
 const decodeToken = require("../auth");
+const { createSession, verifySessionCookie } = require("../auth/authSession");
 const {
   models: { Ride, User },
 } = require("../db/");
 module.exports = router;
+
+router.use(verifySessionCookie);
 //  Here we are "mounted on" (starts with) /api/ride
 
 //Do we need to use decodeToken here?
@@ -16,7 +19,8 @@ module.exports = router;
 //Creating initial Ride request
 router.post("/:userId", async (req, res, next) => {
   try {
-    let { userId } = req.params;
+    // let { userId } = req.params;
+    let userId = req.session.user_id;
     //Check Whether they have a ride already
     const rideBool = await Ride.findOne({
       where: { riderUserId: userId },
@@ -43,7 +47,8 @@ router.post("/:userId", async (req, res, next) => {
 router.put("/:userId", async (req, res, next) => {
   try {
     let { rideId } = req.body;
-    let { userId } = req.params;
+    // let { userId } = req.params;
+    let userId = req.session.user_id;
     const ride = await Ride.findByPk(rideId);
     const user = await User.findOne({ where: { user_id: userId } });
     await ride.setDriver(user);
@@ -57,7 +62,8 @@ router.put("/:userId", async (req, res, next) => {
 //Get All Rides associated w a user
 router.get("/:userId", async (req, res, next) => {
   try {
-    let { userId } = req.params;
+    // let { userId } = req.params;
+      let userId = req.session.user_id;
     const userRides = await Ride.findAll({
       where: { isCompleted: true, riderUserId: userId },
     });
