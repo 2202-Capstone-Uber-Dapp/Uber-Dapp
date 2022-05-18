@@ -319,7 +319,10 @@ export const Home = (props) => {
           />
         </HStack>
         {isRoute===true ? (<HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Cost: {calculateCost(distance, duration)} (USD)</Text>
+          <Text>Cost: {(calculateCost(distance, duration)).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    })}</Text>
         </HStack>) : (<></>)}
       </Box>
     </Flex>
