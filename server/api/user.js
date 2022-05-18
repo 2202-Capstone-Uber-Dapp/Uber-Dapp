@@ -11,7 +11,6 @@ router.use(verifySessionCookie);
 router.get('/', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.session.user_id);
-    console.log(user);
     res.json(user);
   } catch (err) {
     next(err);
