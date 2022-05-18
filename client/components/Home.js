@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children, createContext } from "react";
 import { connect } from "react-redux";
 import {
   useLoadScript,
@@ -39,12 +39,17 @@ const options = {
   zoomControl: true,
 };
 
-export const Home = (props) => {
-  const { username } = props;
+export const MapContext = createContext();
+
+
+export const Home = ({children}) => {
+  // const { username } = props;
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries,
   });
+
+
 
   GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
 
@@ -80,7 +85,7 @@ export const Home = (props) => {
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
-      console.log(address);
+      // console.log(address);
       setAddress(address);
       setPickupLocation(address);
     });
@@ -162,6 +167,8 @@ export const Home = (props) => {
   if (!isLoaded) return <SkeletonText />;
 
   return (
+    <MapContext.Provider value={{duration, distance}}>
+    
     <Flex
       position="absolute"
       flexDirection="column"
@@ -312,6 +319,8 @@ export const Home = (props) => {
         </HStack>) : (<></>)}
       </Box>
     </Flex>
+    {children}
+    </MapContext.Provider>
   );
 };
 
