@@ -22,10 +22,8 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
-
 import mapStyle from "./mapStyle";
 import { TransactionContext } from "../src/context/TransactionContext";
-
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
 const libraries = ["places"];
@@ -68,7 +66,6 @@ export const Home = (props) => {
   const [pickupLocation, setPickupLocation] = React.useState("");
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
-  // const [rideCost, setRideCost] = React.useState(0);
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -87,7 +84,6 @@ export const Home = (props) => {
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
-      console.log(address);
       setAddress(address);
       setPickupLocation(address);
     });
@@ -114,6 +110,12 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
+    GeoCode.fromAddress(originRef.current.value).then(
+      (response) => {
+        const {lat, lng} = response.results[0].geometry.location;
+        setMarker({lat, lng})
+      }
+    )
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
@@ -141,9 +143,19 @@ export const Home = (props) => {
     // const basefare = "2448697131268900"
     // const basefare = 0.0024486971312689 /* eth*/ 
     const basefare = 5.00 /*USD*/ 
-    const _distance = Number(distance.split(' ')[0])
-    const _duration = Number(duration.split(' ')[0])
-    const cost = (basefare * ((_distance * _duration) / (_distance + _duration))) / 3
+    let minutes = 0;
+    let hours = 0;
+    if (duration.split(' ').length === 4) {
+      hours = Number(duration.split(' ')[0])
+      minutes = Number(duration.split(' ')[2])
+    }
+    if (duration.split(' ').length === 2) {
+      minutes = Number(duration.split(' ')[0])
+    }
+    const _duration = (hours * 60) + minutes
+    const _distance = Number(distance.split(' ')[0].replace(/,/g, ''))
+    const cost = (basefare + ((_distance * .96) + (_duration * .25)))
+
     return cost.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
@@ -155,7 +167,7 @@ export const Home = (props) => {
   if (loadError) return "Error Loading Map";
   if (!isLoaded) return <SkeletonText />;
 
-  return (
+  return (    
     <Flex
       position="absolute"
       flexDirection="column"
@@ -291,7 +303,7 @@ export const Home = (props) => {
             icon={<FaLocationArrow />}
             isRound
             onClick={() => {
-              map.panTo(newCenter);
+              map.panTo(marker);
               map.setZoom(15);
             }}
           />
@@ -301,7 +313,6 @@ export const Home = (props) => {
           {/* {console.log("distance:", distance)}
           {console.log("duration:", duration)}
           {console.log("distance again:", Number(distance.split(' ')[0]))}
-          {console.log("duration again:", Number(duration.split(' ')[0]))} */}
         </HStack>) : (<></>)}
       </Box>
     </Flex>
