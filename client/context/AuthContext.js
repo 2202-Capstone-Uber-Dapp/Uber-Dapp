@@ -22,8 +22,9 @@ export function AuthProvider({ children }) {
     return verifySession();
   }, []);
 
-  async function signup(email, password, userName) {
+  async function signup(email, password, userName, role) {
     try {
+      console.log(role);
       const newUser = await auth.createUserWithEmailAndPassword(email, password);
       await updateProfile(newUser.user, {displayName: userName});
       const token = await newUser.user.getIdToken();

@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from './AuthContext';
-import { fetchUserInfo } from '../store/auth';
+import { fetchUserInfo, updateUserinfo } from '../store/auth';
 const UserInfoContext = React.createContext();
 
 export function userContext() {
@@ -12,10 +12,20 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    dispatch(fetchUserInfo());
+    async function fetchData() {
+      const token = await currentUser.getIdToken();
+      window.localStorage.setItem('token', token);
+      //dispatch(fetchUserInfo());
+    }
+
+    fetchData();
     setLoading(false);
+    return function cleanup() {
+      window.localStorage.removeItem('token');
+    };
   }, []);
   const value = { user };
   return (

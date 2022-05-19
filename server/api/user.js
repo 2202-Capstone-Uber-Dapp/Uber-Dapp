@@ -5,13 +5,14 @@ const {
 } = require('../db/');
 
 module.exports = router;
-
 router.use(verifySessionCookie);
-
+// GET /api/user/
 router.get('/', async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.session.user_id);
-    console.log(user);
+    req.session.user_id;
+    req.const[(user, hasCreatedUser)] = await User.findOrCreate({
+      where: { user_id: req.user },
+    });
     res.json(user);
   } catch (err) {
     next(err);
@@ -20,33 +21,37 @@ router.get('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
   try {
+    console.log(req.user);
     const user = await User.findByPk(req.user);
-    const { email, role, wallet } = req.body;
+    console.log(user);
+    const { email, role, wallet} = req.body;
     res.send(await user.update({ email, role, wallet }));
   } catch (err) {
+    console.log(err);
     next(err);
   }
 });
 
-router.get('/', async (req, res, next) => {
+
+router.get('/', async (req,res,next) => {
   try {
-    const { data } = await User.findOne({
+    const {data} = await User.findOne({
       where: {
-        user_id: req.user,
-      },
-    });
+        user_id: req.user
+      }
+    })
     res.json(data);
   } catch (err) {
     next(err);
   }
-});
+})
 
-router.post('/', async (req, res, next) => {
+router.post('/', async (req,res,next) => {
   try {
     const { uid, displayName } = req.body.user;
-    const user = await User.create({ user_id: uid, username: displayName });
+    const user = await User.create({user_id: uid, username: displayName});
     res.send(user);
   } catch (err) {
     next(err);
   }
-});
+})
