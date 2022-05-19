@@ -47,10 +47,10 @@ export const Home = (props) => {
      useContext(TransactionContext);
 
   //ComponentDidUpdate
-  useEffect(() => {
-    checkIfWalletIsConnect();
-    connectWallet();
-  }, []);
+  // useEffect(() => {
+  //   checkIfWalletIsConnect();
+  //   connectWallet();
+  // }, []);
 
   const dispatch = useDispatch();
 
