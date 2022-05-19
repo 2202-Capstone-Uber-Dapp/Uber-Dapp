@@ -14,6 +14,7 @@ import {
   Text,
   useColorModeValue,
   Link,
+  Select
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
@@ -28,6 +29,7 @@ export default function SignupCard() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const displayNameRef = useRef();
+  const [role, setRole] = useState('');
   const { signup } = useAuth();
   const history = useHistory();
   
@@ -42,7 +44,7 @@ export default function SignupCard() {
       return setError('passwords do not match');
     setLoading(true);
     try {
-      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value);
+      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value, role);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -116,6 +118,13 @@ export default function SignupCard() {
               <FormControl id="displayName" isRequired>
                 <FormLabel>Username</FormLabel>
                 <Input ref={displayNameRef} type="text" />
+              </FormControl>
+              <FormControl id="roleSelect" isRequired>
+                <FormLabel htmlFor='role'>Role</FormLabel>
+                <Select id='role' placeholder='Select Role' onChange={(e) => setRole(e.target.value)}>
+                  <option value="RIDER">Rider</option>
+                  <option value="DRIVER">Driver</option>
+                </Select>
               </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button

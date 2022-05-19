@@ -22,12 +22,12 @@ export function AuthProvider({ children }) {
     return verifySession();
   }, []);
 
-  async function signup(email, password, userName) {
+  async function signup(email, password, userName, role) {
     try {
       const newUser = await auth.createUserWithEmailAndPassword(email, password);
       await updateProfile(newUser.user, {displayName: userName});
       const token = await newUser.user.getIdToken();
-      const data = { token, user: newUser.user };
+      const data = { token, user: newUser.user, role: role};
       dispatch(userSignUp(data));
       return () => unsubscribe()
     } catch (err) {
