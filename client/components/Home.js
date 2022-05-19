@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import { connect, useDispatch } from "react-redux";
 import {
   useLoadScript,
@@ -43,13 +43,21 @@ const options = {
 
 export const Home = (props) => {
 
-  const dispatch = useDispatch()
+   let { rideData, handleRideData, sendRideRequest, connectWallet, checkIfWalletIsConnect } =
+     useContext(TransactionContext);
 
-  let { rideData, handleRideData,sendRideRequest } = useContext(TransactionContext);
+  //ComponentDidUpdate
+  useEffect(() => {
+    checkIfWalletIsConnect();
+    connectWallet();
+  }, []);
 
+  const dispatch = useDispatch();
+
+ 
   // const { username } = props;
   const { user } = userContext();
-  const userId = user.user_id
+  const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -71,7 +79,7 @@ export const Home = (props) => {
   const [pickupLocation, setPickupLocation] = React.useState("");
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
-  const [cost, setCost] = React.useState(0)
+  const [cost, setCost] = React.useState(0);
 
   const originRef = React.useRef();
   const destinationRef = React.useRef();
@@ -103,8 +111,15 @@ export const Home = (props) => {
     setIsRideRequest(true);
     console.log("RideRequest status is", isRideRequest);
     // sendRideRequest();
-    let cost = calculateCost(distance, duration)
-    dispatch(requestRide({cost: parseInt(cost), distance: parseInt(distance.split(' ')[0]), duration: parseInt(duration.split(' ')[0]), userId: userId}))
+    let cost = calculateCost(distance, duration);
+    dispatch(
+      requestRide({
+        cost: parseInt(cost),
+        distance: parseInt(distance.split(" ")[0]),
+        duration: parseInt(duration.split(" ")[0]),
+        userId: userId,
+      })
+    );
   }
 
   async function calculateRoute() {
@@ -118,12 +133,10 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    GeoCode.fromAddress(originRef.current.value).then(
-      (response) => {
-        const {lat, lng} = response.results[0].geometry.location;
-        setMarker({lat, lng})
-      }
-    )
+    GeoCode.fromAddress(originRef.current.value).then((response) => {
+      const { lat, lng } = response.results[0].geometry.location;
+      setMarker({ lat, lng });
+    });
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
@@ -149,35 +162,32 @@ export const Home = (props) => {
 
   function calculateCost(distance, duration) {
     // const basefare = "2448697131268900"
-    // const basefare = 0.0024486971312689 /* eth*/ 
-    const basefare = 5.00 /*USD*/ 
+    // const basefare = 0.0024486971312689 /* eth*/
+    const basefare = 5.0; /*USD*/
     let minutes = 0;
     let hours = 0;
-    if (duration.split(' ').length === 4) {
-      hours = Number(duration.split(' ')[0])
-      minutes = Number(duration.split(' ')[2])
+    if (duration.split(" ").length === 4) {
+      hours = Number(duration.split(" ")[0]);
+      minutes = Number(duration.split(" ")[2]);
     }
-    if (duration.split(' ').length === 2) {
-      minutes = Number(duration.split(' ')[0])
+    if (duration.split(" ").length === 2) {
+      minutes = Number(duration.split(" ")[0]);
     }
-    const _duration = (hours * 60) + minutes
-    const _distance = Number(distance.split(' ')[0].replace(/,/g, ''))
-    const cost = (basefare + ((_distance * .96) + (_duration * .25)))
+    const _duration = hours * 60 + minutes;
+    const _distance = Number(distance.split(" ")[0].replace(/,/g, ""));
+    const cost = basefare + (_distance * 0.96 + _duration * 0.25);
     // setCost(cost)
-    return cost
+    return cost;
     // return cost.toLocaleString("en-US", {
     //   style: "currency",
     //   currency: "USD",
     // })
   }
 
-  
-  
-
   if (loadError) return "Error Loading Map";
   if (!isLoaded) return <SkeletonText />;
 
-  return (    
+  return (
     <Flex
       position="absolute"
       flexDirection="column"
@@ -318,12 +328,19 @@ export const Home = (props) => {
             }}
           />
         </HStack>
-        {isRoute===true ? (<HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Cost: {(calculateCost(distance, duration)).toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD",
-    })}</Text>
-        </HStack>) : (<></>)}
+        {isRoute === true ? (
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <Text>
+              Cost:{" "}
+              {calculateCost(distance, duration).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
+              })}
+            </Text>
+          </HStack>
+        ) : (
+          <></>
+        )}
       </Box>
     </Flex>
   );

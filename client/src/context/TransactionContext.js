@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //Purpose of this file is to wrap all of our components with a context & connect them to the blockchain
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
@@ -309,7 +310,7 @@ export const TransactionsProvider = ({ children }) => {
   //ComponentDidUpdate
   useEffect(() => {
     checkIfWalletIsConnect();
-    checkIfTransactionsExists();
+    // checkIfTransactionsExists();
   }, [transactionCount]);
 
   return (
@@ -321,6 +322,7 @@ export const TransactionsProvider = ({ children }) => {
         currentAccount,
         isLoading,
         sendTransaction,
+        checkIfWalletIsConnect,
         // handleChange,
         // formData,
         rideData,
