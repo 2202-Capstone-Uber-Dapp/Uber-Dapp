@@ -19,8 +19,8 @@ router.use(verifySessionCookie);
 //Creating initial Ride request
 router.post("/:userId", async (req, res, next) => {
   try {
-    // let { userId } = req.params;
-    let userId = req.session.user_id;
+    let { userId } = req.params;
+    // let userId = req.session.user_id;
     //Check Whether they have a ride already
     const rideBool = await Ride.findOne({
       where: { riderUserId: userId },
@@ -58,12 +58,32 @@ router.put("/:userId", async (req, res, next) => {
   }
 });
 
+
+
+
+//Driver Fetch All Non Fufilled Rides
+//Get All Rides associated w a user
+router.get("/driver", async (req, res, next) => {
+  try {
+    const requestedRides = await Ride.findAll({
+      where: { isCompleted: false, driverUserId: null},
+    });
+    console.log(requestedRides);
+    res.status(201).json(requestedRides);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
+
 //Ride History
 //Get All Rides associated w a user
 router.get("/:userId", async (req, res, next) => {
   try {
-    // let { userId } = req.params;
-      let userId = req.session.user_id;
+    let { userId } = req.params;
+      // let userId = req.session.user_id;
     const userRides = await Ride.findAll({
       where: { isCompleted: true, riderUserId: userId },
     });
@@ -72,3 +92,4 @@ router.get("/:userId", async (req, res, next) => {
     next(error);
   }
 });
+
