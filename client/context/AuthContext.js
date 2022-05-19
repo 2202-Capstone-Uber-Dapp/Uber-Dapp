@@ -24,11 +24,10 @@ export function AuthProvider({ children }) {
 
   async function signup(email, password, userName, role) {
     try {
-      console.log(role);
       const newUser = await auth.createUserWithEmailAndPassword(email, password);
       await updateProfile(newUser.user, {displayName: userName});
       const token = await newUser.user.getIdToken();
-      const data = { token, user: newUser.user };
+      const data = { token, user: newUser.user, role: role};
       dispatch(userSignUp(data));
       return () => unsubscribe()
     } catch (err) {

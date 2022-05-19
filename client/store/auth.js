@@ -30,7 +30,6 @@ export const fetchUserInfo = () => async (dispatch) => {
 export const userSignUp = (user) => async (dispatch) => {
   try {
     const res = await axios.post('/api/user', user)
-    console.log(user);
     dispatch(setAuth(res.data));
   } catch (err){
     console.log(err);

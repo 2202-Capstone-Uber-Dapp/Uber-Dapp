@@ -119,11 +119,11 @@ export default function SignupCard() {
                 <FormLabel>Username</FormLabel>
                 <Input ref={displayNameRef} type="text" />
               </FormControl>
-              <FormControl>
+              <FormControl id="roleSelect" isRequired>
                 <FormLabel htmlFor='role'>Role</FormLabel>
                 <Select id='role' placeholder='Select Role' onChange={(e) => setRole(e.target.value)}>
-                  <option value="Rider">Rider</option>
-                  <option value="Driver">Driver</option>
+                  <option value="RIDER">Rider</option>
+                  <option value="DRIVER">Driver</option>
                 </Select>
               </FormControl>
               <Stack spacing={10} pt={2}>
