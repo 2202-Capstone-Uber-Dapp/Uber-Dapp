@@ -39,7 +39,7 @@ export const TransactionsProvider = ({ children }) => {
   const [rideData, setRideData] = useState({
     duration: "",
     distance: "",
-    cost: 0
+    cost: 0,
   });
 
   console.log("RIDEDATA", rideData);
@@ -62,7 +62,7 @@ export const TransactionsProvider = ({ children }) => {
     setRideData((prevState) => ({
       duration: data.duration,
       distance: data.distance,
-      cost: data.cost
+      cost: data.cost,
     }));
   };
 
@@ -294,39 +294,50 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  // const sendTransaction = async (riderWalletAddress) => {
-  //   try {
-  //     if (!ethereum) return alert("Please install metamask");
-  //     if (ethereum) {
-  //       const RideDappContract = createEthereumContract();
+  const sendTransaction = async (riderWalletAddress) => {
+    try {
+      if (!ethereum) return alert("Please install metamask");
+      if (ethereum) {
+        const RideDappContract = createEthereumContract();
 
-  //       const { duration, distance, cost } = rideData;
-  //        const parsedAmount = ethers.utils.parseEther(cost);
+        const { duration, distance, cost } = rideData;
+        const parsedAmount = ethers.utils.parseEther(cost);
 
-  //       await ethereum.request({
-  //         method: "eth_sendTransaction",
-  //         params: [
-  //           {
-  //             from: riderWalletAddress,
-  //             to: currentAccount,
-  //             gas: "0x5208",
-  //             value: parsedAmount._hex,
-  //           },
-  //         ],
-  //       });
+        if ( await RideDappContract.checkDriver()) {
+          setIsLoading(true);
+          const sendMoneyHash = await ethereum.request({
+            method: "eth_sendTransaction",
+            params: [
+              {
+                from: riderWalletAddress,
+                to: currentAccount,
+                gas: "0x5208",
+                value: parsedAmount._hex,
+              },
+            ],
+          });
+          console.log(`Loading.... sending money- ${sendMoneyHash.hash}`);
+          await sendMoneyHash.wait();
+          console.log(`Success money sent!- ${sendMoneyHash.hash}`);
+          setIsLoading(false);
 
-  //       const transactionHash = await RideDappContract.acceptRide(rideID);
-  //       setIsLoading(true);
-  //       console.log(`Loading - ${transactionHash.hash}`);
-  //       await transactionHash.wait();
-  //       console.log(`Success - ${transactionHash.hash}`);
-  //       setIsLoading(false);
-  //       window.location.reload();
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+          const transactionHash = await RideDappContract.acceptRide(rideID);
+          setIsLoading(true);
+          console.log(`Loading - ${transactionHash.hash}`);
+          await transactionHash.wait();
+          console.log(`Success - ${transactionHash.hash}`);
+          setIsLoading(false);
+          window.location.reload();
+        }
+      } else {
+        console.log("No ethereum object");
+      }
+    } catch (error) {
+      console.log(error);
+
+      throw new Error("No ethereum object");
+    }
+  };
 
   //Entire logic for sending and storing transactions
   const sendTransaction = async () => {
@@ -344,6 +355,7 @@ export const TransactionsProvider = ({ children }) => {
 
         //Send Eth thru the blockchain !
         //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
+
         await ethereum.request({
           method: "eth_sendTransaction",
           params: [
