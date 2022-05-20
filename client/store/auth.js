@@ -17,18 +17,19 @@ const setAuth = (auth) => ({ type: SET_AUTH, auth });
  * THUNK CREATORS
  */
 export const fetchUserInfo = () => async (dispatch) => {
+  //fixed
   const res = await axios.get('/api/user/');
   return dispatch(setAuth(res.data));
 };
 
 export const userSignUp = (user) => async (dispatch) => {
   try {
-    const res = await axios.post('/api/user', user)
+    const res = await axios.post('/api/user', user);
     dispatch(setAuth(res.data));
-  } catch (err){
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 export const logout = () => {
   window.localStorage.removeItem(TOKEN);

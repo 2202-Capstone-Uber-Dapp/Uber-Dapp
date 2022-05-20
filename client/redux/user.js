@@ -49,16 +49,20 @@ export const acceptRide = ({ rideId, userId }) => {
 
 export const requestRide = ({
   cost,
-  distanceTraveled,
-  estimatedTime,
+  distance,
+  duration,
   userId,
 }) => {
   return async (dispatch) => {
     try {
+      console.log("cost", cost)
+      console.log("distance", distance)
+      console.log("duration", duration)
+      console.log("userID", userId)
       const { data } = await axios.post(`/api/ride/${userId}`, {
         cost,
-        distanceTraveled,
-        estimatedTime,
+        distance,
+        duration,
       });
       dispatch(_requestRide(data));
     } catch (error) {

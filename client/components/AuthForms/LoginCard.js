@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useRef, useState,useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Flex,
@@ -18,8 +19,27 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
+import { TransactionContext } from '../../src/context/TransactionContext';
 
 export default function LoginCard() {
+
+  
+
+ let {
+   connectWallet,
+   checkIfWalletIsConnect,
+ } = useContext(TransactionContext);
+
+ //ComponentDidUpdate
+//  useEffect(() => {
+//    checkIfWalletIsConnect();
+//    connectWallet();
+//  }, []);
+  
+ 
+
+
+
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);

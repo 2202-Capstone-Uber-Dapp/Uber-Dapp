@@ -135,3 +135,21 @@ contract RideDapp is Ownable {
     }
 }
 
+
+
+//Something to implement in the future , if we want to fetch all older transactions 
+//or if we want to get the transaction count 
+
+    // //Returns a TransferStruct array 
+    // function getAllTransactions()
+    //     public
+    //     view
+    //     returns (TransferStruct[] memory)
+    // {
+    //     return transactions;
+    // }
+
+    //     //returns our variable storing amount of transactions 
+    // function getTransactionCount() public view returns (uint256) {
+    //     return transactionCounter;
+    // }

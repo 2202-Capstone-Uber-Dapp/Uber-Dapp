@@ -16,10 +16,10 @@ const Ride = db.define("ride", {
       min: 1, // 0?
     },
   },
-  distanceTraveled: {
+  distance: {
     type: Sequelize.INTEGER, //miles
   },
-    estimatedTime: {
+    duration: {
     type: Sequelize.INTEGER // minutes 
   },
   
