@@ -39,6 +39,7 @@ export const TransactionsProvider = ({ children }) => {
   const [rideData, setRideData] = useState({
     duration: "",
     distance: "",
+    cost: 0
   });
 
   console.log("RIDEDATA", rideData);
@@ -61,6 +62,7 @@ export const TransactionsProvider = ({ children }) => {
     setRideData((prevState) => ({
       duration: data.duration,
       distance: data.distance,
+      cost: data.cost
     }));
   };
 
@@ -173,7 +175,7 @@ export const TransactionsProvider = ({ children }) => {
   //Entire Logic for sending and storing ride Requests
   const sendRideRequest = async () => {
     console.log("SEND RIDE REQUEST FUNCITON INVOKED ");
-    console.log('ETHBBY', ethereum)
+    console.log("ETHBBY", ethereum);
     try {
       if (ethereum) {
         //First we need to grab all the necessary data before we send any eth
@@ -196,7 +198,7 @@ export const TransactionsProvider = ({ children }) => {
 
         let minutes = 0;
         let hours = 0;
-        console.log('DOES IT WORK, ')
+        console.log("DOES IT WORK, ");
         if (rideData.duration.split(" ").length === 4) {
           hours = parseInt(rideData.duration.split(" ")[0]);
           minutes = parseInt(rideData.duration.split(" ")[2]);
@@ -211,8 +213,13 @@ export const TransactionsProvider = ({ children }) => {
           rideData.distance.split(" ")[0].replace(/,/g, "")
         );
 
-        console.log("CONVERTED DISTANCE", _distance, typeof _distance, rideData );
-        console.log("CONVERTED DURATION", _duration, typeof _duration, );
+        console.log(
+          "CONVERTED DISTANCE",
+          _distance,
+          typeof _distance,
+          rideData
+        );
+        console.log("CONVERTED DURATION", _duration, typeof _duration);
         const blockchainHash = await RideDappContract.addRequest(
           _distance,
           _duration
@@ -220,11 +227,15 @@ export const TransactionsProvider = ({ children }) => {
 
         //Add a loading feature to add transparency of transaction process
         setIsLoading(true);
-        console.log(`Loading - ${blockchainHash.hash}`);
+        console.log(
+          `Loading Adding Ride Request to Blockchain - ${blockchainHash.hash}`
+        );
         //This will wait for the transaction to finish
         await blockchainHash.wait();
         //Notify user for success
-        console.log(`Success - ${blockchainHash.hash}`);
+        console.log(
+          `Success, Ride Request added to Blockchain - ${blockchainHash.hash}`
+        );
         setIsLoading(false);
         window.location.reload();
       } else {
@@ -260,28 +271,62 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-    const setDriver = async () => {
-      try {
-        if (ethereum) {
-          const RideDappContract = createEthereumContract();
-          const blockchainHash = await RideDappContract.addDriver();
-          //Add a loading feature to add transparency of transaction process
-          setIsLoading(true);
-          console.log(
-            `Loading, trying to add Driver to block - ${blockchainHash.hash}`
-          );
-          //This will wait for the transaction to finish
-          await blockchainHash.wait();
-          //Notify user for success
-          console.log(`Success, added Driver to Block - ${blockchainHash.hash}`);
-          setIsLoading(false);
-          window.location.reload();
-        }
-      } catch (error) {
-        console.log(error);
-        throw new Error("No ethereum object");
+  const setDriver = async () => {
+    try {
+      if (ethereum) {
+        const RideDappContract = createEthereumContract();
+        const blockchainHash = await RideDappContract.addDriver();
+        //Add a loading feature to add transparency of transaction process
+        setIsLoading(true);
+        console.log(
+          `Loading, trying to add Driver to block - ${blockchainHash.hash}`
+        );
+        //This will wait for the transaction to finish
+        await blockchainHash.wait();
+        //Notify user for success
+        console.log(`Success, added Driver to Block - ${blockchainHash.hash}`);
+        setIsLoading(false);
+        window.location.reload();
       }
-    };
+    } catch (error) {
+      console.log(error);
+      throw new Error("No ethereum object");
+    }
+  };
+
+  // const sendTransaction = async (riderWalletAddress) => {
+  //   try {
+  //     if (!ethereum) return alert("Please install metamask");
+  //     if (ethereum) {
+  //       const RideDappContract = createEthereumContract();
+
+  //       const { duration, distance, cost } = rideData;
+  //        const parsedAmount = ethers.utils.parseEther(cost);
+
+  //       await ethereum.request({
+  //         method: "eth_sendTransaction",
+  //         params: [
+  //           {
+  //             from: riderWalletAddress,
+  //             to: currentAccount,
+  //             gas: "0x5208",
+  //             value: parsedAmount._hex,
+  //           },
+  //         ],
+  //       });
+
+  //       const transactionHash = await RideDappContract.acceptRide(rideID);
+  //       setIsLoading(true);
+  //       console.log(`Loading - ${transactionHash.hash}`);
+  //       await transactionHash.wait();
+  //       console.log(`Success - ${transactionHash.hash}`);
+  //       setIsLoading(false);
+  //       window.location.reload();
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   //Entire logic for sending and storing transactions
   const sendTransaction = async () => {
@@ -372,7 +417,7 @@ export const TransactionsProvider = ({ children }) => {
         handleRideData,
         sendRideRequest,
         setRider,
-        setDriver
+        setDriver,
       }}
     >
       {children}

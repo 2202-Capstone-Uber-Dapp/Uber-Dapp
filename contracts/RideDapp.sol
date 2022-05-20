@@ -82,6 +82,7 @@ contract RideDapp is Ownable {
             msg.sender,
             requestData[_requestId].cost
         );
+
     }
 
     // functions related to rider

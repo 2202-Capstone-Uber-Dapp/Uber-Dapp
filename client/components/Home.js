@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   useLoadScript,
   GoogleMap,
@@ -50,8 +51,11 @@ export const Home = (props) => {
     checkIfWalletIsConnect,
     currentAccount,
     setIs,
+    setRider,
+    setDriver
   } = useContext(TransactionContext);
 
+  const auth = useSelector((state) => state.auth);
   //ComponentDidUpdate
   //Prompt User to Connect Wallet
   useEffect(() => {
@@ -62,6 +66,7 @@ export const Home = (props) => {
 
   // const { username } = props;
   const { user } = userContext();
+  console.log('USERRR', user)
   const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({
@@ -123,8 +128,8 @@ export const Home = (props) => {
         userId: userId,
       })
     );
-    console.log('YO', distance, duration)
-    handleRideData({ distance: distance, duration: duration });
+    console.log('YO', distance, duration, cost)
+    handleRideData({ distance: distance, duration: duration, cost: parseInt(cost)});
         sendRideRequest();
   }
 
