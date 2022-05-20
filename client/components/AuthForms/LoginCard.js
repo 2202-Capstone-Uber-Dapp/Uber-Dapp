@@ -27,7 +27,7 @@ export default function LoginCard() {
 
  let {
    connectWallet,
-   checkIfWalletIsConnect,
+   checkIfWalletIsConnect, currentAccount
  } = useContext(TransactionContext);
 
  //ComponentDidUpdate
@@ -36,6 +36,10 @@ export default function LoginCard() {
 //    connectWallet();
 //  }, []);
   
+  //Prompt User to Connect Wallet 
+    useEffect(() => {
+      connectWallet();
+    }, [currentAccount]);
  
 
 

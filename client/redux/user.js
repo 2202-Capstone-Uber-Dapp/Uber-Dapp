@@ -55,10 +55,6 @@ export const requestRide = ({
 }) => {
   return async (dispatch) => {
     try {
-      console.log("cost", cost)
-      console.log("distance", distance)
-      console.log("duration", duration)
-      console.log("userID", userId)
       const { data } = await axios.post(`/api/ride/${userId}`, {
         cost,
         distance,

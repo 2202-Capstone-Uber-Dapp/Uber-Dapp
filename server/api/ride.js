@@ -19,8 +19,8 @@ router.use(verifySessionCookie);
 //Creating initial Ride request
 router.post("/:userId", async (req, res, next) => {
   try {
-    let { userId } = req.params;
-    // let userId = req.session.user_id;
+    // let { userId } = req.params;
+    let userId = req.session.user_id;
     //Check Whether they have a ride already
     const rideBool = await Ride.findOne({
       where: { riderUserId: userId },

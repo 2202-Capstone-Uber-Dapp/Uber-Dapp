@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
 import {
   useLoadScript,
@@ -24,7 +24,7 @@ import {
 import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
 import mapStyle from "./mapStyle";
 import { TransactionContext } from "../src/context/TransactionContext";
-import { userContext } from '../context/UserContext';
+import { userContext } from "../context/UserContext";
 import { requestRide } from "../redux/user";
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
@@ -42,19 +42,24 @@ const options = {
 };
 
 export const Home = (props) => {
-
-   let { rideData, handleRideData, sendRideRequest, connectWallet, checkIfWalletIsConnect } =
-     useContext(TransactionContext);
+  let {
+    rideData,
+    handleRideData,
+    sendRideRequest,
+    connectWallet,
+    checkIfWalletIsConnect,
+    currentAccount,
+    setIs,
+  } = useContext(TransactionContext);
 
   //ComponentDidUpdate
-  // useEffect(() => {
-  //   checkIfWalletIsConnect();
-  //   connectWallet();
-  // }, []);
+  //Prompt User to Connect Wallet
+  useEffect(() => {
+    connectWallet();
+  }, [currentAccount]);
 
   const dispatch = useDispatch();
 
- 
   // const { username } = props;
   const { user } = userContext();
   const userId = user.user_id;
@@ -109,8 +114,6 @@ export const Home = (props) => {
 
   function handleRideRequest() {
     setIsRideRequest(true);
-    console.log("RideRequest status is", isRideRequest);
-    // sendRideRequest();
     let cost = calculateCost(distance, duration);
     dispatch(
       requestRide({
@@ -120,6 +123,9 @@ export const Home = (props) => {
         userId: userId,
       })
     );
+    console.log('YO', distance, duration)
+    handleRideData({ distance: distance, duration: duration });
+        sendRideRequest();
   }
 
   async function calculateRoute() {
@@ -354,6 +360,5 @@ const mapState = (state) => {
     username: state.auth.username,
   };
 };
-
 
 export default connect(mapState)(Home);
