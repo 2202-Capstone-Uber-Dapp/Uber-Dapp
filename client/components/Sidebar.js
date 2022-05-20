@@ -34,11 +34,11 @@ import {
   FiLogOut,
 } from 'react-icons/fi';
 import { FaWallet, FaUber } from 'react-icons/fa';
-import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from '../context/AuthContext';
 import { userContext } from '../context/UserContext';
 import { Link as RouterLink } from 'react-router-dom';
-import useSocket from './hook/useSocket';
+import useSocket from '../hooks/useSocket';
+
 const DriverItems = [
   { name: 'Home', icon: FiHome, path: '/' },
   { name: 'Trending', icon: FiTrendingUp, path: '/trending' },
@@ -56,7 +56,6 @@ const RiderItems = [
 ];
 
 export default function SidebarWithHeader({ children }) {
-  useSocket();
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -87,8 +86,8 @@ export default function SidebarWithHeader({ children }) {
 }
 
 const SidebarContent = ({ onClose, ...rest }) => {
-  const auth = useSelector((state) => state.auth);
-  let isDriver = 'DRIVER' === auth.role;
+  const { user } = userContext();
+  let isDriver = 'DRIVER' === user.role;
   return (
     <Box
       transition="3s ease"
@@ -123,6 +122,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
 };
 
 const LogoutComponent = () => {
+  const { disconnect } = useSocket();
   const { logout } = useAuth();
 
   return (
@@ -137,7 +137,10 @@ const LogoutComponent = () => {
         bg: 'cyan.400',
         color: 'white',
       }}
-      onClick={() => logout()}
+      onClick={() => {
+        logout();
+        disconnect();
+      }}
     >
       <Icon
         mr="4"

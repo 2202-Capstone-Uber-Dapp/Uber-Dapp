@@ -5,9 +5,6 @@ import { auth } from '../auth/firebase';
 import { userSignUp } from '../store/auth'
 import axios from 'axios';
 const AuthContext = React.createContext();
-const TOKEN = 'token';
-
-// dispatch = useDispatch();
 
 export function useAuth() {
   return useContext(AuthContext);
