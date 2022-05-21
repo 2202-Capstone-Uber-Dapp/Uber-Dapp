@@ -294,7 +294,8 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  const sendTransaction = async (riderWalletAddress) => {
+  //RideId must match the rideId thats in the blockchain 
+  const sendTransaction = async (riderWalletAddress, rideId) => {
     try {
       if (!ethereum) return alert("Please install metamask");
       if (ethereum) {
@@ -321,11 +322,11 @@ export const TransactionsProvider = ({ children }) => {
           console.log(`Success money sent!- ${sendMoneyHash.hash}`);
           setIsLoading(false);
 
-          const transactionHash = await RideDappContract.acceptRide(rideID);
+          const transactionHash = await RideDappContract.acceptRide(rideId);
           setIsLoading(true);
-          console.log(`Loading - ${transactionHash.hash}`);
+          console.log(`Loading, ....adding reciept to Blockchain - ${transactionHash.hash}`);
           await transactionHash.wait();
-          console.log(`Success - ${transactionHash.hash}`);
+          console.log(`Success, recipt added to Blockchain! - ${transactionHash.hash}`);
           setIsLoading(false);
           window.location.reload();
         }
@@ -340,71 +341,71 @@ export const TransactionsProvider = ({ children }) => {
   };
 
   //Entire logic for sending and storing transactions
-  const sendTransaction = async () => {
-    try {
-      if (ethereum) {
-        //First we need to grab all the necessary data before we send any eth
-        //Get form data
-        const { addressTo, amount, keyword, message } = formData;
-        //Gets ours contract
-        const transactionsContract = createEthereumContract();
-        //Convert input decimal to wei/ hexadecimal, use method provided by ethers package, utlility functions
-        const parsedAmount = ethers.utils.parseEther(amount);
-        console.log("FORM DATA", formData);
-        console.log("Contract", transactionsContract);
+  // const sendTransaction = async () => {
+  //   try {
+  //     if (ethereum) {
+  //       //First we need to grab all the necessary data before we send any eth
+  //       //Get form data
+  //       const { addressTo, amount, keyword, message } = formData;
+  //       //Gets ours contract
+  //       const transactionsContract = createEthereumContract();
+  //       //Convert input decimal to wei/ hexadecimal, use method provided by ethers package, utlility functions
+  //       const parsedAmount = ethers.utils.parseEther(amount);
+  //       console.log("FORM DATA", formData);
+  //       console.log("Contract", transactionsContract);
 
-        //Send Eth thru the blockchain !
-        //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
+  //       //Send Eth thru the blockchain !
+  //       //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
 
-        await ethereum.request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: currentAccount,
-              to: addressTo,
-              gas: "0x5208",
-              value: parsedAmount._hex,
-            },
-          ],
-        });
+  //       await ethereum.request({
+  //         method: "eth_sendTransaction",
+  //         params: [
+  //           {
+  //             from: currentAccount,
+  //             to: addressTo,
+  //             gas: "0x5208",
+  //             value: parsedAmount._hex,
+  //           },
+  //         ],
+  //       });
 
-        //Since we executed the transaciton now we want to add the transaction to the Blockchain
-        //Immutable history receipt
-        //Remember that our function requires address, amount, message, and a keyword
-        //transactionHash is a specific transaction ID
-        //asynchronous transation & definitley takes time for it to go through
-        const transactionHash = await transactionsContract.addToBlockchain(
-          addressTo,
-          parsedAmount,
-          message,
-          keyword
-        );
+  //       //Since we executed the transaciton now we want to add the transaction to the Blockchain
+  //       //Immutable history receipt
+  //       //Remember that our function requires address, amount, message, and a keyword
+  //       //transactionHash is a specific transaction ID
+  //       //asynchronous transation & definitley takes time for it to go through
+  //       const transactionHash = await transactionsContract.addToBlockchain(
+  //         addressTo,
+  //         parsedAmount,
+  //         message,
+  //         keyword
+  //       );
 
-        //Add a loading feature to add transparency of transaction process
-        setIsLoading(true);
-        console.log(`Loading - ${transactionHash.hash}`);
-        //This will wait for the transaction to finish
-        await transactionHash.wait();
-        //Notify user for success
-        console.log(`Success - ${transactionHash.hash}`);
-        setIsLoading(false);
+  //       //Add a loading feature to add transparency of transaction process
+  //       setIsLoading(true);
+  //       console.log(`Loading - ${transactionHash.hash}`);
+  //       //This will wait for the transaction to finish
+  //       await transactionHash.wait();
+  //       //Notify user for success
+  //       console.log(`Success - ${transactionHash.hash}`);
+  //       setIsLoading(false);
 
-        //Grab the transaction count & store in local storage
-        const transactionsCount =
-          await transactionsContract.getTransactionCount();
+  //       //Grab the transaction count & store in local storage
+  //       const transactionsCount =
+  //         await transactionsContract.getTransactionCount();
 
-        //Increment the count
-        setTransactionCount(transactionsCount.toNumber());
-        window.location.reload();
-      } else {
-        console.log("No ethereum object");
-      }
-    } catch (error) {
-      console.log(error);
+  //       //Increment the count
+  //       setTransactionCount(transactionsCount.toNumber());
+  //       window.location.reload();
+  //     } else {
+  //       console.log("No ethereum object");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
 
-      throw new Error("No ethereum object");
-    }
-  };
+  //     throw new Error("No ethereum object");
+  //   }
+  // };
 
   //ComponentDidUpdate
   useEffect(() => {

@@ -1,11 +1,6 @@
-<<<<<<< HEAD
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-=======
-import React, { useContext, useEffect } from 'react';
-import { connect, useDispatch } from 'react-redux';
->>>>>>> 4e70151d3b3b6f7cc0b44dc3f78e0996e94028f1
 import {
   useLoadScript,
   GoogleMap,
