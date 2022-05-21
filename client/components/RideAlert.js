@@ -18,16 +18,17 @@ import {
 import useCountdown from "../hooks/useCountdown";
 
 const info = {
+  imageUrl: "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",
   earning: 79,
   eth: 0.059,
   time: 20,
   miles: 9.1,
   pickupLocation: "Broadway, New York",
-  dropOff: "Central Park",
+  dropOff: "Central Park, New York",
 };
 function RideAlert() {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
-  const { earning, eth, time, miles, pickupLocation, dropOff } = info;
+  const { imageUrl, earning, eth, time, miles, pickupLocation, dropOff } = info;
   const secs = useCountdown(30);
   useEffect(() => {
     if (isOpen && secs === 0) onDecline();
@@ -55,7 +56,7 @@ function RideAlert() {
               <Avatar
                 size={"xl"}
                 src={
-                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+                  {imageUrl}
                 }
                 alt={"Avatar Alt"}
                 mt={2}
