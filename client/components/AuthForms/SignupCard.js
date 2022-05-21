@@ -21,7 +21,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useAuth } from "../../context/AuthContext";
 import { updateProfile } from "firebase/auth";
-import { TransactionContext } from "../../src/context/TransactionContext";
+import { TransactionContext } from "../../src/ether/TransactionContext";
 
 export default function SignupCard() {
   let {

@@ -19,7 +19,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useAuth } from '../../context/AuthContext';
 import { Link as RouterLink } from 'react-router-dom';
-import { TransactionContext } from '../../src/context/TransactionContext';
+import { TransactionContext } from '../../src/ether/TransactionContext';
 
 export default function LoginCard() {
 

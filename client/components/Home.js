@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react';
 import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
 import mapStyle from './mapStyle';
-import { TransactionContext } from '../src/context/TransactionContext';
+import { TransactionContext } from '../src/ether/TransactionContext';
 import { userContext } from '../context/UserContext';
 import { requestRide } from '../redux/user';
 
@@ -67,6 +67,7 @@ export const Home = (props) => {
 
   // const { username } = props;
   const { user } = userContext();
+  console.log('THIS GUY!', user);
   const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({

@@ -6,7 +6,7 @@ import history from './history';
 import store from './store';
 import App from './App';
 import { ChakraProvider } from '@chakra-ui/react';
-import { TransactionsProvider } from './src/context/TransactionContext'
+import { TransactionsProvider } from './src/ether/TransactionContext'
 // import * as serviceWorker from "../serviceWorkerRegistration";
 
 

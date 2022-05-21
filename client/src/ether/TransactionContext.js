@@ -7,6 +7,10 @@ import { contractABI, contractAddress } from "../utils/constants";
 
 export const TransactionContext = React.createContext();
 
+
+
+
+
 //Can get the ethereum object, destructruing from window.ethereum
 const { ethereum } = window;
 
@@ -35,6 +39,10 @@ export const TransactionsProvider = ({ children }) => {
   //   keyword: "",
   //   message: "",
   // });
+
+    const { user } = userContext();
+    console.log("THIS GUY!", user);
+    const userId = user.user_id;
 
   const [rideData, setRideData] = useState({
     duration: "",
