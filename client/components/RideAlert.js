@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -14,17 +14,18 @@ import {
   VStack,
   HStack,
   Progress,
-} from "@chakra-ui/react";
-import useCountdown from "../hooks/useCountdown";
+} from '@chakra-ui/react';
+import useCountdown from '../hooks/useCountdown';
 
 const info = {
-  imageUrl: "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",
+  imageUrl:
+    'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
   earning: 79,
   eth: 0.059,
   time: 20,
   miles: 9.1,
-  pickupLocation: "Broadway, New York",
-  dropOff: "Central Park, New York",
+  pickupLocation: 'Broadway, New York',
+  dropOff: 'Central Park, New York',
 };
 function RideAlert() {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
@@ -53,33 +54,26 @@ function RideAlert() {
         <ModalContent margin={5}>
           <ModalHeader>
             <Center>
-              <Avatar
-                size={"xl"}
-                src={
-                  {imageUrl}
-                }
-                alt={"Avatar Alt"}
-                mt={2}
-              />
+              <Avatar size={'xl'} src={imageUrl} alt={'Avatar Alt'} mt={2} />
             </Center>
           </ModalHeader>
           <ModalBody>
-            <VStack align={"center"} justify={"center"}>
+            <VStack align={'center'} justify={'center'}>
               <HStack>
-                <Text fontSize={"5xl"} fontWeight={800}>
+                <Text fontSize={'5xl'} fontWeight={800}>
                   ${earning}
                 </Text>
-                <Text color="gray.500" fontSize={"2xl"} fontWeight={600}>
+                <Text color="gray.500" fontSize={'2xl'} fontWeight={600}>
                   | ETH {eth}
                 </Text>
               </HStack>
-              <Text fontSize={"2xl"} fontWeight={600}>
+              <Text fontSize={'2xl'} fontWeight={600}>
                 {time} min ● {miles} mi
               </Text>
-              <Text fontSize={"xl"} fontWeight={300}>
+              <Text fontSize={'xl'} fontWeight={300}>
                 Pickup: {pickupLocation}
               </Text>
-              <Text fontSize={"xl"} fontWeight={300}>
+              <Text fontSize={'xl'} fontWeight={300}>
                 Dropoff: {dropOff}
               </Text>
             </VStack>
