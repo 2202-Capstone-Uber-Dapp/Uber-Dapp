@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef, useState,useContext, useEffect } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import RideAlert from '../RideAlert';
 import {
   Flex,
   Box,
@@ -22,23 +23,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import { TransactionContext } from '../../src/context/TransactionContext';
 
 export default function LoginCard() {
+  let { connectWallet, checkIfWalletIsConnect } =
+    useContext(TransactionContext);
 
-  
-
- let {
-   connectWallet,
-   checkIfWalletIsConnect,
- } = useContext(TransactionContext);
-
- //ComponentDidUpdate
-//  useEffect(() => {
-//    checkIfWalletIsConnect();
-//    connectWallet();
-//  }, []);
-  
- 
-
-
+  //ComponentDidUpdate
+  //  useEffect(() => {
+  //    checkIfWalletIsConnect();
+  //    connectWallet();
+  //  }, []);
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -65,6 +57,7 @@ export default function LoginCard() {
       justify={'center'}
       bg={useColorModeValue('gray.50', 'gray.800')}
     >
+      <RideAlert />
       <form onSubmit={handleSubmit}>
         <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
           <Stack align={'center'}>

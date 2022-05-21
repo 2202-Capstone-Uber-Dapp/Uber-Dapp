@@ -16,11 +16,10 @@ import {
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 function RideAlert() {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
-  const [progress, secs] = useCountdown(30);
+  const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  const secs = useCountdown(30);
   useEffect(() => {
-    console.log(progress);
-    if (secs === 0) alert('made it!');
+    if (isOpen && secs === 0) onDecline();
   }, [secs]);
   function onAccept() {
     //TODO: write logic for driver acceptance of ride
@@ -68,7 +67,14 @@ function RideAlert() {
               </Text>
             </VStack>
           </ModalBody>
-          <Progress colorScheme="pink" size="sm" value={progress} margin={5} />
+          <Progress
+            colorScheme="pink"
+            size="sm"
+            value={secs}
+            margin={5}
+            min="0"
+            max="30"
+          />
           <ModalFooter
             display="flex"
             alignItems="center"
