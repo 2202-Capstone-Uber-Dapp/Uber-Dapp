@@ -49,6 +49,7 @@ function RideAlert() {
         closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
+        trapFocus={false}
       >
         <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
         <ModalContent margin={5}>
