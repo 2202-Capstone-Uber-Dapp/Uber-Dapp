@@ -296,27 +296,48 @@ export const TransactionsProvider = ({ children }) => {
 
   //RideId must match the rideId thats in the blockchain 
   const sendTransaction = async (riderWalletAddress, rideId) => {
+    console.log('CURRENT', currentAccount)
+    console.log("YELLO");
     try {
+      console.log('HELLO')
       if (!ethereum) return alert("Please install metamask");
       if (ethereum) {
         const RideDappContract = createEthereumContract();
 
-        const { duration, distance, cost } = rideData;
-        const parsedAmount = ethers.utils.parseEther(cost);
+        const { duration, distance } = rideData;
+        let cost = .00005;
+        console.log('COSTED', cost)
+        let strCost = cost.toString()
+        console.log('IS STRING?', strCost)
+        const parsedAmount = ethers.utils.parseEther(strCost);
+        console.log('PARSER', parsedAmount)
+        let bool = await RideDappContract.checkDriver();
+        console.log('WALLET', riderWalletAddress);
+        //   setIsLoading(true);
+        //   console.log(
+        //     `Loading, ....checking driver - ${bool.hash}`
+        //   );
+        //   await bool.wait();
+        //   console.log(
+        //     `Success, driver confirmed! - ${bool.hash}`
+        //   );
+        // setIsLoading(false);
+        console.log('BOOL', bool)
 
-        if ( await RideDappContract.checkDriver()) {
+        if (bool) {
           setIsLoading(true);
           const sendMoneyHash = await ethereum.request({
             method: "eth_sendTransaction",
             params: [
               {
-                from: riderWalletAddress,
-                to: currentAccount,
+                from: currentAccount,
+                to: riderWalletAddress,
                 gas: "0x5208",
                 value: parsedAmount._hex,
               },
             ],
           });
+
           console.log(`Loading.... sending money- ${sendMoneyHash.hash}`);
           await sendMoneyHash.wait();
           console.log(`Success money sent!- ${sendMoneyHash.hash}`);
@@ -354,20 +375,11 @@ export const TransactionsProvider = ({ children }) => {
   //       console.log("FORM DATA", formData);
   //       console.log("Contract", transactionsContract);
 
-  //       //Send Eth thru the blockchain !
-  //       //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
+        // //Send Eth thru the blockchain !
+        // //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
 
-  //       await ethereum.request({
-  //         method: "eth_sendTransaction",
-  //         params: [
-  //           {
-  //             from: currentAccount,
-  //             to: addressTo,
-  //             gas: "0x5208",
-  //             value: parsedAmount._hex,
-  //           },
-  //         ],
-  //       });
+        // await ethereum.request({
+        //e
 
   //       //Since we executed the transaciton now we want to add the transaction to the Blockchain
   //       //Immutable history receipt

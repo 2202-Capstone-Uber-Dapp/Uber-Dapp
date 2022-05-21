@@ -2,8 +2,7 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
-//Need a refund function/ cancel function 
+//Need a refund function/ cancel function
 
 contract RideDapp is Ownable {
     event Transfer(address from, address receiver, uint256 amount);
@@ -51,7 +50,7 @@ contract RideDapp is Ownable {
         return false;
     }
 
-    function addDriver() public  {
+    function addDriver() public {
         //Increments totalDriver
         driverCount++;
         //Adds Driver to the Driver Dictionary mapping wallet address to the count in driverCount
@@ -62,7 +61,7 @@ contract RideDapp is Ownable {
     //Transfer eth from rider wallet to drive wallet
     function acceptRide(uint256 _requestId) public {
         //See if the person invoking this function exists as a viable driver in our driver dictionary
-        require(checkDriver(), 'not a valid driver');
+        require(checkDriver(), "not a valid driver");
 
         //Increment counter
         transactionCounter += 1;
@@ -82,7 +81,6 @@ contract RideDapp is Ownable {
             msg.sender,
             requestData[_requestId].cost
         );
-
     }
 
     // functions related to rider
@@ -99,9 +97,12 @@ contract RideDapp is Ownable {
         riderMapping[msg.sender] = riderCount;
     }
 
-    function addRequest(uint256 _distance, uint256 _rideTime) public {
+    function addRequest(uint256 _distance, uint256 _rideTime)
+        public
+        returns (uint256)
+    {
         //See if the person invoking this function exists as a viable rider in our rider dictionary
-        require(checkRider(), 'not a valid rider');
+        require(checkRider(), "not a valid rider");
 
         //Increments totalRequests
         requestCount++;
@@ -113,6 +114,7 @@ contract RideDapp is Ownable {
             block.timestamp,
             _cost
         );
+        return requestCount;
     }
 
     // general functions
@@ -121,7 +123,7 @@ contract RideDapp is Ownable {
     // $5 in wei is 2,448,697,131,268,900.0000 Wei
     //I want the base fare to be
     //Do all smart contracts operate in wei? is that the correct way to denote $5?
-    function calcCost(uint256 _distance, uint256 _rideTime)
+    function calcCost(uint256 _distance, uint256 _duration)
         public
         pure
         returns (uint256)
@@ -130,27 +132,28 @@ contract RideDapp is Ownable {
         // uint256 baseFare = 5;
 
         //Super Special Algorithm! Its a Bargain!
-        uint256 cost = (baseFare *
-            ((_distance * _rideTime) / (_distance + _rideTime))) / 3;
+        uint256 cost = baseFare + ((_distance * 96 + _duration * 25) / 100);
         return cost;
     }
 }
 
+//Something to implement in the future , if we want to fetch all older transactions
+//or if we want to get the transaction count
 
+// //Returns a TransferStruct array
+// function getAllTransactions()
+//     public
+//     view
+//     returns (TransferStruct[] memory)
+// {
+//     return transactions;
+// }
 
-//Something to implement in the future , if we want to fetch all older transactions 
-//or if we want to get the transaction count 
+//     //returns our variable storing amount of transactions
+// function getTransactionCount() public view returns (uint256) {
+//     return transactionCounter;
+// }
 
-    // //Returns a TransferStruct array 
-    // function getAllTransactions()
-    //     public
-    //     view
-    //     returns (TransferStruct[] memory)
-    // {
-    //     return transactions;
-    // }
-
-    //     //returns our variable storing amount of transactions 
-    // function getTransactionCount() public view returns (uint256) {
-    //     return transactionCounter;
-    // }
+//Old Cost Algo
+//    uint256 cost = (baseFare *
+//         ((_distance * _rideTime) / (_distance + _rideTime))) / 3;

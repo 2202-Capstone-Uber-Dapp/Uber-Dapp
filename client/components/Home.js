@@ -50,6 +50,7 @@ export const Home = (props) => {
     connectWallet,
     checkIfWalletIsConnect,
     currentAccount,
+    sendTransaction,
     setIs,
     setRider,
     setDriver
@@ -66,7 +67,6 @@ export const Home = (props) => {
 
   // const { username } = props;
   const { user } = userContext();
-  console.log('USERRR', user)
   const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({
@@ -118,7 +118,7 @@ export const Home = (props) => {
   }
 
   function handleRideRequest() {
-    socket.emit('requestRide', { address, pickupLocation });
+    // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
     console.log('RideRequest status is', isRideRequest);
     // sendRideRequest();
@@ -210,6 +210,11 @@ export const Home = (props) => {
       w="100vw"
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
+        <Button
+          onClick={() =>{ sendTransaction("0x105836DcA641335558f633816Dfd768aa2F81E81", 1); }}
+        >
+          <Text> Test Transaction</Text>
+        </Button>
         {/* Google Map Box */}
         <GoogleMap
           center={center}
@@ -345,10 +350,10 @@ export const Home = (props) => {
         {isRoute === true ? (
           <HStack spacing={4} mt={4} justifyContent="space-between">
             <Text>
-              Cost:{' '}
-              {calculateCost(distance, duration).toLocaleString('en-US', {
-                style: 'currency',
-                currency: 'USD',
+              Cost:{" "}
+              {calculateCost(distance, duration).toLocaleString("en-US", {
+                style: "currency",
+                currency: "USD",
               })}
             </Text>
           </HStack>
