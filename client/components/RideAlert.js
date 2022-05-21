@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   Modal,
   ModalOverlay,
@@ -12,11 +12,22 @@ import {
   Button,
   Avatar,
   VStack,
+  HStack,
   Progress,
-} from '@chakra-ui/react';
-import useCountdown from '../hooks/useCountdown';
+} from "@chakra-ui/react";
+import useCountdown from "../hooks/useCountdown";
+
+const info = {
+  earning: 79,
+  eth: 0.059,
+  time: 20,
+  miles: 9.1,
+  pickupLocation: "Broadway, New York",
+  dropOff: "Central Park",
+};
 function RideAlert() {
   const { isOpen, onClose } = useDisclosure({ defaultIsOpen: true });
+  const { earning, eth, time, miles, pickupLocation, dropOff } = info;
   const secs = useCountdown(30);
   useEffect(() => {
     if (isOpen && secs === 0) onDecline();
@@ -42,28 +53,33 @@ function RideAlert() {
           <ModalHeader>
             <Center>
               <Avatar
-                size={'xl'}
+                size={"xl"}
                 src={
-                  'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'
+                  "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
                 }
-                alt={'Avatar Alt'}
+                alt={"Avatar Alt"}
                 mt={2}
               />
             </Center>
           </ModalHeader>
           <ModalBody>
-            <VStack align={'center'} justify={'center'}>
-              <Text fontSize={'6xl'} fontWeight={800}>
-                $79
+            <VStack align={"center"} justify={"center"}>
+              <HStack>
+                <Text fontSize={"5xl"} fontWeight={800}>
+                  ${earning}
+                </Text>
+                <Text color="gray.500" fontSize={"2xl"} fontWeight={600}>
+                  | ETH {eth}
+                </Text>
+              </HStack>
+              <Text fontSize={"2xl"} fontWeight={600}>
+                {time} min ● {miles} mi
               </Text>
-              <Text fontSize={'2xl'} fontWeight={600}>
-                20min ● 9.1mi
+              <Text fontSize={"xl"} fontWeight={300}>
+                Pickup: {pickupLocation}
               </Text>
-              <Text fontSize={'xl'} fontWeight={300}>
-                Pickup: Broadway, New York
-              </Text>
-              <Text fontSize={'xl'} fontWeight={300}>
-                Dropoff: Central Park, New York
+              <Text fontSize={"xl"} fontWeight={300}>
+                Dropoff: {dropOff}
               </Text>
             </VStack>
           </ModalBody>
