@@ -1,7 +1,7 @@
 const {
   driver: { DRIVER, CAN_ACCEPT_RIDE, ABLE_TO_ACCEPT_RIDE },
   rider: { RIDER, REQUEST_RIDE },
-} = require('./commons');
+} = require('./eventCommons');
 const Connection = require('./Connection');
 
 class RiderEventHandler extends Connection {
