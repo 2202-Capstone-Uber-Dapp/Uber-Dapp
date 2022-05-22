@@ -19,6 +19,10 @@ const User = db.define('user', {
   wallet: {
     type: Sequelize.STRING,
   },
+  profileImage: {
+    type: Sequelize.STRING,
+    defaultValue: "https://media.istockphoto.com/vectors/default-avatar-photo-placeholder-profile-icon-vector-id1313110704?k=20&m=1313110704&s=612x612&w=0&h=rcF1_ukINlcPVY1JYkyYkTkbvET4E3jEslCgxeda11Y="
+  }
 });
 
 module.exports = User;
