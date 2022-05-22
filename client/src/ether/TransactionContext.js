@@ -5,15 +5,7 @@ import { ethers } from "ethers";
 
 import { contractABI, contractAddress } from "../utils/constants";
 
-
-
-
-
 export const TransactionContext = React.createContext();
-
-
-
-
 
 //Can get the ethereum object, destructruing from window.ethereum
 const { ethereum } = window;
@@ -44,13 +36,16 @@ export const TransactionsProvider = ({ children }) => {
   //   message: "",
   // });
 
-
   const [rideData, setRideData] = useState({
     duration: "",
     distance: "",
     cost: 0,
-    riderId: ""
+    riderId: "",
   });
+
+  useEffect(() => {
+    sendRideRequest();
+  }, [rideData]);
 
   console.log("RIDEDATA", rideData);
 
@@ -74,7 +69,7 @@ export const TransactionsProvider = ({ children }) => {
       duration: data.duration,
       distance: data.distance,
       cost: data.cost,
-      riderId: data.riderId
+      riderId: data.riderId,
     }));
   };
 
@@ -229,34 +224,46 @@ export const TransactionsProvider = ({ children }) => {
           typeof _distance,
           rideData
         );
-        console.log("CONVERTED RIDE DATA", _duration, typeof _duration, _distance, typeof _distance, rideData.cost, rideData.riderId);
-        //Need to add a value to this 
+        console.log(
+          "CONVERTED RIDE DATA",
+          _duration,
+          typeof _duration,
+          _distance,
+          typeof _distance,
+          rideData.cost,
+          rideData.riderId
+        );
+        //Need to add a value to this
         //Value of the ride , that will leave the users account go to the SMART Contract
-        //and house the fare until the driver accepts 
+        //and house the fare until the driver accepts
         // const options = { value: ethers.utils.parseEther(rideData.cost.toString()) }
-         const options = ethers.utils.parseEther(rideData.cost.toString()) 
-        
-        console.log('ZE COST', options)
-        // const blockchainHash = await RideDappContract.addRequest(
-        //   _distance,
-        //   _duration,
-        //   rideData.riderId,
-        //   options
-        // );
+        const parsedAmount = ethers.utils.parseEther(".0000005");
+        const options = { value: parsedAmount._hex };
+        // const etherToWei = (rideData.cost / (Math.pow(10, 18)))
+        // const options = { value: etherToWei };
+        // const options = { value: .000005 };
 
-        //Add a loading feature to add transparency of transaction process
-        // setIsLoading(true);
-        // console.log(
-        //   `Loading Adding Ride Request to Blockchain - ${blockchainHash.hash}`
-        // );
-        // //This will wait for the transaction to finish
-        // await blockchainHash.wait();
-        // //Notify user for success
-        // console.log(
-        //   `Success, Ride Request added to Blockchain - ${blockchainHash.hash}`
-        // );
-        // setIsLoading(false);
-        // window.location.reload();
+        console.log("ZE COST", options);
+        const blockchainHash = await RideDappContract.addRequest(
+          _distance,
+          _duration,
+          rideData.riderId,
+          options
+        );
+
+        // Add a loading feature to add transparency of transaction process
+        setIsLoading(true);
+        console.log(
+          `Loading Adding Ride Request to Blockchain - ${blockchainHash.hash}`
+        );
+        //This will wait for the transaction to finish
+        await blockchainHash.wait();
+        //Notify user for success
+        console.log(
+          `Success, Ride Request added to Blockchain - ${blockchainHash.hash}`
+        );
+        setIsLoading(false);
+        window.location.reload();
       } else {
         console.log("No ethereum object");
       }
@@ -313,25 +320,25 @@ export const TransactionsProvider = ({ children }) => {
     }
   };
 
-  //RideId must match the rideId thats in the blockchain 
-  const sendTransaction = async (riderWalletAddress, rideId) => {
-    console.log('CURRENT', currentAccount)
+  //RideId must match the rideId thats in the blockchain
+  const sendTransaction = async (rideId, riderId, riderWalletAddress) => {
+    console.log("CURRENT", currentAccount);
     console.log("YELLO");
     try {
-      console.log('HELLO')
+      console.log("HELLO");
       if (!ethereum) return alert("Please install metamask");
       if (ethereum) {
         const RideDappContract = createEthereumContract();
 
-        const { duration, distance } = rideData;
-        let cost = .00005;
-        console.log('COSTED', cost)
-        let strCost = cost.toString()
-        console.log('IS STRING?', strCost)
-        const parsedAmount = ethers.utils.parseEther(strCost);
-        console.log('PARSER', parsedAmount)
-        let bool = await RideDappContract.checkDriver();
-        console.log('WALLET', riderWalletAddress);
+        // const { duration, distance } = rideData;
+        // let cost = 0.00005;
+        // console.log("COSTED", cost);
+        // let strCost = cost.toString();
+        // console.log("IS STRING?", strCost);
+        // const parsedAmount = ethers.utils.parseEther(strCost);
+        // console.log("PARSER", parsedAmount);
+        // let bool = await RideDappContract.checkDriver();
+        console.log("WALLET", riderWalletAddress);
         //   setIsLoading(true);
         //   console.log(
         //     `Loading, ....checking driver - ${bool.hash}`
@@ -341,35 +348,43 @@ export const TransactionsProvider = ({ children }) => {
         //     `Success, driver confirmed! - ${bool.hash}`
         //   );
         // setIsLoading(false);
-        console.log('BOOL', bool)
+        // console.log("BOOL", bool);
 
-        if (bool) {
-          setIsLoading(true);
-          const sendMoneyHash = await ethereum.request({
-            method: "eth_sendTransaction",
-            params: [
-              {
-                from: currentAccount,
-                to: riderWalletAddress,
-                gas: "0x5208",
-                value: parsedAmount._hex,
-              },
-            ],
-          });
+        // if (bool) {
+        // setIsLoading(true);
+        // const sendMoneyHash = await ethereum.request({
+        //   method: "eth_sendTransaction",
+        //   params: [
+        //     {
+        //       from: currentAccount,
+        //       to: riderWalletAddress,
+        //       gas: "0x5208",
+        //       value: parsedAmount._hex,
+        //     },
+        //   ],
+        // });
 
-          console.log(`Loading.... sending money- ${sendMoneyHash.hash}`);
-          await sendMoneyHash.wait();
-          console.log(`Success money sent!- ${sendMoneyHash.hash}`);
-          setIsLoading(false);
+        // console.log(`Loading.... sending money- ${sendMoneyHash.hash}`);
+        // await sendMoneyHash.wait();
+        // console.log(`Success money sent!- ${sendMoneyHash.hash}`);
+        // setIsLoading(false);
 
-          const transactionHash = await RideDappContract.acceptRide(rideId);
-          setIsLoading(true);
-          console.log(`Loading, ....adding reciept to Blockchain - ${transactionHash.hash}`);
-          await transactionHash.wait();
-          console.log(`Success, recipt added to Blockchain! - ${transactionHash.hash}`);
-          setIsLoading(false);
-          window.location.reload();
-        }
+        const transactionHash = await RideDappContract.acceptRide(
+          rideId,
+          riderId,
+          riderWalletAddress
+        );
+        setIsLoading(true);
+        console.log(
+          `Loading, ....adding reciept to Blockchain - ${transactionHash.hash}`
+        );
+        await transactionHash.wait();
+        console.log(
+          `Success, recipt added to Blockchain! - ${transactionHash.hash}`
+        );
+        setIsLoading(false);
+        window.location.reload();
+        // }
       } else {
         console.log("No ethereum object");
       }
@@ -394,11 +409,11 @@ export const TransactionsProvider = ({ children }) => {
   //       console.log("FORM DATA", formData);
   //       console.log("Contract", transactionsContract);
 
-        // //Send Eth thru the blockchain !
-        // //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
+  // //Send Eth thru the blockchain !
+  // //All values used in the eth network are im hexadecimal ex: 0x5208 ==> 21,000 Gwei ==> 0.000021 eth
 
-        // await ethereum.request({
-        //e
+  // await ethereum.request({
+  //e
 
   //       //Since we executed the transaciton now we want to add the transaction to the Blockchain
   //       //Immutable history receipt
@@ -463,7 +478,7 @@ export const TransactionsProvider = ({ children }) => {
         setRider,
         setDriver,
         riderId,
-        setRiderId
+        setRiderId,
       }}
     >
       {children}

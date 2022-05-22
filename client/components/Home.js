@@ -215,7 +215,7 @@ export const Home = (props) => {
     >
       <Box position="absolute" left={0} top={0} h="100%" w="100%">
         <Button
-          onClick={() =>{ sendTransaction("0x105836DcA641335558f633816Dfd768aa2F81E81", 1); }}
+          onClick={() =>{ sendTransaction(1, 'D0jB4ck6QPPuWZ8PEG18HATO6yE3', "0x105836DcA641335558f633816Dfd768aa2F81E81"); }}
         >
           <Text> Test Transaction</Text>
         </Button>
