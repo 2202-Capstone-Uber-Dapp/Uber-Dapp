@@ -67,7 +67,6 @@ export const Home = (props) => {
 
   // const { username } = props;
   const { user } = userContext();
-  console.log('THIS GUY!', user);
   const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({
@@ -118,7 +117,7 @@ export const Home = (props) => {
     setPickupLocation(event.target.value);
   }
 
-  function handleRideRequest() {
+   function  handleRideRequest  () {
     // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
     console.log('RideRequest status is', isRideRequest);
@@ -132,9 +131,13 @@ export const Home = (props) => {
         userId: userId,
       })
     );
-    console.log('YO', distance, duration, cost)
-    handleRideData({ distance: distance, duration: duration, cost: parseInt(cost)});
-        sendRideRequest();
+    console.log('Data in Home Right before Set State', distance, duration, cost)
+    let needToWait = handleRideData({
+      distance: distance,
+      duration: duration,
+      cost: parseInt(cost),
+      riderId: userId,
+    });
   }
 
   async function calculateRoute() {
