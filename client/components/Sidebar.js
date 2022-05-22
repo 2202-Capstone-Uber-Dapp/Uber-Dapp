@@ -37,7 +37,6 @@ import { FaWallet, FaUber } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 import { userContext } from '../context/UserContext';
 import { Link as RouterLink } from 'react-router-dom';
-import useSocket from '../hooks/useSocket';
 
 const DriverItems = [
   { name: 'Home', icon: FiHome, path: '/' },
@@ -122,7 +121,6 @@ const SidebarContent = ({ onClose, ...rest }) => {
 };
 
 const LogoutComponent = () => {
-  const { disconnect } = useSocket();
   const { logout } = useAuth();
 
   return (
@@ -139,7 +137,6 @@ const LogoutComponent = () => {
       }}
       onClick={() => {
         logout();
-        disconnect();
       }}
     >
       <Icon
