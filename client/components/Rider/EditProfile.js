@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuth, updateProfile } from "firebase/auth";
 import {
@@ -15,6 +15,7 @@ import {
   AvatarBadge,
   IconButton,
   Center,
+  Select
 } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { editProfile } from '../../store';
@@ -22,13 +23,15 @@ import { editProfile } from '../../store';
 export default function EditProfile() {
   const user = useSelector((state) => state.auth);
   const usernameRef = useRef(user.username);
+  const photoRef = useRef(user.profileImage);
   const dispatch = useDispatch();
   const firebaseUser =  getAuth().currentUser;
+  const [role, setRole] = useState(user.role);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const data = { userName: usernameRef.current.value};
-    await updateProfile(firebaseUser, {displayName: usernameRef.current.value});
+    const data = { userName: usernameRef.current.value, role: role , photo: photoRef.current.value};
+    await updateProfile(firebaseUser, {displayName: usernameRef.current.value, photoURL: photoRef.current.value});
     dispatch(editProfile(data));
   }
 
@@ -49,7 +52,7 @@ export default function EditProfile() {
         p={6}
         my={12}>
         <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
-          User Profile Edit
+          Profile Settings
         </Heading>
         <FormControl id="userName">
           <FormLabel>User Icon</FormLabel>
@@ -67,10 +70,17 @@ export default function EditProfile() {
                 />
               </Avatar>
             </Center>
-            <Center w="full">
-              <Button w="full">Change Icon</Button>
-            </Center>
           </Stack>
+        </FormControl>
+        <FormControl id="photoUrl" isRequired>
+          <FormLabel>Profile Picture</FormLabel>
+          <Input
+            placeholder="photo"
+            defaultValue={user.profileImage}
+            _placeholder={{ color: 'gray.500' }}
+            type="text"
+            ref={photoRef}
+          />
         </FormControl>
         <FormControl id="userName" isRequired>
           <FormLabel>User name</FormLabel>
@@ -82,21 +92,12 @@ export default function EditProfile() {
             ref={usernameRef}
           />
         </FormControl>
-        <FormControl id="email" >
-          <FormLabel>Email address</FormLabel>
-          <Input
-            placeholder="your-email@example.com"
-            _placeholder={{ color: 'gray.500' }}
-            type="email"
-          />
-        </FormControl>
-        <FormControl id="password" >
-          <FormLabel>Password</FormLabel>
-          <Input
-            placeholder="password"
-            _placeholder={{ color: 'gray.500' }}
-            type="password"
-          />
+        <FormControl id="roleSelect" isRequired>
+          <FormLabel htmlFor='role'>Role</FormLabel>
+          <Select id='role' defaultValue="RIDER" onChange={(e) => setRole(e.target.value)}>
+            <option value="RIDER">Rider</option>
+            <option value="DRIVER">Driver</option>
+          </Select>
         </FormControl>
         <Stack spacing={6} direction={['column', 'row']}>
           <Button

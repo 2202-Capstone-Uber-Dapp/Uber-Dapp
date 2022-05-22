@@ -33,9 +33,8 @@ export const userSignUp = (user) => async (dispatch) => {
 
 export const editProfile = (user) => async (dispatch) => {
   try {
-    const {userName} = user;
-    console.log(userName);
-    const res = await axios.put('/api/user', {username: userName});
+    const {userName, role , photo} = user;
+    const res = await axios.put('/api/user', {username: userName, role: role , profileImage: photo});
     dispatch(setAuth(res.data));
   } catch (err) {
     console.log(err);

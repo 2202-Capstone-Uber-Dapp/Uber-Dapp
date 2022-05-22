@@ -19,7 +19,7 @@ export default function Routes() {
           <Sidebar>
             <Switch>
               <Route exact path="/wallet" component={Wallet} />
-              <Route exact path="/trending" component={EditProfile} />
+              <Route exact path="/setting" component={EditProfile} />
               <Route path="/" component={Home} />
               <Route path="/home" component={Home} />
               <Redirect to="/" />
