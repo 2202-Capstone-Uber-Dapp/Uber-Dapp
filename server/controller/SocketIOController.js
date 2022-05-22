@@ -9,7 +9,8 @@ const {
   DRIVER,
   RIDER,
 } = require('../connection');
-function IO(io) {
+
+function SocketIOController(io) {
   io.use(wrap(sessionMiddleware));
 
   io.on('connection', async (socket) => {
@@ -26,4 +27,4 @@ function IO(io) {
   });
 }
 
-module.exports = IO;
+module.exports = SocketIOController;

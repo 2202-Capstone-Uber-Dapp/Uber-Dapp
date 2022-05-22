@@ -8,7 +8,7 @@ const { sessionMiddleware } = require('./controller/serverController');
 const app = express();
 const cors = require('cors');
 const server = http.createServer(app);
-const IO = require('./controller/IOController');
+const SocketIOController = require('./controller/SocketIOController');
 const io = new Server(server, {
   cors: {
     origin: 'http://localhost:3000',
@@ -39,7 +39,7 @@ app.use('/api', require('./api'));
 app.get('/', (req, res) =>
   res.sendFile(path.join(__dirname, '..', 'public/index.html'))
 );
-IO(io);
+SocketIOController(io);
 // any remaining requests with an extension (.js, .css, etc.) send 404
 app.use((req, res, next) => {
   if (path.extname(req.path).length) {
@@ -50,7 +50,6 @@ app.use((req, res, next) => {
     next();
   }
 });
-
 // sends index.html
 app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public/index.html'));
