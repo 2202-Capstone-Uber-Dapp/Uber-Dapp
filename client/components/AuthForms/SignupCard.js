@@ -32,7 +32,7 @@ export default function SignupCard() {
   const [role, setRole] = useState('');
   const { signup } = useAuth();
   const history = useHistory();
-  
+
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
     return passwordRef.current.value !== passwordConfirmRef.current.value;
   }
@@ -40,8 +40,10 @@ export default function SignupCard() {
   async function handleSubmit(e) {
     e.preventDefault();
     setError('');
-    if (CheckPasswordMatch(passwordRef, passwordConfirmRef))
+    if (CheckPasswordMatch(passwordRef, passwordConfirmRef)){
+      alert("Passwords do not match");
       return setError('passwords do not match');
+    }
     setLoading(true);
     try {
       const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value, role);
