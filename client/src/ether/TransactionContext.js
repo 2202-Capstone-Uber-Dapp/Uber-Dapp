@@ -1,7 +1,11 @@
 /* eslint-disable no-unused-vars */
 //Purpose of this file is to wrap all of our components with a context & connect them to the blockchain
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ethers } from "ethers";
+
+
+import { fetchConversion } from "../../redux/conversions";
 
 import { contractABI, contractAddress } from "../utils/constants";
 
@@ -26,6 +30,9 @@ const createEthereumContract = () => {
 
 //Every context provider recieves children as props
 export const TransactionsProvider = ({ children }) => {
+  const dispatch = useDispatch();
+    const conversionRate = useSelector((state) => state.conversionRate);
+  console.log('CONVERSION ETH TO USD', conversionRate);
   //Set form data to our local state
   //Pass this to our form on another component via context provider
   //this is how we will gain access to these values
@@ -237,7 +244,8 @@ export const TransactionsProvider = ({ children }) => {
         //Value of the ride , that will leave the users account go to the SMART Contract
         //and house the fare until the driver accepts
         // const options = { value: ethers.utils.parseEther(rideData.cost.toString()) }
-        const parsedAmount = ethers.utils.parseEther(".0000005");
+        let rideFareInEth = rideData.cost / conversionRate;
+        const parsedAmount = ethers.utils.parseEther(rideFareInEth.toString());
         const options = { value: parsedAmount._hex };
         // const etherToWei = (rideData.cost / (Math.pow(10, 18)))
         // const options = { value: etherToWei };
@@ -263,7 +271,7 @@ export const TransactionsProvider = ({ children }) => {
           `Success, Ride Request added to Blockchain - ${blockchainHash.hash}`
         );
         setIsLoading(false);
-        window.location.reload();
+        // window.location.reload();
       } else {
         console.log("No ethereum object");
       }
@@ -372,7 +380,8 @@ export const TransactionsProvider = ({ children }) => {
         const transactionHash = await RideDappContract.acceptRide(
           rideId,
           riderId,
-          riderWalletAddress
+          riderWalletAddress,
+          { gasLimit: 6000000 }
         );
         setIsLoading(true);
         console.log(
@@ -456,6 +465,7 @@ export const TransactionsProvider = ({ children }) => {
   //ComponentDidUpdate
   useEffect(() => {
     checkIfWalletIsConnect();
+    dispatch(fetchConversion())
     // checkIfTransactionsExists();
   }, []);
   // transactionCount;
