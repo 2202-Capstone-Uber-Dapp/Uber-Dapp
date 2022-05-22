@@ -18,11 +18,9 @@ router.get('/', async (req, res, next) => {
 
 router.put('/', async (req, res, next) => {
   try {
-    console.log(req.user);
-    const user = await User.findByPk(req.user);
-    console.log(user);
-    const { email, role, wallet } = req.body;
-    res.send(await user.update({ email, role, wallet }));
+    const user = await User.findByPk(req.user.user_id);
+    const { email, role, wallet , username} = req.body;
+    res.send(await user.update({ email, role, wallet, username }));
   } catch (err) {
     console.log(err);
     next(err);

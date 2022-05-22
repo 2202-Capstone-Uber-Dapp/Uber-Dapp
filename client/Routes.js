@@ -8,6 +8,7 @@ import Sidebar from "./components/Sidebar";
 import SignupCard from "./components/AuthForms/SignupCard";
 import LoginCard from "./components/AuthForms/LoginCard";
 import { UserProvider } from "./context/UserContext";
+import EditProfile from  "./components/Rider/EditProfile"
 export default function Routes() {
   const { currentUser } = useAuth();
 
@@ -18,6 +19,7 @@ export default function Routes() {
           <Sidebar>
             <Switch>
               <Route exact path="/wallet" component={Wallet} />
+              <Route exact path="/trending" component={EditProfile} />
               <Route path="/" component={Home} />
               <Route path="/home" component={Home} />
               <Redirect to="/" />
