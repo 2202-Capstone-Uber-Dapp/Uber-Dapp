@@ -103,45 +103,26 @@ contract RideDapp is Ownable {
 
     //    mapping(string => mapping(address => uint)) rideRequestFares;
     //add Request needs the distance & duration along with id auth
-    function addRequest(
-        uint256 _distance,
-        uint256 _rideTime,
-        string memory _riderId
-    ) public payable returns (uint256) {
+    function addRequest(string memory _riderId)
+        public
+        payable
+        returns (uint256)
+    {
         require(checkRider(), "not a valid rider");
 
         requestCount++;
-        uint256 _cost = calcCost(_distance, _rideTime);
         //Checks whether the rider sent the correct amount of money,
         //which is derived from the front end algorithm
         //We also have the backend algorithm to match, more transparency for our app
         //Not Completely Necessary but nice to have
-        require(_cost == msg.value, "Not Correct Ride Fare");
         rideRequestFares[_riderId][msg.sender] += msg.value;
-
-        // payable (this).transfer(_cost);
 
         requestData[requestCount] = RideRequest(
             msg.sender,
             block.timestamp,
-            _cost
+            msg.value
         );
 
         return requestCount;
-    }
-
-    // general functions
-
-    function calcCost(uint256 _distance, uint256 _duration)
-        public
-        pure
-        returns (uint256)
-    {
-        uint256 baseFare = 2448697131268900;
-        // uint256 baseFare = 5;
-
-        //Super Special Algorithm! Its a Bargain!
-        uint256 cost = baseFare + ((_distance * 96 + _duration * 25) / 100);
-        return cost;
     }
 }
