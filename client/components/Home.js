@@ -120,7 +120,9 @@ export const Home = (props) => {
   }
 
   function handleRideRequest() {
-    socket.emit('GET_ALL_DRIVER', { address, pickupLocation });
+    //transaction happens
+    //axios ride table
+    socket.emit('GET_ALL_DRIVER');
     socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
       const driver = driverList.shift();
       const message = {
@@ -133,23 +135,11 @@ export const Home = (props) => {
         miles: 9.1,
         pickupLocation: 'Broadway, New York',
         dropOff: 'Central Park, New York',
+        wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
       };
       setDriver(driverList);
       socket.emit('REQUEST_RIDE_TO_DRIVER', driver, message);
     });
-
-    // setIsRideRequest(true);
-    // console.log('RideRequest status is', isRideRequest);
-    // // sendRideRequest();
-    // let cost = calculateCost(distance, duration);
-    // dispatch(
-    //   requestRide({
-    //     cost: parseInt(cost),
-    //     distance: parseInt(distance.split(' ')[0]),
-    //     duration: parseInt(duration.split(' ')[0]),
-    //     userId: userId,
-    //   })
-    // );
   }
 
   async function calculateRoute() {
