@@ -9,6 +9,7 @@ export function useSocket() {
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
   const [drivers, setSocketList] = useState([]);
+  const [rideInfo, setRideInfo] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +26,11 @@ export function SocketProvider({ children }) {
     socket.close();
   }
 
-  const value = { socket, disconnect, setSocketList };
+  function setRideMsg(message) {
+    setRideInfo(message);
+  }
+
+  const value = { socket, disconnect, setSocketList, rideInfo, setRideMsg };
 
   return (
     <SocketContext.Provider value={value}>
