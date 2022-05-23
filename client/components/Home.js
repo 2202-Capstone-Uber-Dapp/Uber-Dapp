@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useContext, useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
   useLoadScript,
   GoogleMap,
@@ -62,7 +62,7 @@ export const Home = (props) => {
     sendTransaction,
     setIs,
     setRider,
-    setDriver
+    setDriver,
   } = useContext(TransactionContext);
 
   const auth = useSelector((state) => state.auth);
@@ -99,7 +99,7 @@ export const Home = (props) => {
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
   const [cost, setCost] = React.useState(0);
-  const { setDriver } = useSocket();
+  const { setSocketList } = useSocket();
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
@@ -126,7 +126,7 @@ export const Home = (props) => {
     setPickupLocation(event.target.value);
   }
 
-   function  handleRideRequest  () {
+  function handleRideRequest() {
     // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
     console.log('RideRequest status is', isRideRequest);
@@ -140,12 +140,18 @@ export const Home = (props) => {
         userId: userId,
       })
     );
-    console.log('Data in Home Right before Set State', distance, duration, cost)
+    console.log(
+      'Data in Home Right before Set State',
+      distance,
+      duration,
+      cost
+    );
     let needToWait = handleRideData({
       distance: distance,
       duration: duration,
       cost: parseInt(cost),
       riderId: userId,
+    });
     //transaction happens
     //axios ride table
     socket.emit('GET_ALL_DRIVER');
@@ -234,62 +240,64 @@ export const Home = (props) => {
   if (!isLoaded) return <SkeletonText />;
 
   return (
-      <>
+    <>
       <RideAlert />
-    <Flex
-      position="absolute"
-      flexDirection="column"
-      alignItems="center"
-      h="100vh"
-      w="100vw"
-    >
-      <Box position="absolute" left={0} top={0} h="100%" w="100%">
-        <Button
-          onClick={() =>{ sendTransaction(
-            1,
-            "KBQ79F5899bClAQPyV1qqq8Zjk72",
-            "0x105836DcA641335558f633816Dfd768aa2F81E81"
-          ); }}
-        >
-          <Text> Test Transaction</Text>
-        </Button>
-        {/* Google Map Box */}
-        <GoogleMap
-          center={center}
-          zoom={15}
-          mapContainerStyle={containerStyle}
-          options={options}
-          onLoad={onMapLoad}
-          onClick={(event) => {
-            setMarker({
-              lat: event.latLng.lat(),
-              lng: event.latLng.lng(),
-            });
-            calculateAddress();
-            setNewCenter({
-              lat: event.latLng.lat(),
-              lng: event.latLng.lng(),
-            });
-          }}
-        >
-          <Marker
-            position={marker}
+      <Flex
+        position="absolute"
+        flexDirection="column"
+        alignItems="center"
+        h="100vh"
+        w="100vw"
+      >
+        <Box position="absolute" left={0} top={0} h="100%" w="100%">
+          <Button
             onClick={() => {
-              setSelected(marker);
+              sendTransaction(
+                1,
+                'KBQ79F5899bClAQPyV1qqq8Zjk72',
+                '0x105836DcA641335558f633816Dfd768aa2F81E81'
+              );
             }}
-          />
-          {selected && selected !== initialCenter ? (
-            <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
-              <div>
-                <p>{JSON.stringify(address)}</p>
-              </div>
-            </InfoWindow>
-          ) : null}
-          {directionsResponse && (
-            <DirectionsRenderer directions={directionsResponse} />
-          )}
-        </GoogleMap>
-      </Box>
+          >
+            <Text> Test Transaction</Text>
+          </Button>
+          {/* Google Map Box */}
+          <GoogleMap
+            center={center}
+            zoom={15}
+            mapContainerStyle={containerStyle}
+            options={options}
+            onLoad={onMapLoad}
+            onClick={(event) => {
+              setMarker({
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng(),
+              });
+              calculateAddress();
+              setNewCenter({
+                lat: event.latLng.lat(),
+                lng: event.latLng.lng(),
+              });
+            }}
+          >
+            <Marker
+              position={marker}
+              onClick={() => {
+                setSelected(marker);
+              }}
+            />
+            {selected && selected !== initialCenter ? (
+              <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
+                <div>
+                  <p>{JSON.stringify(address)}</p>
+                </div>
+              </InfoWindow>
+            ) : null}
+            {directionsResponse && (
+              <DirectionsRenderer directions={directionsResponse} />
+            )}
+          </GoogleMap>
+        </Box>
 
         <Box
           position="absolute"
@@ -385,67 +393,17 @@ export const Home = (props) => {
                 map.setZoom(15);
               }}
             />
-            {isRoute === true ? (
-              <Button
-                colorScheme="pink"
-                type="submit"
-                onClick={handleRideRequest}
-              >
-                Request Ride
-              </Button>
-            ) : (
-              <></>
-            )}
-          </ButtonGroup>
-        </HStack>
-        <HStack spacing={4} mt={4} justifyContent="space-between">
-          <Text>Distance: {distance} </Text>
-          <Text>Duration: {duration} </Text>
-          <IconButton
-            aria-label="center back"
-            icon={<FaCompass />}
-            isRound
-            onClick={() =>
-              navigator.geolocation.getCurrentPosition(
-                (position) => {
-                  pansTo({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                  });
-                  setMarker({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                  });
-                  setCenter({
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                  });
-                  calculateAddress();
-                },
-                () => null
-              )
-            }
-          />
-          <IconButton
-            aria-label="center back"
-            icon={<FaLocationArrow />}
-            isRound
-            onClick={() => {
-              map.panTo(marker);
-              map.setZoom(15);
-            }}
-          />
-        </HStack>
-        {isRoute === true ? (
-          <HStack spacing={4} mt={4} justifyContent="space-between">
-            <Text>
-              Cost:{" "}
-              {calculateCost(distance, duration).toLocaleString("en-US", {
-                style: "currency",
-                currency: "USD",
-              })}
-            </Text>
           </HStack>
+          {isRoute === true ? (
+            <HStack spacing={4} mt={4} justifyContent="space-between">
+              <Text>
+                Cost:{' '}
+                {calculateCost(distance, duration).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </Text>
+            </HStack>
           ) : (
             <></>
           )}
