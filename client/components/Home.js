@@ -298,7 +298,7 @@ export const Home = (props) => {
             )}
           </GoogleMap>
         </Box>
-
+        {user.role === "RIDER" ? (
         <Box
           position="absolute"
           p={4}
@@ -408,6 +408,69 @@ export const Home = (props) => {
             <></>
           )}
         </Box>
+        ): (
+          <Box
+          position="absolute"
+          p={4}
+          borderRadius="lg"
+          m={4}
+          bgColor="white"
+          shadow="base"
+          // minW="container.md"
+          zIndex="1"
+        >
+        
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <IconButton
+              aria-label="center back"
+              icon={<FaCompass />}
+              isRound
+              onClick={() =>
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    pansTo({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    setMarker({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    setCenter({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    calculateAddress();
+                  },
+                  () => null
+                )
+              }
+            />
+            <IconButton
+              aria-label="center back"
+              icon={<FaLocationArrow />}
+              isRound
+              onClick={() => {
+                map.panTo(marker);
+                map.setZoom(15);
+              }}
+            />
+          </HStack>
+          {isRoute === true ? (
+            <HStack spacing={4} mt={4} justifyContent="space-between">
+              <Text>
+                Cost:{' '}
+                {calculateCost(distance, duration).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </Text>
+            </HStack>
+          ) : (
+            <></>
+          )}
+        </Box>
+        )}
       </Flex>
     </>
   );
