@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -12,16 +12,29 @@ import {
   Button,
   Avatar,
   VStack,
+  HStack,
   Progress,
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
+import { useSocket } from '../context/SocketContext';
+
 function RideAlert() {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
-  const [progress, secs] = useCountdown(30);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { socket } = useSocket();
+  const [ride, setRideMsg] = useState({});
+  const [seconds, startTimer] = useCountdown();
   useEffect(() => {
-    console.log(progress);
-    if (secs === 0) alert('made it!');
-  }, [secs]);
+    socket.on('CAN_ACCEPT_RIDE', (message) => {
+      setRideMsg(message);
+      startTimer();
+      onOpen();
+    });
+
+    if (isOpen && seconds === 0) onDecline();
+    return () => {
+      socket.off('CAN_ACCEPT_RIDE');
+    };
+  }, [seconds]);
   function onAccept() {
     //TODO: write logic for driver acceptance of ride
     onClose();
@@ -30,6 +43,7 @@ function RideAlert() {
     //TODO: write logic for driver declination of ride
     onClose();
   }
+
   return (
     <>
       <Modal
@@ -37,6 +51,7 @@ function RideAlert() {
         closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
+        trapFocus={false}
       >
         <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
         <ModalContent margin={5}>
@@ -44,9 +59,7 @@ function RideAlert() {
             <Center>
               <Avatar
                 size={'xl'}
-                src={
-                  'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg'
-                }
+                src={ride.imageUrl}
                 alt={'Avatar Alt'}
                 mt={2}
               />
@@ -54,21 +67,33 @@ function RideAlert() {
           </ModalHeader>
           <ModalBody>
             <VStack align={'center'} justify={'center'}>
-              <Text fontSize={'6xl'} fontWeight={800}>
-                $79
-              </Text>
+              <HStack>
+                <Text fontSize={'5xl'} fontWeight={800}>
+                  ${ride.earning}
+                </Text>
+                <Text color="gray.500" fontSize={'2xl'} fontWeight={600}>
+                  | ETH {ride.eth}
+                </Text>
+              </HStack>
               <Text fontSize={'2xl'} fontWeight={600}>
-                20min ● 9.1mi
+                {ride.time} min ● {ride.miles} mi
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
-                Pickup: Broadway, New York
+                Pickup: {ride.pickupLocation}
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
-                Dropoff: Central Park, New York
+                Dropoff: {ride.dropOff}
               </Text>
             </VStack>
           </ModalBody>
-          <Progress colorScheme="pink" size="sm" value={progress} margin={5} />
+          <Progress
+            colorScheme="pink"
+            size="sm"
+            value={seconds}
+            margin={5}
+            min="0"
+            max="30"
+          />
           <ModalFooter
             display="flex"
             alignItems="center"

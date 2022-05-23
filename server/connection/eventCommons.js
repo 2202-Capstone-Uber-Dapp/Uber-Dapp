@@ -1,0 +1,22 @@
+const DRIVER = 'DRIVER';
+const RIDER = 'RIDER';
+
+const REQUEST_RIDE = 'REQUEST_RIDE';
+
+const CAN_ACCEPT_RIDE = 'CAN_ACCEPT_RIDE';
+const ABLE_TO_ACCEPT_RIDE = 'ABLE_TO_ACCEPT_RIDE';
+const GET_ALL_DRIVER = 'GET_ALL_DRIVER';
+const REQUEST_RIDE_TO_DRIVER = 'REQUEST_RIDE_TO_DRIVER';
+module.exports = {
+  driver: {
+    DRIVER,
+    CAN_ACCEPT_RIDE,
+    ABLE_TO_ACCEPT_RIDE,
+  },
+  rider: {
+    RIDER,
+    REQUEST_RIDE,
+    GET_ALL_DRIVER,
+    REQUEST_RIDE_TO_DRIVER,
+  },
+};

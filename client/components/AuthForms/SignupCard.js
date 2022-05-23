@@ -55,9 +55,11 @@ export default function SignupCard() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError("");
-    if (CheckPasswordMatch(passwordRef, passwordConfirmRef))
-      return setError("passwords do not match");
+    setError('');
+    if (CheckPasswordMatch(passwordRef, passwordConfirmRef)){
+      alert("Passwords do not match");
+      return setError('passwords do not match');
+    }
     setLoading(true);
     try {
       const newUser = await signup(

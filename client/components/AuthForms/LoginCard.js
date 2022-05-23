@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useRef, useState,useContext, useEffect } from 'react';
+import React, { useRef, useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   Flex,
@@ -22,8 +22,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { TransactionContext } from '../../src/ether/TransactionContext';
 
 export default function LoginCard() {
-
-  
+ 
 
  let {
    connectWallet,
@@ -41,7 +40,6 @@ export default function LoginCard() {
       connectWallet();
     }, [currentAccount]);
  
-
 
 
   const [showPassword, setShowPassword] = useState(false);

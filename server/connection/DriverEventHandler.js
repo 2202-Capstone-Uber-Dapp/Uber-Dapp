@@ -1,0 +1,20 @@
+const {
+  driver: { DRIVER, CAN_ACCEPT_RIDE, ABLE_TO_ACCEPT_RIDE },
+  rider: { RIDER, REQUEST_RIDE },
+} = require('./eventCommons');
+const Connection = require('./Connection');
+
+class DriverEventHandler extends Connection {
+  constructor(io, socket, user) {
+    super(io, socket, user);
+
+    socket.on(ABLE_TO_ACCEPT_RIDE, (rideRequest) =>
+      this.driverCanAcceptRide(rideRequest)
+    );
+    console.log('Finished connecting as a driver...');
+  }
+
+  driverCanAcceptRide(rideRequest) {}
+}
+
+module.exports = DriverEventHandler;

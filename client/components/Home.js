@@ -27,7 +27,8 @@ import mapStyle from './mapStyle';
 import { TransactionContext } from '../src/ether/TransactionContext';
 import { userContext } from '../context/UserContext';
 import { requestRide } from '../redux/user';
-
+import { useSocket } from '../context/SocketContext';
+import RideAlert from './RideAlert';
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
 const libraries = ['places'];
@@ -43,6 +44,14 @@ const options = {
 };
 
 export const Home = (props) => {
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    socket.on('test', () => {});
+    return () => {
+      socket.off('test');
+    };
+  }, [socket]);
   let {
     rideData,
     handleRideData,
@@ -90,7 +99,7 @@ export const Home = (props) => {
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
   const [cost, setCost] = React.useState(0);
-
+  const { setDriver } = useSocket();
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
@@ -137,6 +146,25 @@ export const Home = (props) => {
       duration: duration,
       cost: parseInt(cost),
       riderId: userId,
+    //transaction happens
+    //axios ride table
+    socket.emit('GET_ALL_DRIVER');
+    socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
+      const driver = driverList.shift();
+      const message = {
+        senderId: socket.id,
+        imageUrl:
+          'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+        earning: 79,
+        eth: 0.059,
+        time: 20,
+        miles: 9.1,
+        pickupLocation: 'Broadway, New York',
+        dropOff: 'Central Park, New York',
+        wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
+      };
+      setDriver(driverList);
+      socket.emit('REQUEST_RIDE_TO_DRIVER', driver, message);
     });
   }
 
@@ -206,6 +234,8 @@ export const Home = (props) => {
   if (!isLoaded) return <SkeletonText />;
 
   return (
+      <>
+      <RideAlert />
     <Flex
       position="absolute"
       flexDirection="column"
@@ -260,49 +290,100 @@ export const Home = (props) => {
           )}
         </GoogleMap>
       </Box>
-      <Box
-        position="absolute"
-        p={4}
-        borderRadius="lg"
-        m={4}
-        bgColor="white"
-        shadow="base"
-        // minW="container.md"
-        zIndex="1"
-      >
-        <HStack spacing={2} justifyContent="space-between">
-          <Box flexGrow={1}>
-            <Autocomplete>
-              <Input
-                type="text"
-                placeholder="Pickup Location"
-                value={pickupLocation}
-                onChange={handleTitleChange}
-                ref={originRef}
+
+        <Box
+          position="absolute"
+          p={4}
+          borderRadius="lg"
+          m={4}
+          bgColor="white"
+          shadow="base"
+          // minW="container.md"
+          zIndex="1"
+        >
+          <HStack spacing={2} justifyContent="space-between">
+            <Box flexGrow={1}>
+              <Autocomplete>
+                <Input
+                  type="text"
+                  placeholder="Pickup Location"
+                  value={pickupLocation}
+                  onChange={handleTitleChange}
+                  ref={originRef}
+                />
+              </Autocomplete>
+            </Box>
+          </HStack>
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <Box flexGrow={1}>
+              <Autocomplete>
+                <Input
+                  type="text"
+                  placeholder="Destination"
+                  ref={destinationRef}
+                />
+              </Autocomplete>
+            </Box>
+          </HStack>
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <ButtonGroup>
+              <Button colorScheme="pink" type="submit" onClick={calculateRoute}>
+                Calculate Route
+              </Button>
+              <IconButton
+                aria-label="center back"
+                icon={<FaTimes />}
+                onClick={clearRoute}
               />
-            </Autocomplete>
-          </Box>
-        </HStack>
-        <HStack spacing={4} mt={4} justifyContent="space-between">
-          <Box flexGrow={1}>
-            <Autocomplete>
-              <Input
-                type="text"
-                placeholder="Destination"
-                ref={destinationRef}
-              />
-            </Autocomplete>
-          </Box>
-        </HStack>
-        <HStack spacing={4} mt={4} justifyContent="space-between">
-          <ButtonGroup>
-            <Button colorScheme="pink" type="submit" onClick={calculateRoute}>
-              Calculate Route
-            </Button>
+              {isRoute === true ? (
+                <Button
+                  colorScheme="pink"
+                  type="submit"
+                  onClick={handleRideRequest}
+                >
+                  Request Ride
+                </Button>
+              ) : (
+                <></>
+              )}
+            </ButtonGroup>
+          </HStack>
+          <HStack spacing={4} mt={4} justifyContent="space-between">
+            <Text>Distance: {distance} </Text>
+            <Text>Duration: {duration} </Text>
             <IconButton
               aria-label="center back"
-              icon={<FaTimes />}
-              onClick={clearRoute}
+              icon={<FaCompass />}
+              isRound
+              onClick={() =>
+                navigator.geolocation.getCurrentPosition(
+                  (position) => {
+                    pansTo({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    setMarker({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    setCenter({
+                      lat: position.coords.latitude,
+                      lng: position.coords.longitude,
+                    });
+                    calculateAddress();
+                  },
+                  () => null
+                )
+              }
+            />
+            <IconButton
+              aria-label="center back"
+              icon={<FaLocationArrow />}
+              isRound
+              onClick={() => {
+                map.panTo(marker);
+                map.setZoom(15);
+              }}
             />
             {isRoute === true ? (
               <Button
@@ -365,11 +446,12 @@ export const Home = (props) => {
               })}
             </Text>
           </HStack>
-        ) : (
-          <></>
-        )}
-      </Box>
-    </Flex>
+          ) : (
+            <></>
+          )}
+        </Box>
+      </Flex>
+    </>
   );
 };
 
