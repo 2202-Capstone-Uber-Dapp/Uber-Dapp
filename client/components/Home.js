@@ -120,6 +120,19 @@ export const Home = (props) => {
   }
 
   function handleRideRequest() {
+    socket.emit('requestRide', { address, pickupLocation });
+    setIsRideRequest(true);
+    console.log('RideRequest status is', isRideRequest);
+    // sendRideRequest();
+    let cost = calculateCost(distance, duration);
+    dispatch(
+      requestRide({
+        cost: parseInt(cost),
+        distance: parseInt(distance.split(' ')[0]),
+        duration: parseInt(duration.split(' ')[0]),
+        userId: userId,
+      })
+    );
     //transaction happens
     //axios ride table
     socket.emit('GET_ALL_DRIVER');
