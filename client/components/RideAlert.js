@@ -18,7 +18,7 @@ import {
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
 
-function RideAlert() {
+function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
@@ -35,7 +35,8 @@ function RideAlert() {
     };
   }, [seconds]);
   function onAccept() {
-    //TODO: write logic for driver acceptance of ride
+    console.log(setDriverToPickupLocation);
+    setDriverToPickupLocation();
     onClose();
   }
   function onDecline() {
@@ -98,10 +99,10 @@ function RideAlert() {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Button colorScheme="red" variant="ghost" onClick={onAccept}>
+            <Button colorScheme="red" variant="ghost" onClick={onDecline}>
               Decline
             </Button>
-            <Button colorScheme="green" variant="ghost" onClick={onDecline}>
+            <Button colorScheme="green" variant="ghost" onClick={onAccept}>
               Accept
             </Button>
           </ModalFooter>
