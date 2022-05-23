@@ -119,7 +119,7 @@ contract RideDapp is Ownable {
         require(_cost == msg.value, "Not Correct Ride Fare");
         rideRequestFares[_riderId][msg.sender] += msg.value;
 
-        payable (this).transfer(_cost);
+        // payable (this).transfer(_cost);
 
         requestData[requestCount] = RideRequest(
             msg.sender,
