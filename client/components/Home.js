@@ -156,7 +156,6 @@ export const Home = (props) => {
     //axios ride table
     socket.emit('GET_ALL_DRIVER');
     socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
-      consol;
       const driver = driverList.shift();
       const message = {
         riderSocket: socket.id,
