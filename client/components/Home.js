@@ -258,7 +258,7 @@ export const Home = (props) => {
           <Button
             onClick={() => {
               sendTransaction(
-                1,
+                2,
                 'KBQ79F5899bClAQPyV1qqq8Zjk72',
                 '0x105836DcA641335558f633816Dfd768aa2F81E81'
               );

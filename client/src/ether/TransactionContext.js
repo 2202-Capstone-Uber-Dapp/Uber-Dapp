@@ -253,8 +253,6 @@ export const TransactionsProvider = ({ children }) => {
 
         console.log("ZE COST", options);
         const blockchainHash = await RideDappContract.addRequest(
-          _distance,
-          _duration,
           rideData.riderId,
           options
         );
