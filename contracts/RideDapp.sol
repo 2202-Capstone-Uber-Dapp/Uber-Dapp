@@ -107,7 +107,7 @@ contract RideDapp is Ownable {
         uint256 _distance,
         uint256 _rideTime,
         string memory _riderId
-    ) public payable {
+    ) public payable returns (uint256) {
         require(checkRider(), "not a valid rider");
 
         requestCount++;
@@ -116,8 +116,10 @@ contract RideDapp is Ownable {
         //which is derived from the front end algorithm
         //We also have the backend algorithm to match, more transparency for our app
         //Not Completely Necessary but nice to have
-        // require(_cost == msg.value, 'Not Correct Ride Fare' );
+        require(_cost == msg.value, "Not Correct Ride Fare");
         rideRequestFares[_riderId][msg.sender] += msg.value;
+
+        payable (this).transfer(_cost);
 
         requestData[requestCount] = RideRequest(
             msg.sender,
@@ -125,7 +127,7 @@ contract RideDapp is Ownable {
             _cost
         );
 
-        // return requestCount;
+        return requestCount;
     }
 
     // general functions
