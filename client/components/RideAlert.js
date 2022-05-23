@@ -20,8 +20,7 @@ import { useSocket } from '../context/SocketContext';
 
 function RideAlert() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { socket } = useSocket();
-  const [ride, setRideMsg] = useState({});
+  const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
   useEffect(() => {
     socket.on('CAN_ACCEPT_RIDE', (message) => {
@@ -59,7 +58,7 @@ function RideAlert() {
             <Center>
               <Avatar
                 size={'xl'}
-                src={ride.imageUrl}
+                src={rideInfo.imageUrl}
                 alt={'Avatar Alt'}
                 mt={2}
               />
@@ -69,20 +68,20 @@ function RideAlert() {
             <VStack align={'center'} justify={'center'}>
               <HStack>
                 <Text fontSize={'5xl'} fontWeight={800}>
-                  ${ride.earning}
+                  ${rideInfo.earning}
                 </Text>
                 <Text color="gray.500" fontSize={'2xl'} fontWeight={600}>
-                  | ETH {ride.eth}
+                  | ETH {rideInfo.eth}
                 </Text>
               </HStack>
               <Text fontSize={'2xl'} fontWeight={600}>
-                {ride.time} min ● {ride.miles} mi
+                {rideInfo.time} min ● {rideInfo.miles} mi
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
-                Pickup: {ride.pickupLocation}
+                Pickup: {rideInfo.pickupLocation}
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
-                Dropoff: {ride.dropOff}
+                Dropoff: {rideInfo.dropOff}
               </Text>
             </VStack>
           </ModalBody>
