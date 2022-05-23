@@ -1,4 +1,4 @@
-const CONNECT_ERROR = 'CONNECT_ERROR';
+const CONNECT_ERROR = 'connect_error';
 const DISCONNECT = 'disconnect';
 
 const request = new Set();

@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-export default function useCountdown(seconds) {
-  const [secs, decrement] = useState(seconds);
+export default function useCountdown() {
+  const [seconds, setSeconds] = useState(0);
   useEffect(() => {
-    if (secs > 0) {
+    if (seconds > 0) {
       const progressLevel = setTimeout(() => {
-        decrement(secs - 1);
+        setSeconds(seconds - 1);
       }, 1000);
       return () => clearTimeout(progressLevel);
     }
-  }, [secs, seconds]);
-
-  return secs;
+  }, [seconds]);
+  function startTimer() {
+    setSeconds(30);
+  }
+  return [seconds, startTimer];
 }

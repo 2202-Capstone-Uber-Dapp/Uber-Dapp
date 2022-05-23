@@ -11,6 +11,7 @@ class DriverEventHandler extends Connection {
     socket.on(ABLE_TO_ACCEPT_RIDE, (rideRequest) =>
       this.driverCanAcceptRide(rideRequest)
     );
+    console.log('Finished connecting as a driver...');
   }
 
   driverCanAcceptRide(rideRequest) {}
