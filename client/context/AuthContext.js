@@ -28,7 +28,7 @@ export function AuthProvider({ children }) {
       dispatch(userSignUp(data));
       return () => unsubscribe()
     } catch (err) {
-      console.log(err);
+      alert(AuthErrorHandler(err));
     }
   }
 
@@ -67,4 +67,20 @@ export function AuthProvider({ children }) {
       {!loading && children}
     </AuthContext.Provider>
   );
+}
+
+
+function AuthErrorHandler(error) {
+  let status = error;
+  switch (error.code) {
+    case "auth/email-already-in-use":
+      status = "Email is already in use";
+      break;
+    case "auth/weak-password":
+      status = "Password should be at least 6 characters"
+    default:
+      break;
+  }
+
+  return status;
 }
