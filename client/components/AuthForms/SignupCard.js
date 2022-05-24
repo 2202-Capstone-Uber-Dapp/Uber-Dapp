@@ -20,7 +20,6 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useAuth } from "../../context/AuthContext";
-import { updateProfile } from "firebase/auth";
 import { TransactionContext } from "../../src/ether/TransactionContext";
 
 export default function SignupCard() {
@@ -35,7 +34,6 @@ export default function SignupCard() {
   //Prompt User to Connect Wallet
   useEffect(() => {
     connectWallet();
-    console.log("CURRENT ACC", currentAccount);
   }, [currentAccount]);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -71,7 +69,6 @@ export default function SignupCard() {
       //Add Rider to blockchain dictionary
       if (role === "RIDER") {
         setRider();
-        console.log("Rider")
       }
     } catch (error) {
       setError(error.message);
