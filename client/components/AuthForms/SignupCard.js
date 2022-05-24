@@ -30,7 +30,7 @@ export default function SignupCard() {
   const passwordConfirmRef = useRef();
   const displayNameRef = useRef();
   const [role, setRole] = useState('');
-  const { signup } = useAuth();
+  const { signup, login } = useAuth();
   const history = useHistory();
 
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
@@ -47,6 +47,7 @@ export default function SignupCard() {
     setLoading(true);
     try {
       const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value, role);
+      await login(emailRef.current.value, passwordConfirmRef.current.value)
     } catch (error) {
       setError(error.message);
     } finally {
@@ -129,18 +130,18 @@ export default function SignupCard() {
                 </Select>
               </FormControl>
               <Stack spacing={10} pt={2}>
-                <Button
-                  type="submit"
-                  loadingText="Submitting"
-                  size="lg"
-                  bg={'blue.400'}
-                  color={'white'}
-                  _hover={{
-                    bg: 'blue.500',
-                  }}
-                >
-                  Sign up
-                </Button>
+                  <Button
+                    type="submit"
+                    loadingText="Submitting"
+                    size="lg"
+                    bg={'blue.400'}
+                    color={'white'}
+                    _hover={{
+                      bg: 'blue.500',
+                    }}
+                  >
+                    Sign up
+                  </Button>
               </Stack>
               <Stack pt={6}>
                 <Text align={'center'}>
