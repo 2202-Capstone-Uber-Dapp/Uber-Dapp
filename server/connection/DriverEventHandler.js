@@ -7,14 +7,15 @@ const Connection = require('./Connection');
 class DriverEventHandler extends Connection {
   constructor(io, socket, user) {
     super(io, socket, user);
+    socket.on('DECLINE_RIDE', (message) => this.declineRide(message));
 
-    socket.on(ABLE_TO_ACCEPT_RIDE, (rideRequest) =>
-      this.driverCanAcceptRide(rideRequest)
-    );
     console.log('Finished connecting as a driver...');
   }
-
-  driverCanAcceptRide(rideRequest) {}
+  declineRide(message) {
+    this.io.sockets
+      .to(message.riderSocketId)
+      .emit('DRIVER_DECLINE_RIDE', message);
+  }
 }
 
 module.exports = DriverEventHandler;

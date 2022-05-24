@@ -13,9 +13,8 @@ const {
 function SocketIOController(io) {
   io.use(wrap(sessionMiddleware));
 
-  io.on("connection", async (socket) => {
-    console.log("Socket is connecting");
-
+  io.on('connection', async (socket) => {
+    console.log('Socket is connecting');
     const user = await User.findByPk(socket.request.session.user_id);
     if (user) {
       switch (user.role) {

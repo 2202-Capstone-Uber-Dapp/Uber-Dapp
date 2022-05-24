@@ -14,10 +14,18 @@ import {
   VStack,
   HStack,
   Progress,
+  useToast,
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
 import {TransactionContext} from '../src/ether/TransactionContext'
+
+const toastRideAcceptConfig = {
+  title: 'Successfully matched to rider',
+  position: 'top',
+  description: 'Go Pickup Rider!',
+  status: 'success',
+};
 
 function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,6 +34,8 @@ function RideAlert({ setDriverToPickupLocation }) {
     let {
     sendTransaction,
   } = useContext(TransactionContext);
+  const toast = useToast();
+
   useEffect(() => {
     socket.on('CAN_ACCEPT_RIDE', (message) => {
       setRideMsg(message);
@@ -44,9 +54,10 @@ function RideAlert({ setDriverToPickupLocation }) {
     console.log(setDriverToPickupLocation);
     setDriverToPickupLocation();
     onClose();
+    toast(toastRideAcceptConfig);
   }
   function onDecline() {
-    //TODO: write logic for driver declination of ride
+    socket.emit('DECLINE_RIDE', rideInfo);
     onClose();
   }
 
@@ -75,14 +86,14 @@ function RideAlert({ setDriverToPickupLocation }) {
             <VStack align={'center'} justify={'center'}>
               <HStack>
                 <Text fontSize={'5xl'} fontWeight={800}>
-                  ${rideInfo.earning}
+                  {rideInfo.earning}
                 </Text>
                 <Text color="gray.500" fontSize={'2xl'} fontWeight={600}>
                   | ETH {rideInfo.eth}
                 </Text>
               </HStack>
               <Text fontSize={'2xl'} fontWeight={600}>
-                {rideInfo.time} min ● {rideInfo.miles} mi
+                {rideInfo.time} ● {rideInfo.miles}
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
                 Pickup: {rideInfo.pickupLocation}
