@@ -101,7 +101,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          Uber-Dapp
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
@@ -238,12 +238,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               _focus={{ boxShadow: 'none' }}
             >
               <HStack>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    user.profileImage
-                  }
-                />
+                <Avatar size={'sm'} src={user.profileImage} />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
                   alignItems="flex-start"
