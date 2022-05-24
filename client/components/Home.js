@@ -137,6 +137,7 @@ export const Home = (props) => {
   }
   
   function createRideInfo() {
+    console.log("REQUESTED RIDE ID ", userRideRequest.requestedRide.id);
     return {
       riderSocketId: socket.id,
       imageUrl: user.profileImage,
@@ -150,7 +151,11 @@ export const Home = (props) => {
       pickupLocation: originRef.current.value,
       dropOff: destinationRef.current.value,
       marker,
-      wallet: { rideRequestId: 0, riderId: userId, riderWalletId: currentAccount },
+      wallet: {
+        rideRequestId: userRideRequest.requestedRide.id,
+        riderId: userId,
+        riderWalletId: currentAccount,
+      },
     };
   }
   
