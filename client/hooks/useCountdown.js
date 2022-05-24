@@ -10,7 +10,7 @@ export default function useCountdown() {
     }
   }, [seconds]);
   function startTimer() {
-    setSeconds(500);
+    setSeconds(30);
   }
   return [seconds, startTimer];
 }

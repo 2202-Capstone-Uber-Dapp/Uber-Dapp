@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
-import {TransactionContext} from '../src/ether/TransactionContext'
+import { TransactionContext } from '../src/ether/TransactionContext';
 
 const toastRideAcceptConfig = {
   title: 'Successfully matched to rider',
@@ -31,9 +31,7 @@ function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
-    let {
-    sendTransaction,
-  } = useContext(TransactionContext);
+  const { sendTransaction } = useContext(TransactionContext);
   const toast = useToast();
 
   useEffect(() => {
@@ -48,13 +46,20 @@ function RideAlert({ setDriverToPickupLocation }) {
       socket.off('CAN_ACCEPT_RIDE');
     };
   }, [seconds]);
-  function onAccept() {
-    console.log('THE RIDE INFO', rideInfo)
-    sendTransaction(rideInfo.wallet.rideRequestId, rideInfo.wallet.riderId,rideInfo.wallet.riderWalletId )
-    console.log(setDriverToPickupLocation);
-    setDriverToPickupLocation();
-    onClose();
-    toast(toastRideAcceptConfig);
+  async function onAccept() {
+    // try {
+      await sendTransaction(
+        0,
+        rideInfo.wallet.riderId,
+        rideInfo.wallet.riderWalletId
+      );
+    // } catch (e) {
+      // console.error(e);
+    // } finally {
+      setDriverToPickupLocation();
+      toast(toastRideAcceptConfig);
+      onClose();
+    // }
   }
   function onDecline() {
     socket.emit('DECLINE_RIDE', rideInfo);

@@ -27,6 +27,7 @@ router.post("/:userId", async (req, res, next) => {
       // explicitly select only the isCompleted field
       attributes: ["isCompleted"],
     });
+    console.log('RIDEBOOL', rideBool)
     //Ride is DNE or completed, allow for a new one
     if (rideBool === null || rideBool === true) {
       let rideRequest = await Ride.create(req.body);
