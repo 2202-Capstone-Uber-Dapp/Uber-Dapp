@@ -17,7 +17,6 @@ const setAuth = (auth) => ({ type: SET_AUTH, auth });
  * THUNK CREATORS
  */
 export const fetchUserInfo = () => async (dispatch) => {
-  //fixed
   const res = await axios.get('/api/user/');
   return dispatch(setAuth(res.data));
 };
