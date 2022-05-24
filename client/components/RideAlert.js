@@ -14,7 +14,7 @@ import {
   VStack,
   HStack,
   Progress,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
@@ -23,7 +23,7 @@ function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
-  const toast = useToast()
+  const toast = useToast();
 
   useEffect(() => {
     socket.on('CAN_ACCEPT_RIDE', (message) => {
@@ -45,11 +45,11 @@ function RideAlert({ setDriverToPickupLocation }) {
       title: 'Successfully matched to rider',
       position: 'top',
       size: '32rem',
-      description: "Go Pickup Rider!",
+      description: 'Go Pickup Rider!',
       status: 'success',
       duration: 9000,
       isClosable: true,
-    })
+    });
   }
   function onDecline() {
     //TODO: write logic for driver declination of ride
@@ -88,7 +88,7 @@ function RideAlert({ setDriverToPickupLocation }) {
                 </Text>
               </HStack>
               <Text fontSize={'2xl'} fontWeight={600}>
-                {rideInfo.time} ● {rideInfo.miles} 
+                {rideInfo.time} ● {rideInfo.miles}
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
                 Pickup: {rideInfo.pickupLocation}

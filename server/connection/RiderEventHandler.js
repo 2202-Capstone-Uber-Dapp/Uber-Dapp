@@ -21,9 +21,12 @@ class RiderEventHandler extends Connection {
     this.io.sockets.to(driverSocket).emit(CAN_ACCEPT_RIDE, message);
   }
   getDriver() {
-    const driverList = [...this.socket.adapter.rooms.get(DRIVER)];
-
-    this.socket.emit('DRIVER_LIST_RESPONSE', driverList);
+    try {
+      const driverList = [...this.socket.adapter.rooms.get(DRIVER)];
+      this.socket.emit('DRIVER_LIST_RESPONSE', driverList);
+    } catch {
+      this.socket.emit('DRIVER_LIST_RESPONSE', []);
+    }
   }
   requestRide(location) {
     const rideRequest = {

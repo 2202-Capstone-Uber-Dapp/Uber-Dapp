@@ -21,7 +21,7 @@ import {
   Input,
   SkeletonText,
   Text,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
 import mapStyle from './mapStyle';
@@ -43,27 +43,6 @@ const options = {
   disableDefaultUI: true,
   zoomControl: true,
 };
-
-
-function CustomToastExample() {
-  const toast = useToast()
-  return (
-    <Button
-      onClick={() =>
-        toast({
-          position: 'bottom-left',
-          render: () => (
-            <Box color='white' p={3} bg='blue.500'>
-              Hello World
-            </Box>
-          ),
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
-}
 
 export const Home = (props) => {
   const { socket } = useSocket();
@@ -125,9 +104,8 @@ export const Home = (props) => {
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
-  const [driverLocation, setDriverLocation] = React.useState(center)
-  const [isRouteToRider, setIsRouteToRider] = React.useState(false)
-
+  const [driverLocation, setDriverLocation] = React.useState(center);
+  const [isRouteToRider, setIsRouteToRider] = React.useState(false);
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map;
     setMap(map);
@@ -150,11 +128,28 @@ export const Home = (props) => {
     setPickupLocation(event.target.value);
   }
 
+  function createRideInfo() {
+    return {
+      riderSocket: socket.id,
+      driverSocket: driver,
+      imageUrl: user.profileImage,
+      earning: calculateCost(distance, duration).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }),
+      eth: 0.059,
+      time: duration,
+      miles: distance,
+      pickupLocation: originRef.current.value,
+      dropOff: destinationRef.current.value,
+      marker,
+      wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
+    };
+  }
   function handleRideRequest() {
-    // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
     console.log('RideRequest status is', isRideRequest);
-    // sendRideRequest();
+
     let cost = calculateCost(distance, duration);
     dispatch(
       requestRide({
@@ -170,53 +165,38 @@ export const Home = (props) => {
       duration,
       cost
     );
+
     let needToWait = handleRideData({
       distance: distance,
       duration: duration,
       cost: parseInt(cost),
       riderId: userId,
     });
-    //transaction happens
-    //axios ride table
+
     socket.emit('GET_ALL_DRIVER');
     socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
-      const driver = driverList.shift();
-      const message = {
-        riderSocket: socket.id,
-        driverSocket: driver,
-        imageUrl:
-          'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
-        earning: calculateCost(distance, duration).toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }),
-        eth: 0.059,
-        time: duration,
-        miles: distance,
-        pickupLocation: originRef.current.value,
-        dropOff: destinationRef.current.value,
-        marker,
-        wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
-      };
+      if (!driverList.length) return;
+
+      const driverSocketId = driverList.shift();
+      const rideInfoMessage = createRideInfo();
       setDriver(driverList);
-      socket.emit('REQUEST_RIDE_TO_DRIVER', driver, message);
+      socket.emit('REQUEST_RIDE_TO_DRIVER', driverSocketId, rideInfoMessage);
     });
   }
 
   async function setDriverToPickupLocation() {
     console.log(rideInfo);
-      const directionsService = new google.maps.DirectionsService();
-      const results = await directionsService.route({
-        origin: driverLocation,
-        destination: rideInfo.marker,
-        travelMode: google.maps.TravelMode.DRIVING,
-      });
-      console.log("directions results!!!!!", results)
-      setDirectionsResponse(results);
-      setIsRouteToRider(true)
-      // alert("Go pickup Rider")
-    }
-  
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: driverLocation,
+      destination: rideInfo.marker,
+      travelMode: google.maps.TravelMode.DRIVING,
+    });
+    console.log('directions results!!!!!', results);
+    setDirectionsResponse(results);
+    setIsRouteToRider(true);
+    // alert("Go pickup Rider")
+  }
 
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
@@ -229,7 +209,7 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    console.log("directions results!!!!!", results)
+    console.log('directions results!!!!!', results);
     GeoCode.fromAddress(originRef.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setMarker({ lat, lng });
@@ -244,7 +224,6 @@ export const Home = (props) => {
     };
     // handleRideData(rideData);
   }
-  
 
   // async function calculateRouteTwo() {
   //   const directionsService = new google.maps.DirectionsService();
@@ -499,8 +478,8 @@ export const Home = (props) => {
                       });
                       setDriverLocation({
                         lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                      })
+                        lng: position.coords.longitude,
+                      });
                       calculateAddress();
                     },
                     () => null
@@ -524,9 +503,7 @@ export const Home = (props) => {
                 >
                   Route to Rider
                 </Button> */}
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-           
-            </HStack>
+            <HStack spacing={4} mt={4} justifyContent="space-between"></HStack>
           </Box>
         )}
       </Flex>
