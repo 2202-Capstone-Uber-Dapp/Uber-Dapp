@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import React, { useContext, useEffect } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
 import {
   useLoadScript,
   GoogleMap,
@@ -8,8 +8,8 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-} from '@react-google-maps/api';
-import GeoCode from 'react-geocode';
+} from "@react-google-maps/api";
+import GeoCode from "react-geocode";
 
 import {
   Box,
@@ -21,21 +21,24 @@ import {
   Input,
   SkeletonText,
   Text,
-  useToast
-} from '@chakra-ui/react';
-import { FaLocationArrow, FaTimes, FaCompass } from 'react-icons/fa';
-import mapStyle from './mapStyle';
-import { TransactionContext } from '../src/ether/TransactionContext';
-import { userContext } from '../context/UserContext';
-import { requestRide } from '../redux/user';
-import { useSocket } from '../context/SocketContext';
-import RideAlert from './RideAlert';
+  useToast,
+} from "@chakra-ui/react";
+import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+import mapStyle from "./mapStyle";
+import { TransactionContext } from "../src/ether/TransactionContext";
+import { userContext } from "../context/UserContext";
+import { requestRide } from "../redux/user";
+import { useSocket } from "../context/SocketContext";
+import RideAlert from "./RideAlert";
+import RiderMap from "./RiderMap";
+import DriverMap from "./DriverMap";
+
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
-const libraries = ['places'];
+const libraries = ["places"];
 const containerStyle = {
-  width: '83%',
-  height: '88%',
+  width: "83%",
+  height: "88%",
 };
 const options = {
   styles:
@@ -44,34 +47,13 @@ const options = {
   zoomControl: true,
 };
 
-
-function CustomToastExample() {
-  const toast = useToast()
-  return (
-    <Button
-      onClick={() =>
-        toast({
-          position: 'bottom-left',
-          render: () => (
-            <Box color='white' p={3} bg='blue.500'>
-              Hello World
-            </Box>
-          ),
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
-}
-
 export const Home = (props) => {
   const { socket } = useSocket();
 
   useEffect(() => {
-    socket.on('test', () => {});
+    socket.on("test", () => {});
     return () => {
-      socket.off('test');
+      socket.off("test");
     };
   }, [socket]);
   let {
@@ -109,24 +91,22 @@ export const Home = (props) => {
 
   // Hooks to manage state
   const [center, setCenter] = React.useState(initialCenter);
-  const [newCenter, setNewCenter] = React.useState(center);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState('');
-  const [duration, setDuration] = React.useState('');
+  const [distance, setDistance] = React.useState("");
+  const [duration, setDuration] = React.useState("");
   const [marker, setMarker] = React.useState(center);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
-  const [pickupLocation, setPickupLocation] = React.useState('');
+  const [pickupLocation, setPickupLocation] = React.useState("");
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
-  const [cost, setCost] = React.useState(0);
   const { setSocketList, rideInfo } = useSocket();
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
-  const [driverLocation, setDriverLocation] = React.useState(center)
-  const [isRouteToRider, setIsRouteToRider] = React.useState(false)
+  const [driverLocation, setDriverLocation] = React.useState(center);
+  const [isRouteToRider, setIsRouteToRider] = React.useState(false);
 
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map;
@@ -138,6 +118,7 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
+  // Reverse Geocoding; using coordinates to obtain address using react-geocode
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
@@ -153,19 +134,19 @@ export const Home = (props) => {
   function handleRideRequest() {
     // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
-    console.log('RideRequest status is', isRideRequest);
+    console.log("RideRequest status is", isRideRequest);
     // sendRideRequest();
     let cost = calculateCost(distance, duration);
     dispatch(
       requestRide({
         cost: parseInt(cost),
-        distance: parseInt(distance.split(' ')[0]),
-        duration: parseInt(duration.split(' ')[0]),
+        distance: parseInt(distance.split(" ")[0]),
+        duration: parseInt(duration.split(" ")[0]),
         userId: userId,
       })
     );
     console.log(
-      'Data in Home Right before Set State',
+      "Data in Home Right before Set State",
       distance,
       duration,
       cost
@@ -178,17 +159,17 @@ export const Home = (props) => {
     });
     //transaction happens
     //axios ride table
-    socket.emit('GET_ALL_DRIVER');
-    socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
+    socket.emit("GET_ALL_DRIVER");
+    socket.once("DRIVER_LIST_RESPONSE", (driverList) => {
       const driver = driverList.shift();
       const message = {
         riderSocket: socket.id,
         driverSocket: driver,
         imageUrl:
-          'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
-        earning: calculateCost(distance, duration).toLocaleString('en-US', {
-          style: 'currency',
-          currency: 'USD',
+          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",
+        earning: calculateCost(distance, duration).toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
         }),
         eth: 0.059,
         time: duration,
@@ -199,28 +180,25 @@ export const Home = (props) => {
         wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
       };
       setDriver(driverList);
-      socket.emit('REQUEST_RIDE_TO_DRIVER', driver, message);
+      socket.emit("REQUEST_RIDE_TO_DRIVER", driver, message);
     });
   }
 
   async function setDriverToPickupLocation() {
-    console.log(rideInfo);
-      const directionsService = new google.maps.DirectionsService();
-      const results = await directionsService.route({
-        origin: driverLocation,
-        destination: rideInfo.marker,
-        travelMode: google.maps.TravelMode.DRIVING,
-      });
-      console.log("directions results!!!!!", results)
-      setDirectionsResponse(results);
-      setIsRouteToRider(true)
-      // alert("Go pickup Rider")
-    }
-  
+    const directionsService = new google.maps.DirectionsService();
+    const results = await directionsService.route({
+      origin: driverLocation,
+      destination: rideInfo.marker,
+      travelMode: google.maps.TravelMode.DRIVING,
+    });
+    setDirectionsResponse(results);
+    setIsRouteToRider(true);
+    // alert("Go pickup Rider")
+  }
 
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
-    if (originRef.current.value === '' || destinationRef.current.value === '') {
+    if (originRef.current.value === "" || destinationRef.current.value === "") {
       return;
     }
     const directionsService = new google.maps.DirectionsService();
@@ -229,7 +207,6 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    console.log("directions results!!!!!", results)
     GeoCode.fromAddress(originRef.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setMarker({ lat, lng });
@@ -238,59 +215,64 @@ export const Home = (props) => {
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
     setIsRoute(true);
-    let rideData = {
-      duration: results.routes[0].legs[0].duration.text,
-      distance: results.routes[0].legs[0].distance.text,
-    };
-    // handleRideData(rideData);
   }
-  
-
-  // async function calculateRouteTwo() {
-  //   const directionsService = new google.maps.DirectionsService();
-  //   const results = await directionsService.route({
-  //     origin: ,
-  //     destination: ,
-  //   })
-  // }
 
   function clearRoute() {
     setDirectionsResponse(null);
-    setDistance('');
-    setDuration('');
-    setPickupLocation('');
-    originRef.current.value = '';
-    destinationRef.current.value = '';
+    setDistance("");
+    setDuration("");
+    setPickupLocation("");
+    originRef.current.value = "";
+    destinationRef.current.value = "";
     setIsRoute(false);
     setIsRideRequest(false);
-    console.log('RideRequest status is', isRideRequest);
   }
 
   function calculateCost(distance, duration) {
-    // const basefare = "2448697131268900"
-    // const basefare = 0.0024486971312689 /* eth*/
     const basefare = 5.0; /*USD*/
     let minutes = 0;
     let hours = 0;
-    if (duration.split(' ').length === 4) {
-      hours = Number(duration.split(' ')[0]);
-      minutes = Number(duration.split(' ')[2]);
+    if (duration.split(" ").length === 4) {
+      hours = Number(duration.split(" ")[0]);
+      minutes = Number(duration.split(" ")[2]);
     }
-    if (duration.split(' ').length === 2) {
-      minutes = Number(duration.split(' ')[0]);
+    if (duration.split(" ").length === 2) {
+      minutes = Number(duration.split(" ")[0]);
     }
     const _duration = hours * 60 + minutes;
-    const _distance = Number(distance.split(' ')[0].replace(/,/g, ''));
+    const _distance = Number(distance.split(" ")[0].replace(/,/g, ""));
     const cost = basefare + (_distance * 0.96 + _duration * 0.25);
-    // setCost(cost)
     return cost;
-    // return cost.toLocaleString("en-US", {
-    //   style: "currency",
-    //   currency: "USD",
-    // })
   }
 
-  if (loadError) return 'Error Loading Map';
+  function calculateCurrentPosition() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        pansTo({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setMarker({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        setCenter({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+        calculateAddress();
+        user.role === "DRIVER"
+          ? setDriverLocation({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            })
+          : null;
+      },
+      () => null
+    );
+  }
+
+  if (loadError) return "Error Loading Map";
   if (!isLoaded) return <SkeletonText />;
 
   return (
@@ -308,8 +290,8 @@ export const Home = (props) => {
             onClick={() => {
               sendTransaction(
                 1,
-                'KBQ79F5899bClAQPyV1qqq8Zjk72',
-                '0x105836DcA641335558f633816Dfd768aa2F81E81'
+                "KBQ79F5899bClAQPyV1qqq8Zjk72",
+                "0x105836DcA641335558f633816Dfd768aa2F81E81"
               );
             }}
           >
@@ -328,10 +310,6 @@ export const Home = (props) => {
                 lng: event.latLng.lng(),
               });
               calculateAddress();
-              setNewCenter({
-                lat: event.latLng.lat(),
-                lng: event.latLng.lng(),
-              });
             }}
           >
             <Marker
@@ -352,182 +330,30 @@ export const Home = (props) => {
             )}
           </GoogleMap>
         </Box>
-        {user.role === 'RIDER' ? (
-          <Box
-            position="absolute"
-            p={4}
-            borderRadius="lg"
-            m={4}
-            bgColor="white"
-            shadow="base"
-            // minW="container.md"
-            zIndex="1"
-          >
-            <HStack spacing={2} justifyContent="space-between">
-              <Box flexGrow={1}>
-                <Autocomplete>
-                  <Input
-                    type="text"
-                    placeholder="Pickup Location"
-                    value={pickupLocation}
-                    onChange={handleTitleChange}
-                    ref={originRef}
-                  />
-                </Autocomplete>
-              </Box>
-            </HStack>
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-              <Box flexGrow={1}>
-                <Autocomplete>
-                  <Input
-                    type="text"
-                    placeholder="Destination"
-                    ref={destinationRef}
-                  />
-                </Autocomplete>
-              </Box>
-            </HStack>
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-              <ButtonGroup>
-                <Button
-                  colorScheme="pink"
-                  type="submit"
-                  onClick={calculateRoute}
-                >
-                  Calculate Route
-                </Button>
-                <IconButton
-                  aria-label="center back"
-                  icon={<FaTimes />}
-                  onClick={clearRoute}
-                />
-                {isRoute === true ? (
-                  <Button
-                    colorScheme="pink"
-                    type="submit"
-                    onClick={handleRideRequest}
-                  >
-                    Request Ride
-                  </Button>
-                ) : (
-                  <></>
-                )}
-              </ButtonGroup>
-            </HStack>
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-              <Text>Distance: {distance} </Text>
-              <Text>Duration: {duration} </Text>
-              <IconButton
-                aria-label="center back"
-                icon={<FaCompass />}
-                isRound
-                onClick={() =>
-                  navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                      pansTo({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      setMarker({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      setCenter({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      calculateAddress();
-                    },
-                    () => null
-                  )
-                }
-              />
-              <IconButton
-                aria-label="center back"
-                icon={<FaLocationArrow />}
-                isRound
-                onClick={() => {
-                  map.panTo(marker);
-                  map.setZoom(15);
-                }}
-              />
-            </HStack>
-            {isRoute === true ? (
-              <HStack spacing={4} mt={4} justifyContent="space-between">
-                <Text>
-                  Cost:{' '}
-                  {calculateCost(distance, duration).toLocaleString('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  })}
-                </Text>
-              </HStack>
-            ) : (
-              <></>
-            )}
-          </Box>
+        {/* RENDERS APPROPRIATE UI BASED ON IF THE USER IS A RIDER OR DRIVER  */}
+        {user.role === "RIDER" ? (
+          <RiderMap
+            pickupLocation={pickupLocation}
+            handleTitleChange={handleTitleChange}
+            handleRideRequest={handleRideRequest}
+            calculateCost={calculateCost}
+            calculateRoute={calculateRoute}
+            originRef={originRef}
+            destinationRef={destinationRef}
+            clearRoute={clearRoute}
+            isRoute={isRoute}
+            distance={distance}
+            duration={duration}
+            marker={marker}
+            calculateCurrentPosition={calculateCurrentPosition}
+            map={map}
+          />
         ) : (
-          <Box
-            position="absolute"
-            p={4}
-            borderRadius="lg"
-            m={4}
-            bgColor="white"
-            shadow="base"
-            // minW="container.md"
-            zIndex="1"
-          >
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-              <IconButton
-                aria-label="center back"
-                icon={<FaCompass />}
-                isRound
-                onClick={() =>
-                  navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                      pansTo({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      setMarker({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      setCenter({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude,
-                      });
-                      setDriverLocation({
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                      })
-                      calculateAddress();
-                    },
-                    () => null
-                  )
-                }
-              />
-              <IconButton
-                aria-label="center back"
-                icon={<FaLocationArrow />}
-                isRound
-                onClick={() => {
-                  map.panTo(marker);
-                  map.setZoom(15);
-                }}
-              />
-            </HStack>
-            {/* <Button
-                  colorScheme="pink"
-                  type="submit"
-                  onClick={setDriverToPickupLocation}
-                >
-                  Route to Rider
-                </Button> */}
-            <HStack spacing={4} mt={4} justifyContent="space-between">
-           
-            </HStack>
-          </Box>
+          <DriverMap
+            calculateCurrentPosition={calculateCurrentPosition}
+            marker={marker}
+            map={map}
+          />
         )}
       </Flex>
     </>
