@@ -23,7 +23,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+import { FaLocationArrow, FaTimes, FaCompass, FaCarAlt } from "react-icons/fa";
 import mapStyle from "./mapStyle";
 import { TransactionContext } from "../src/ether/TransactionContext";
 import { userContext } from "../context/UserContext";
@@ -94,6 +94,7 @@ export const Home = (props) => {
   const [distance, setDistance] = React.useState("");
   const [duration, setDuration] = React.useState("");
   const [marker, setMarker] = React.useState(center);
+  const [markers, setMarkers] = React.useState([]);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
   const [pickupLocation, setPickupLocation] = React.useState("");
@@ -327,10 +328,20 @@ export const Home = (props) => {
           >
             <Marker
               position={marker}
+              icon={{
+                url: '/person.svg', scaledSize: new window.google.maps.Size(50,50)
+              }}
               onClick={() => {
                 setSelected(marker);
               }}
+              
             />
+            {/* <Marker
+              position={driverLocation}
+              icon={{
+                url: '/car.svg', scaledSize: new window.google.maps.Size(50,50)
+              }}
+            /> */}
             {selected ? (
               <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
                 <div>
