@@ -22,12 +22,12 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+import { FaLocationArrow, FaTimes, FaCompass, FaHome } from "react-icons/fa";
 
 const RiderMap = (props) => {
   const {
     pickupLocation,
-    handleTitleChange,
+    setPickupLocation,
     handleRideRequest,
     calculateCost,
     calculateRoute,
@@ -40,6 +40,7 @@ const RiderMap = (props) => {
     marker,
     calculateCurrentPosition,
     map,
+    panToHome
   } = props;
 
   const onMapLoad = React.useCallback((map) => {
@@ -51,6 +52,10 @@ const RiderMap = (props) => {
     mapRef.current.panTo({ lat, lng });
     mapRef.current.setZoom(15);
   }, []);
+
+  function handleTitleChange(event) {
+    setPickupLocation(event.target.value);
+  }
 
   return (
     <Box
@@ -102,7 +107,12 @@ const RiderMap = (props) => {
               Request Ride
             </Button>
           ) : (
-            <></>
+            <IconButton
+          aria-label="center back"
+          icon={<FaHome />}
+          isRound
+          onClick={() => panToHome()}
+        />
           )}
         </ButtonGroup>
       </HStack>

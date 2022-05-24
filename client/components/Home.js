@@ -77,8 +77,6 @@ export const Home = (props) => {
   }, [currentAccount]);
 
   const dispatch = useDispatch();
-
-  // const { username } = props;
   const { user } = userContext();
   const userId = user.user_id;
 
@@ -118,6 +116,12 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
+  // brings map back to original spot (central park is how we have it for initial center)
+  function panToHome() {
+    setCenter(initialCenter)
+    setMarker(initialCenter)
+  }
+
   // Reverse Geocoding; using coordinates to obtain address using react-geocode
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
@@ -127,10 +131,7 @@ export const Home = (props) => {
     });
   }
 
-  function handleTitleChange(event) {
-    setPickupLocation(event.target.value);
-  }
-
+  // When Rider Clicks on button "Request Ride" [after route is calculated]
   function handleRideRequest() {
     // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
@@ -184,7 +185,11 @@ export const Home = (props) => {
     });
   }
 
+  // Directions from Driver location to Rider location
   async function setDriverToPickupLocation() {
+    if (driverLocation === "" || rideInfo.marker === "") {
+      return;
+    }
     const directionsService = new google.maps.DirectionsService();
     const results = await directionsService.route({
       origin: driverLocation,
@@ -193,9 +198,13 @@ export const Home = (props) => {
     });
     setDirectionsResponse(results);
     setIsRouteToRider(true);
-    // alert("Go pickup Rider")
   }
 
+  // function clearDriverRoute() {
+  //   setDriverLocation("")
+  // }
+
+  //Rider enters pickup spot and destination; route and directions calculated
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
     if (originRef.current.value === "" || destinationRef.current.value === "") {
@@ -207,6 +216,7 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
+    // Geocoding; obtaining coordinates from address 
     GeoCode.fromAddress(originRef.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setMarker({ lat, lng });
@@ -228,6 +238,7 @@ export const Home = (props) => {
     setIsRideRequest(false);
   }
 
+  // SUPER SECRET ALGORITHM TO DETERMINE COST
   function calculateCost(distance, duration) {
     const basefare = 5.0; /*USD*/
     let minutes = 0;
@@ -318,7 +329,7 @@ export const Home = (props) => {
                 setSelected(marker);
               }}
             />
-            {selected && selected !== initialCenter ? (
+            {selected ? (
               <InfoWindow position={{ lat: selected.lat, lng: selected.lng }}>
                 <div>
                   <p>{JSON.stringify(address)}</p>
@@ -330,11 +341,10 @@ export const Home = (props) => {
             )}
           </GoogleMap>
         </Box>
-        {/* RENDERS APPROPRIATE UI BASED ON IF THE USER IS A RIDER OR DRIVER  */}
         {user.role === "RIDER" ? (
           <RiderMap
             pickupLocation={pickupLocation}
-            handleTitleChange={handleTitleChange}
+            setPickupLocation={setPickupLocation}
             handleRideRequest={handleRideRequest}
             calculateCost={calculateCost}
             calculateRoute={calculateRoute}
@@ -347,12 +357,16 @@ export const Home = (props) => {
             marker={marker}
             calculateCurrentPosition={calculateCurrentPosition}
             map={map}
+            panToHome={panToHome}
           />
         ) : (
           <DriverMap
             calculateCurrentPosition={calculateCurrentPosition}
             marker={marker}
             map={map}
+            panToHome={panToHome}
+            setDriverLocation={setDriverLocation}
+            setDirectionsResponse={setDirectionsResponse}
           />
         )}
       </Flex>

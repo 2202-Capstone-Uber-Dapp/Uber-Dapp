@@ -11,20 +11,22 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass } from "react-icons/fa";
+import { FaLocationArrow, FaTimes, FaCompass, FaHome } from "react-icons/fa";
 
 const DriverMap = (props) => {
-  const { marker, calculateCurrentPosition, map } = props;
+  const {
+    panToHome,
+    marker,
+    calculateCurrentPosition,
+    map,
+    setDriverLocation,
+    setDirectionsResponse,
+  } = props;
 
-  const onMapLoad = React.useCallback((map) => {
-    mapRef.current = map;
-    setMap(map);
-  });
-
-  const pansTo = React.useCallback(({ lat, lng }) => {
-    mapRef.current.panTo({ lat, lng });
-    mapRef.current.setZoom(15);
-  }, []);
+  function clearDriverRoute() {
+    setDirectionsResponse(null);
+    setDriverLocation("");
+  }
 
   return (
     <Box
@@ -40,6 +42,12 @@ const DriverMap = (props) => {
       <HStack spacing={4} mt={4} justifyContent="space-between">
         <IconButton
           aria-label="center back"
+          icon={<FaHome />}
+          isRound
+          onClick={() => panToHome()}
+        />
+        <IconButton
+          aria-label="center back"
           icon={<FaCompass />}
           isRound
           onClick={() => calculateCurrentPosition()}
@@ -53,6 +61,7 @@ const DriverMap = (props) => {
             map.setZoom(15);
           }}
         />
+        {/* <Button colorScheme="pink" type="submit" onClick={clearDriverRoute}>clear</Button> */}
       </HStack>
       <HStack spacing={4} mt={4} justifyContent="space-between">
         {/* {isRouteToRider === true? (
