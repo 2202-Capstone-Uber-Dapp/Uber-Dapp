@@ -20,7 +20,6 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useAuth } from "../../context/AuthContext";
-import { updateProfile } from "firebase/auth";
 import { TransactionContext } from "../../src/ether/TransactionContext";
 
 export default function SignupCard() {
@@ -35,7 +34,6 @@ export default function SignupCard() {
   //Prompt User to Connect Wallet
   useEffect(() => {
     connectWallet();
-    console.log("CURRENT ACC", currentAccount);
   }, [currentAccount]);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -45,8 +43,8 @@ export default function SignupCard() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const displayNameRef = useRef();
-  const [role, setRole] = useState("");
-  const { signup } = useAuth();
+  const [role, setRole] = useState('');
+  const { signup, login } = useAuth();
   const history = useHistory();
 
   function CheckPasswordMatch(passwordRef, passwordConfirmRef) {
@@ -62,22 +60,15 @@ export default function SignupCard() {
     }
     setLoading(true);
     try {
-      const newUser = await signup(
-        emailRef.current.value,
-        passwordConfirmRef.current.value,
-        displayNameRef.current.value,
-        role
-      );
-      console.log('ROLE CALL', role)
+      const newUser = await signup(emailRef.current.value, passwordConfirmRef.current.value, displayNameRef.current.value, role);
+      await login(emailRef.current.value, passwordConfirmRef.current.value)
       //Add Driver to blockchain dictionary
       if (role === "DRIVER") {
         setDriver();
-              console.log('DRIVAHHHHH')
       }
       //Add Rider to blockchain dictionary
       if (role === "RIDER") {
         setRider();
-        console.log('RIDAHHHHH')
       }
     } catch (error) {
       setError(error.message);
