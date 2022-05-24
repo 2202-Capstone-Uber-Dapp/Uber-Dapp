@@ -19,6 +19,16 @@ import {
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
 
+const toastRideAcceptConfig = {
+  title: 'Successfully matched to rider',
+  position: 'top',
+  size: '32rem',
+  description: 'Go Pickup Rider!',
+  status: 'success',
+  duration: 9000,
+  isClosable: true,
+};
+
 function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
@@ -41,18 +51,10 @@ function RideAlert({ setDriverToPickupLocation }) {
     console.log(setDriverToPickupLocation);
     setDriverToPickupLocation();
     onClose();
-    toast({
-      title: 'Successfully matched to rider',
-      position: 'top',
-      size: '32rem',
-      description: 'Go Pickup Rider!',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    });
+    toast(toastRideAcceptConfig);
   }
   function onDecline() {
-    //TODO: write logic for driver declination of ride
+    socket.emit('DECLINE_RIDE', rideInfo);
     onClose();
   }
 

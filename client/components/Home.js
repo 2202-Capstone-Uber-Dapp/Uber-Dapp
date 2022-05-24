@@ -45,7 +45,7 @@ const options = {
 };
 
 export const Home = (props) => {
-  const { socket } = useSocket();
+  const { socket, setRideMsg } = useSocket();
 
   useEffect(() => {
     socket.on('test', () => {});
@@ -100,7 +100,7 @@ export const Home = (props) => {
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
   const [cost, setCost] = React.useState(0);
-  const { setSocketList, rideInfo } = useSocket();
+  const { setDriverList, rideInfo } = useSocket();
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
@@ -130,8 +130,7 @@ export const Home = (props) => {
 
   function createRideInfo() {
     return {
-      riderSocket: socket.id,
-      driverSocket: driver,
+      riderSocketId: socket.id,
       imageUrl: user.profileImage,
       earning: calculateCost(distance, duration).toLocaleString('en-US', {
         style: 'currency',
@@ -174,13 +173,10 @@ export const Home = (props) => {
     });
 
     socket.emit('GET_ALL_DRIVER');
-    socket.once('DRIVER_LIST_RESPONSE', (driverList) => {
-      if (!driverList.length) return;
-
-      const driverSocketId = driverList.shift();
+    socket.once('DRIVER_LIST_RESPONSE', () => {
       const rideInfoMessage = createRideInfo();
-      setDriver(driverList);
-      socket.emit('REQUEST_RIDE_TO_DRIVER', driverSocketId, rideInfoMessage);
+      setRideMsg(rideInfoMessage);
+      socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
     });
   }
 
