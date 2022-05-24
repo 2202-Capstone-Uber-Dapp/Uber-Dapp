@@ -9,7 +9,6 @@ export function useSocket() {
 
 export function SocketProvider({ children }) {
   const [socket, setSocket] = useState(null);
-  const [drivers, setSocketList] = useState([]);
   const [rideInfo, setRideInfo] = useState({});
   const [loading, setLoading] = useState(true);
   const toast = useToast();
@@ -42,12 +41,7 @@ export function SocketProvider({ children }) {
     setRideInfo(message);
   }
 
-  function setDriverList(driverList) {
-    setSocketList((list) => list.concat(driverList));
-    console.log(drivers);
-  }
-
-  const value = { socket, disconnect, setDriverList, rideInfo, setRideMsg };
+  const value = { socket, disconnect, rideInfo, setRideMsg };
 
   return (
     <SocketContext.Provider value={value}>

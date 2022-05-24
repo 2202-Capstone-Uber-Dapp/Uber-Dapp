@@ -22,11 +22,8 @@ import { useSocket } from '../context/SocketContext';
 const toastRideAcceptConfig = {
   title: 'Successfully matched to rider',
   position: 'top',
-  size: '32rem',
   description: 'Go Pickup Rider!',
   status: 'success',
-  duration: 9000,
-  isClosable: true,
 };
 
 function RideAlert({ setDriverToPickupLocation }) {
@@ -48,7 +45,6 @@ function RideAlert({ setDriverToPickupLocation }) {
     };
   }, [seconds]);
   function onAccept() {
-    console.log(setDriverToPickupLocation);
     setDriverToPickupLocation();
     onClose();
     toast(toastRideAcceptConfig);
