@@ -43,16 +43,6 @@ const RiderMap = (props) => {
     panToHome
   } = props;
 
-  const onMapLoad = React.useCallback((map) => {
-    mapRef.current = map;
-    setMap(map);
-  });
-
-  const pansTo = React.useCallback(({ lat, lng }) => {
-    mapRef.current.panTo({ lat, lng });
-    mapRef.current.setZoom(15);
-  }, []);
-
   function handleTitleChange(event) {
     setPickupLocation(event.target.value);
   }
