@@ -318,7 +318,6 @@ export const TransactionsProvider = ({ children }) => {
         //Notify user for success
         console.log(`Success, added Driver to Block - ${blockchainHash.hash}`);
         setIsLoading(false);
-        window.location.reload();
       }
     } catch (error) {
       console.log(error);
@@ -382,6 +381,7 @@ export const TransactionsProvider = ({ children }) => {
           { gasLimit: 6000000 }
         );
         setIsLoading(true);
+        console.log('TRANSACTION HAS ', transactionHash)
         console.log(
           `Loading, ....adding reciept to Blockchain - ${transactionHash.hash}`
         );
