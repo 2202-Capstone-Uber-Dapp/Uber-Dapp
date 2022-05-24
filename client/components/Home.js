@@ -48,7 +48,7 @@ const options = {
 };
 
 export const Home = (props) => {
-  const { socket } = useSocket();
+  const { socket, setRideMsg } = useSocket();
 
   useEffect(() => {
     socket.on("test", () => {});
@@ -99,13 +99,12 @@ export const Home = (props) => {
   const [pickupLocation, setPickupLocation] = React.useState("");
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
-  const { setSocketList, rideInfo } = useSocket();
+  const { rideInfo } = useSocket();
   const originRef = React.useRef();
   const destinationRef = React.useRef();
   const mapRef = React.useRef();
   const [driverLocation, setDriverLocation] = React.useState(center);
   const [isRouteToRider, setIsRouteToRider] = React.useState(false);
-
   const onMapLoad = React.useCallback((map) => {
     mapRef.current = map;
     setMap(map);
@@ -130,13 +129,33 @@ export const Home = (props) => {
       setPickupLocation(address);
     });
   }
-
-  // When Rider Clicks on button "Request Ride" [after route is calculated]
+  //concider removing this from home as I (zach) moved this function to RiderMap.js
+  function handleTitleChange(event) {
+    setPickupLocation(event.target.value);
+  }
+  
+  function createRideInfo() {
+    return {
+      riderSocketId: socket.id,
+      imageUrl: user.profileImage,
+      earning: calculateCost(distance, duration).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }),
+      eth: 0.059,
+      time: duration,
+      miles: distance,
+      pickupLocation: originRef.current.value,
+      dropOff: destinationRef.current.value,
+      marker,
+      wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
+    };
+  }
+  
   function handleRideRequest() {
-    // socket.emit('requestRide', { address, pickupLocation });
     setIsRideRequest(true);
-    console.log("RideRequest status is", isRideRequest);
-    // sendRideRequest();
+    console.log('RideRequest status is', isRideRequest);
+
     let cost = calculateCost(distance, duration);
     dispatch(
       requestRide({
@@ -152,36 +171,19 @@ export const Home = (props) => {
       duration,
       cost
     );
+
     let needToWait = handleRideData({
       distance: distance,
       duration: duration,
       cost: parseInt(cost),
       riderId: userId,
     });
-    //transaction happens
-    //axios ride table
-    socket.emit("GET_ALL_DRIVER");
-    socket.once("DRIVER_LIST_RESPONSE", (driverList) => {
-      const driver = driverList.shift();
-      const message = {
-        riderSocket: socket.id,
-        driverSocket: driver,
-        imageUrl:
-          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",
-        earning: calculateCost(distance, duration).toLocaleString("en-US", {
-          style: "currency",
-          currency: "USD",
-        }),
-        eth: 0.059,
-        time: duration,
-        miles: distance,
-        pickupLocation: originRef.current.value,
-        dropOff: destinationRef.current.value,
-        marker,
-        wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
-      };
-      setDriver(driverList);
-      socket.emit("REQUEST_RIDE_TO_DRIVER", driver, message);
+
+    socket.emit('GET_ALL_DRIVER');
+    socket.once('DRIVER_LIST_RESPONSE', () => {
+      const rideInfoMessage = createRideInfo();
+      setRideMsg(rideInfoMessage);
+      socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
     });
   }
 
