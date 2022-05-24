@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
-import io from '../socket';
-import { useToast } from '@chakra-ui/react';
+import React, { useContext, useState, useEffect } from "react";
+import io from "../socket";
+import { useToast } from "@chakra-ui/react";
 const SocketContext = React.createContext();
 
 export function useSocket() {
@@ -15,16 +15,15 @@ export function SocketProvider({ children }) {
   const toast = useToast();
   useEffect(() => {
     io.connect();
-    io.on('connect_error', (error) => {
+    io.on("connect_error", (error) => {
       // ...
     });
-    io.on('DRIVER_DECLINE_RIDE', (message) => sendRequestToNextDriver(message));
-    io.on('NO_DRIVER_AVALIABLE', () =>
+    io.on("DRIVER_DECLINE_RIDE", (message) => sendRequestToNextDriver(message));
+    io.on("NO_DRIVER_AVALIABLE", () =>
       toast({
-        description: 'No Driver Avaliable',
-        status: 'error',
-        position: 'top',
-        isClosable: true,
+        description: "No Driver Avaliable",
+        status: "error",
+        position: "top",
       })
     );
     setSocket(io);
@@ -32,7 +31,7 @@ export function SocketProvider({ children }) {
   }, []);
 
   function sendRequestToNextDriver(message) {
-    io.emit('REQUEST_RIDE_TO_DRIVER', message);
+    io.emit("REQUEST_RIDE_TO_DRIVER", message);
   }
 
   function disconnect() {
