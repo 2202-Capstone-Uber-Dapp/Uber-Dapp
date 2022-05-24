@@ -3,6 +3,8 @@ import axios from "axios";
 const GET_RIDES = "GET_RIDES";
 const ACCEPT_RIDE = "ACCEPT_RIDE";
 const REQUEST_RIDE = "REQUEST_RIDE";
+// const GET_REQUESTED_RIDE = "REQUESTED_RIDE";
+
 
 export const getRides = (rides) => {
   return {
@@ -25,6 +27,13 @@ export const _requestRide = (ride) => {
   };
 };
 
+// export const _getRequestRide = (ride) => {
+//   return {
+//     type: GET_REQUESTED_RIDE,
+//     ride,
+//   };
+// };
+
 export const fetchRides = (id) => {
   return async (dispatch) => {
     try {
@@ -35,6 +44,20 @@ export const fetchRides = (id) => {
     }
   };
 };
+
+
+
+
+// export const fetchRequestedRide = () => {
+//   return async (dispatch) => {
+//     try {
+//       const { data } = await axios.get(`/api/ride/requested`);
+//       dispatch(_getRequestRide(data));
+//     } catch (error) {
+//       console.error(error);
+//     }
+//   };
+// };
 
 export const acceptRide = ({ rideId, userId }) => {
   return async (dispatch) => {
@@ -85,8 +108,9 @@ export default function singleUserReducer(state = initialState, action) {
       //We just want to add an additional completed ride to our ride arr
       //Be Weary of overwriting the existing rides
       return { ...state, completedRides: [...action.ride] };
-    case ACCEPT_RIDE:
+    case REQUEST_RIDE:
       return { ...state, requestedRide: action.ride };
+
     default:
       return state;
   }

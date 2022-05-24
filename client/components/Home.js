@@ -66,6 +66,8 @@ export const Home = (props) => {
   } = useContext(TransactionContext);
 
   const auth = useSelector((state) => state.auth);
+  const userRideRequest = useSelector((state) => state.user);
+  console.log('USERRIDE REQUEST', userRideRequest);
   //ComponentDidUpdate
   //Prompt User to Connect Wallet
   useEffect(() => {
@@ -161,15 +163,19 @@ export const Home = (props) => {
         riderSocket: socket.id,
         driverSocket: driver,
         imageUrl:
-          'https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg',
+          "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg",
         earning: 79,
         eth: 0.059,
         time: 20,
         miles: 9.1,
-        pickupLocation: 'Broadway, New York',
-        dropOff: 'Central Park, New York',
+        pickupLocation: "Broadway, New York",
+        dropOff: "Central Park, New York",
         marker,
-        wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
+        wallet: {
+          rideRequestId: 0,
+          riderId: userId,
+          riderWalletId: currentAccount,
+        },
       };
       setDriver(driverList);
       socket.emit('REQUEST_RIDE_TO_DRIVER', driver, message);

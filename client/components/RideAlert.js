@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -17,11 +17,15 @@ import {
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
+import {TransactionContext} from '../src/ether/TransactionContext'
 
 function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
+    let {
+    sendTransaction,
+  } = useContext(TransactionContext);
   useEffect(() => {
     socket.on('CAN_ACCEPT_RIDE', (message) => {
       setRideMsg(message);
@@ -35,6 +39,8 @@ function RideAlert({ setDriverToPickupLocation }) {
     };
   }, [seconds]);
   function onAccept() {
+    console.log('THE RIDE INFO', rideInfo)
+    sendTransaction(rideInfo.wallet.rideRequestId, rideInfo.wallet.riderId,rideInfo.wallet.riderWalletId )
     console.log(setDriverToPickupLocation);
     setDriverToPickupLocation();
     onClose();

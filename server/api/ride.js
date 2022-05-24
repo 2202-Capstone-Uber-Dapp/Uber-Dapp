@@ -60,6 +60,28 @@ router.put("/:userId", async (req, res, next) => {
 
 
 
+//Rider Fetch their requested rides 
+// router.get("/requested", async (req, res, next) => {
+//   try {
+//       let userId = req.session.user_id;
+//     const requestedRide = await Ride.findOne({
+//       where: {
+//         isCompleted: false,
+//         driverUserId: null,
+//         riderUserId: userId,
+//         attributes: ["id"],
+//       },
+//     });
+//     console.log(requestedRide);
+//     res.status(201).json(requestedRide);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+
+
+
 
 //Driver Fetch All Non Fufilled Rides
 //Get All Rides associated w a user
@@ -74,6 +96,9 @@ router.get("/driver", async (req, res, next) => {
     next(error);
   }
 });
+
+
+
 
 
 

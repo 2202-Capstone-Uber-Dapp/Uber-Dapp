@@ -390,7 +390,7 @@ export const TransactionsProvider = ({ children }) => {
           `Success, recipt added to Blockchain! - ${transactionHash.hash}`
         );
         setIsLoading(false);
-        window.location.reload();
+        // window.location.reload();
         // }
       } else {
         console.log("No ethereum object");

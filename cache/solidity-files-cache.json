@@ -37,8 +37,8 @@
       ]
     },
     "/mnt/c/Users/seala/Documents/Full.Stack.Academy/Senior.Phase/Capstone_PWA/uber-dapp/contracts/RideDapp.sol": {
-      "lastModificationDate": 1653361713319,
-      "contentHash": "32e6940668750ebbbf9447cd91ce92e8",
+      "lastModificationDate": 1653403869462,
+      "contentHash": "f76b0c52621bbf91f240c2f215f58f9a",
       "sourceName": "contracts/RideDapp.sol",
       "solcConfig": {
         "version": "0.8.0",
