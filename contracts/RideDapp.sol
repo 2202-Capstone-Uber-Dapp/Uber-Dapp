@@ -71,6 +71,7 @@ contract RideDapp is Ownable {
 
         //Would make it so only on ride request request would be viable upon completion
         // payable (msg.sender).transfer(address (this).balance);
+        //Change for Deploy
         payable(msg.sender).transfer(balance);
 
         transactionCounter += 1;
