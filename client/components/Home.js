@@ -118,6 +118,7 @@ export const Home = (props) => {
     mapRef.current.setZoom(15);
   }, []);
 
+  // Reverse Geocoding; using coordinates to obtain address using react-geocode
   function calculateAddress() {
     GeoCode.fromLatLng(marker.lat, marker.lng).then((response) => {
       const address = response.results[0].formatted_address;
@@ -206,7 +207,6 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    console.log("directions results!!!!!", results);
     GeoCode.fromAddress(originRef.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setMarker({ lat, lng });
@@ -215,11 +215,6 @@ export const Home = (props) => {
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
     setIsRoute(true);
-    let rideData = {
-      duration: results.routes[0].legs[0].duration.text,
-      distance: results.routes[0].legs[0].distance.text,
-    };
-    // handleRideData(rideData);
   }
 
   function clearRoute() {
