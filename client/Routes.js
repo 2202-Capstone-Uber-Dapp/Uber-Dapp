@@ -21,10 +21,10 @@ export default function Routes() {
           <SocketProvider>
             <Sidebar>
               <Switch>
-                <Route exact path="/wallet" component={Wallet} />
-                <Route path="/" component={Home} />
-                <Route exact path="/setting" component={EditProfile} />
-                <Route path="/home" component={Home} />
+                <Route exact path="/" component={Home} />
+                <Route path="/wallet" component={Wallet} />
+                <Route path="/setting" component={EditProfile} />
+                <Route path="/home" component={Home} />=
                 <Redirect to="/" />
               </Switch>
             </Sidebar>

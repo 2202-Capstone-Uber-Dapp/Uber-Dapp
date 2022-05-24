@@ -2,13 +2,8 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
-//Need a refund function/ cancel function 
-
 contract RideDapp is Ownable {
     event Transfer(address from, address receiver, uint256 amount);
-
-    //lower uint if possile
 
     struct RideRequest {
         address requesterAddress;
@@ -23,52 +18,62 @@ contract RideDapp is Ownable {
         uint256 cost;
     }
 
-    //Define an array of transactions, to store all of them, Housed in the transferStruct Array,
-    //transactions will be an array of TransferStruct, thus an array of objects
     Transaction[] transactions;
 
-    //Dictionary containing all the drivers
     mapping(address => uint256) public driverMapping;
-    //Dictionary containing all the riders
     mapping(address => uint256) public riderMapping;
+    //Firebase Auth user_ID is a long string
+    //ex: pOty1mOnGAbj69EfYO3QB5K3EyN2
+    //We can use this for our riding mapping
+    //All we need is a unique identifier, might as well use that!
+    //Mapped top a kev value pair containing wallet address and how much they sent to the contract to be housed
+    //and then accepted by driver
+    //Allows user to use multiple wallets etc. more specficity the better
+    //EXAMPLE  OF MAPPING :
+    // {
+    //     pOty1mOnGAbj69EfYO3QB5K3EyN2: { 0xdB166aCcFdbD22De7A15DC0cCA61577279D57B06 : 150000000 wei}
+    // }
 
-    //Count of all the drivers
+    mapping(string => mapping(address => uint256)) rideRequestFares;
+
     uint256 public driverCount;
-    //Count of all the riders
     uint256 public riderCount;
-    //Count all of the transactions
     uint256 transactionCounter;
-    //Count of all the requests
     uint256 public requestCount;
-    //Dictionary Containing all of the rides
     mapping(uint256 => RideRequest) public requestData;
 
     // functions related to driver
 
-    //Checks to see if it is a valid driver
     function checkDriver() public view returns (bool) {
         if (driverMapping[msg.sender] > 0) return true;
         return false;
     }
 
-    function addDriver() public  {
-        //Increments totalDriver
+    function addDriver() public {
         driverCount++;
-        //Adds Driver to the Driver Dictionary mapping wallet address to the count in driverCount
         driverMapping[msg.sender] = driverCount;
     }
 
-    //Function to allow Driver to accept a Ride and receve the money
-    //Transfer eth from rider wallet to drive wallet
-    function acceptRide(uint256 _requestId) public {
-        //See if the person invoking this function exists as a viable driver in our driver dictionary
-        require(checkDriver(), 'not a valid driver');
+    function acceptRide(
+        uint256 _requestId,
+        string memory _riderId,
+        address _riderWallet
+    ) public {
+        require(checkDriver(), "not a valid driver");
+        //msg.sender is already a payable address
+        //Looks at request data to find the cost of the ride to transfer from the SMART Contract to the driver
+        //This should the same amount in the rideRequestFares, if both algorithms match up ==> Very important
+        //If not we'll have to index the mapping the rider auth id and rider wallet to find the amount
+        //Either way works for the latter will need to change arg parameters for this funciton and add riderWallet and rider auth id
+        //Try former first
+        // uint balance = requestData[_requestId].cost;
+        uint256 balance = rideRequestFares[_riderId][_riderWallet];
 
-        //Increment counter
+        //Would make it so only on ride request request would be viable upon completion
+        // payable (msg.sender).transfer(address (this).balance);
+        payable(msg.sender).transfer(balance);
+
         transactionCounter += 1;
-
-        //Add a Transaction Struct to our transactions array
-        //This is to provide a history of our transactions
         transactions.push(
             Transaction(
                 requestData[_requestId].requesterAddress,
@@ -85,71 +90,39 @@ contract RideDapp is Ownable {
     }
 
     // functions related to rider
-    //Checks to see if it is a valid rider
+
     function checkRider() public view returns (bool) {
         if (riderMapping[msg.sender] > 0) return true;
         return false;
     }
 
     function addRider() public {
-        //Increments totalDriver
         riderCount++;
-        //Adds Driver to the Driver Dictionary mapping wallet address to the count in driverCount
         riderMapping[msg.sender] = riderCount;
     }
 
-    function addRequest(uint256 _distance, uint256 _rideTime) public {
-        //See if the person invoking this function exists as a viable rider in our rider dictionary
-        require(checkRider(), 'not a valid rider');
+    //    mapping(string => mapping(address => uint)) rideRequestFares;
+    //add Request needs the distance & duration along with id auth
+    function addRequest(string memory _riderId)
+        public
+        payable
+        returns (uint256)
+    {
+        require(checkRider(), "not a valid rider");
 
-        //Increments totalRequests
         requestCount++;
-        //Gets the cost of the Ride
-        uint256 _cost = calcCost(_distance, _rideTime);
-        //Adds the request to the Request Dictionary
+        //Checks whether the rider sent the correct amount of money,
+        //which is derived from the front end algorithm
+        //We also have the backend algorithm to match, more transparency for our app
+        //Not Completely Necessary but nice to have
+        rideRequestFares[_riderId][msg.sender] += msg.value;
+
         requestData[requestCount] = RideRequest(
             msg.sender,
             block.timestamp,
-            _cost
+            msg.value
         );
-    }
 
-    // general functions
-
-    // RideCost
-    // $5 in wei is 2,448,697,131,268,900.0000 Wei
-    //I want the base fare to be
-    //Do all smart contracts operate in wei? is that the correct way to denote $5?
-    function calcCost(uint256 _distance, uint256 _rideTime)
-        public
-        pure
-        returns (uint256)
-    {
-        uint256 baseFare = 2448697131268900;
-        // uint256 baseFare = 5;
-
-        //Super Special Algorithm! Its a Bargain!
-        uint256 cost = (baseFare *
-            ((_distance * _rideTime) / (_distance + _rideTime))) / 3;
-        return cost;
+        return requestCount;
     }
 }
-
-
-
-//Something to implement in the future , if we want to fetch all older transactions 
-//or if we want to get the transaction count 
-
-    // //Returns a TransferStruct array 
-    // function getAllTransactions()
-    //     public
-    //     view
-    //     returns (TransferStruct[] memory)
-    // {
-    //     return transactions;
-    // }
-
-    //     //returns our variable storing amount of transactions 
-    // function getTransactionCount() public view returns (uint256) {
-    //     return transactionCounter;
-    // }

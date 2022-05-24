@@ -14,14 +14,24 @@ import {
   VStack,
   HStack,
   Progress,
+  useToast,
 } from '@chakra-ui/react';
 import useCountdown from '../hooks/useCountdown';
 import { useSocket } from '../context/SocketContext';
 
-function RideAlert() {
+const toastRideAcceptConfig = {
+  title: 'Successfully matched to rider',
+  position: 'top',
+  description: 'Go Pickup Rider!',
+  status: 'success',
+};
+
+function RideAlert({ setDriverToPickupLocation }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { socket, rideInfo, setRideMsg } = useSocket();
   const [seconds, startTimer] = useCountdown();
+  const toast = useToast();
+
   useEffect(() => {
     socket.on('CAN_ACCEPT_RIDE', (message) => {
       setRideMsg(message);
@@ -35,11 +45,12 @@ function RideAlert() {
     };
   }, [seconds]);
   function onAccept() {
-    //TODO: write logic for driver acceptance of ride
+    setDriverToPickupLocation();
     onClose();
+    toast(toastRideAcceptConfig);
   }
   function onDecline() {
-    //TODO: write logic for driver declination of ride
+    socket.emit('DECLINE_RIDE', rideInfo);
     onClose();
   }
 
@@ -68,14 +79,14 @@ function RideAlert() {
             <VStack align={'center'} justify={'center'}>
               <HStack>
                 <Text fontSize={'5xl'} fontWeight={800}>
-                  ${rideInfo.earning}
+                  {rideInfo.earning}
                 </Text>
                 <Text color="gray.500" fontSize={'2xl'} fontWeight={600}>
                   | ETH {rideInfo.eth}
                 </Text>
               </HStack>
               <Text fontSize={'2xl'} fontWeight={600}>
-                {rideInfo.time} min ● {rideInfo.miles} mi
+                {rideInfo.time} ● {rideInfo.miles}
               </Text>
               <Text fontSize={'xl'} fontWeight={300}>
                 Pickup: {rideInfo.pickupLocation}
@@ -98,10 +109,10 @@ function RideAlert() {
             alignItems="center"
             justifyContent="space-between"
           >
-            <Button colorScheme="red" variant="ghost" onClick={onAccept}>
+            <Button colorScheme="red" variant="ghost" onClick={onDecline}>
               Decline
             </Button>
-            <Button colorScheme="green" variant="ghost" onClick={onDecline}>
+            <Button colorScheme="green" variant="ghost" onClick={onAccept}>
               Accept
             </Button>
           </ModalFooter>

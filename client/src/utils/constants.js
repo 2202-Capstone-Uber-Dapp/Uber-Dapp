@@ -2,4 +2,4 @@ import abi from './RideDapp.json'
 
 
 export const contractABI = abi.abi;
-export const contractAddress = "0xb62E0FA7d3725163B4DF53b88a9D25117C56d8f1";
+export const contractAddress = "0xD6E11211ADe65E33772aefb014A88DbCAD79c559";

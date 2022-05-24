@@ -5,7 +5,7 @@ import { AiFillPlayCircle } from "react-icons/ai";
 import { SiEthereum } from "react-icons/si";
 import { BsInfoCircle } from "react-icons/bs";
 import Loader from "./Loader";
-import { TransactionContext } from "../src/context/TransactionContext";
+import { TransactionContext } from "../src/ether/TransactionContext";
 import Transactions from "./Transactions";
 import { shortenAddress } from '../src/utils/shortenAddress'
 

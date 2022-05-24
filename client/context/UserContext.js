@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-vars */
 //new
 import React, { useContext, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useAuth } from './AuthContext';
 import { fetchUserInfo } from '../store/auth';
+import { TransactionsProvider } from '../src/ether/TransactionContext';
 const UserInfoContext = React.createContext();
 
 export function userContext() {

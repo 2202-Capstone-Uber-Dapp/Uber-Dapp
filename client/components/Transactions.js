@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { TransactionContext } from "../src/context/TransactionContext";
+import { TransactionContext } from "../src/ether/TransactionContext";
 import { shortenAddress } from "../src/utils/shortenAddress";
 
 const TransactionsCard = ({
