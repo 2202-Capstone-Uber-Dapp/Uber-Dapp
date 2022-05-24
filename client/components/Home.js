@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useContext, useEffect } from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
   useLoadScript,
   GoogleMap,
@@ -8,8 +8,8 @@ import {
   Autocomplete,
   InfoWindow,
   DirectionsRenderer,
-} from "@react-google-maps/api";
-import GeoCode from "react-geocode";
+} from '@react-google-maps/api';
+import GeoCode from 'react-geocode';
 
 import {
   Box,
@@ -33,12 +33,13 @@ import RideAlert from "./RideAlert";
 import RiderMap from "./RiderMap";
 import DriverMap from "./DriverMap";
 
+
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
-const libraries = ["places"];
+const libraries = ['places'];
 const containerStyle = {
-  width: "83%",
-  height: "88%",
+  width: '83%',
+  height: '88%',
 };
 const options = {
   styles:
@@ -51,9 +52,9 @@ export const Home = (props) => {
   const { socket, setRideMsg } = useSocket();
 
   useEffect(() => {
-    socket.on("test", () => {});
+    socket.on('test', () => {});
     return () => {
-      socket.off("test");
+      socket.off('test');
     };
   }, [socket]);
   let {
@@ -70,6 +71,8 @@ export const Home = (props) => {
   } = useContext(TransactionContext);
 
   const auth = useSelector((state) => state.auth);
+  const userRideRequest = useSelector((state) => state.user);
+  
   //ComponentDidUpdate
   //Prompt User to Connect Wallet
   useEffect(() => {
@@ -91,13 +94,13 @@ export const Home = (props) => {
   const [center, setCenter] = React.useState(initialCenter);
   const [map, setMap] = React.useState(null);
   const [directionsResponse, setDirectionsResponse] = React.useState(null);
-  const [distance, setDistance] = React.useState("");
-  const [duration, setDuration] = React.useState("");
+  const [distance, setDistance] = React.useState('');
+  const [duration, setDuration] = React.useState('');
   const [marker, setMarker] = React.useState(center);
   const [markers, setMarkers] = React.useState([]);
   const [selected, setSelected] = React.useState(center);
   const [address, setAddress] = React.useState(center);
-  const [pickupLocation, setPickupLocation] = React.useState("");
+  const [pickupLocation, setPickupLocation] = React.useState('');
   const [isRoute, setIsRoute] = React.useState(false);
   const [isRideRequest, setIsRideRequest] = React.useState(false);
   const { rideInfo } = useSocket();
@@ -118,8 +121,8 @@ export const Home = (props) => {
 
   // brings map back to original spot (central park is how we have it for initial center)
   function panToHome() {
-    setCenter(initialCenter)
-    setMarker(initialCenter)
+    setCenter(initialCenter);
+    setMarker(initialCenter);
   }
 
   // Reverse Geocoding; using coordinates to obtain address using react-geocode
@@ -134,8 +137,10 @@ export const Home = (props) => {
   function handleTitleChange(event) {
     setPickupLocation(event.target.value);
   }
-  
+
   function createRideInfo() {
+    console.log("USERREQUESTEDRIDE  FROM STATE", userRideRequest);
+    console.log("REQUESTED RIDE ID ", userRideRequest.requestedRide.id);
     return {
       riderSocketId: socket.id,
       imageUrl: user.profileImage,
@@ -149,48 +154,50 @@ export const Home = (props) => {
       pickupLocation: originRef.current.value,
       dropOff: destinationRef.current.value,
       marker,
-      wallet: { rideRequestId: 0, riderId: 0, riderWalletId: 0 },
+      wallet: {
+        rideRequestId: userRideRequest.requestedRide.id,
+        riderId: userId,
+        riderWalletId: currentAccount,
+      },
     };
   }
-  
-  function handleRideRequest() {
+
+  async function handleRideRequest(e) {
+    e.preventDefault();
     setIsRideRequest(true);
-    console.log('RideRequest status is', isRideRequest);
 
     let cost = calculateCost(distance, duration);
     dispatch(
       requestRide({
         cost: parseInt(cost),
-        distance: parseInt(distance.split(" ")[0]),
-        duration: parseInt(duration.split(" ")[0]),
+        distance: parseInt(distance.split(' ')[0]),
+        duration: parseInt(duration.split(' ')[0]),
         userId: userId,
       })
     );
-    console.log(
-      "Data in Home Right before Set State",
-      distance,
-      duration,
-      cost
-    );
 
-    let needToWait = handleRideData({
-      distance: distance,
-      duration: duration,
-      cost: parseInt(cost),
-      riderId: userId,
-    });
-
-    socket.emit('GET_ALL_DRIVER');
-    socket.once('DRIVER_LIST_RESPONSE', () => {
-      const rideInfoMessage = createRideInfo();
-      setRideMsg(rideInfoMessage);
-      socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
-    });
+    // try {
+      await sendRideRequest({
+        distance: distance,
+        duration: duration,
+        cost: parseInt(cost),
+        riderId: userId,
+      });
+    // } catch (e) {
+      console.log(e);
+    // } finally {
+      socket.emit('GET_ALL_DRIVER');
+      socket.once('DRIVER_LIST_RESPONSE', () => {
+        const rideInfoMessage = createRideInfo();
+        setRideMsg(rideInfoMessage);
+        socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
+      });
+    // }
   }
 
   // Directions from Driver location to Rider location
   async function setDriverToPickupLocation() {
-    if (driverLocation === "" || rideInfo.marker === "") {
+    if (driverLocation === '' || rideInfo.marker === '') {
       return;
     }
     const directionsService = new google.maps.DirectionsService();
@@ -210,7 +217,7 @@ export const Home = (props) => {
   //Rider enters pickup spot and destination; route and directions calculated
   async function calculateRoute() {
     // If either origin or destination fields are empty, cannot calculate a route
-    if (originRef.current.value === "" || destinationRef.current.value === "") {
+    if (originRef.current.value === '' || destinationRef.current.value === '') {
       return;
     }
     const directionsService = new google.maps.DirectionsService();
@@ -219,7 +226,7 @@ export const Home = (props) => {
       destination: destinationRef.current.value,
       travelMode: google.maps.TravelMode.DRIVING,
     });
-    // Geocoding; obtaining coordinates from address 
+    // Geocoding; obtaining coordinates from address
     GeoCode.fromAddress(originRef.current.value).then((response) => {
       const { lat, lng } = response.results[0].geometry.location;
       setMarker({ lat, lng });
@@ -232,11 +239,11 @@ export const Home = (props) => {
 
   function clearRoute() {
     setDirectionsResponse(null);
-    setDistance("");
-    setDuration("");
-    setPickupLocation("");
-    originRef.current.value = "";
-    destinationRef.current.value = "";
+    setDistance('');
+    setDuration('');
+    setPickupLocation('');
+    originRef.current.value = '';
+    destinationRef.current.value = '';
     setIsRoute(false);
     setIsRideRequest(false);
   }
@@ -246,15 +253,15 @@ export const Home = (props) => {
     const basefare = 5.0; /*USD*/
     let minutes = 0;
     let hours = 0;
-    if (duration.split(" ").length === 4) {
-      hours = Number(duration.split(" ")[0]);
-      minutes = Number(duration.split(" ")[2]);
+    if (duration.split(' ').length === 4) {
+      hours = Number(duration.split(' ')[0]);
+      minutes = Number(duration.split(' ')[2]);
     }
-    if (duration.split(" ").length === 2) {
-      minutes = Number(duration.split(" ")[0]);
+    if (duration.split(' ').length === 2) {
+      minutes = Number(duration.split(' ')[0]);
     }
     const _duration = hours * 60 + minutes;
-    const _distance = Number(distance.split(" ")[0].replace(/,/g, ""));
+    const _distance = Number(distance.split(' ')[0].replace(/,/g, ''));
     const cost = basefare + (_distance * 0.96 + _duration * 0.25);
     return cost;
   }
@@ -275,7 +282,7 @@ export const Home = (props) => {
           lng: position.coords.longitude,
         });
         calculateAddress();
-        user.role === "DRIVER"
+        user.role === 'DRIVER'
           ? setDriverLocation({
               lat: position.coords.latitude,
               lng: position.coords.longitude,
@@ -286,7 +293,7 @@ export const Home = (props) => {
     );
   }
 
-  if (loadError) return "Error Loading Map";
+  if (loadError) return 'Error Loading Map';
   if (!isLoaded) return <SkeletonText />;
 
   return (
@@ -304,8 +311,8 @@ export const Home = (props) => {
             onClick={() => {
               sendTransaction(
                 1,
-                "KBQ79F5899bClAQPyV1qqq8Zjk72",
-                "0x105836DcA641335558f633816Dfd768aa2F81E81"
+                'KBQ79F5899bClAQPyV1qqq8Zjk72',
+                '0x105836DcA641335558f633816Dfd768aa2F81E81'
               );
             }}
           >
@@ -354,7 +361,7 @@ export const Home = (props) => {
             )}
           </GoogleMap>
         </Box>
-        {user.role === "RIDER" ? (
+        {user.role === 'RIDER' ? (
           <RiderMap
             pickupLocation={pickupLocation}
             setPickupLocation={setPickupLocation}

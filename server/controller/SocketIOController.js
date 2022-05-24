@@ -1,14 +1,14 @@
 const {
   models: { User },
-} = require('../db');
+} = require("../db");
 
-const { sessionMiddleware, wrap } = require('./serverController');
+const { sessionMiddleware, wrap } = require("./serverController");
 const {
   DriverEventHandler,
   RiderEventHandler,
   DRIVER,
   RIDER,
-} = require('../connection');
+} = require("../connection");
 
 function SocketIOController(io) {
   io.use(wrap(sessionMiddleware));

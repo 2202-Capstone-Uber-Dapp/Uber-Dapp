@@ -1,13 +1,12 @@
 /* eslint-disable no-unused-vars */
 //Purpose of this file is to wrap all of our components with a context & connect them to the blockchain
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { ethers } from "ethers";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { ethers } from 'ethers';
 
+import { fetchConversion } from '../../redux/conversions';
 
-import { fetchConversion } from "../../redux/conversions";
-
-import { contractABI, contractAddress } from "../utils/constants";
+import { contractABI, contractAddress } from '../utils/constants';
 
 export const TransactionContext = React.createContext();
 
@@ -31,7 +30,7 @@ const createEthereumContract = () => {
 //Every context provider recieves children as props
 export const TransactionsProvider = ({ children }) => {
   const dispatch = useDispatch();
-    const conversionRate = useSelector((state) => state.conversionRate);
+  const conversionRate = useSelector((state) => state.conversionRate);
   console.log('CONVERSION ETH TO USD', conversionRate);
   //Set form data to our local state
   //Pass this to our form on another component via context provider
@@ -43,26 +42,13 @@ export const TransactionsProvider = ({ children }) => {
   //   message: "",
   // });
 
-  const [rideData, setRideData] = useState({
-    duration: "",
-    distance: "",
-    cost: 0,
-    riderId: "",
-  });
-
-  useEffect(() => {
-    sendRideRequest();
-  }, [rideData]);
-
-  console.log("RIDEDATA", rideData);
-
-  const [currentAccount, setCurrentAccount] = useState("");
-  const [riderId, setRiderId] = useState("");
+  const [currentAccount, setCurrentAccount] = useState('');
+  const [riderId, setRiderId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   //We store in local storage so the count doesnt get wiped every time we re load our browser
   //So we can always keep track of current transaction count
   const [transactionCount, setTransactionCount] = useState(
-    localStorage.getItem("transactionCount")
+    localStorage.getItem('transactionCount')
   );
   const [transactions, setTransactions] = useState([]);
 
@@ -70,15 +56,6 @@ export const TransactionsProvider = ({ children }) => {
   //   e.persist();
   //   setformData((prevState) => ({ ...prevState, [name]: e.target.value }));
   // };
-
-  const handleRideData = (data) => {
-    setRideData((prevState) => ({
-      duration: data.duration,
-      distance: data.distance,
-      cost: data.cost,
-      riderId: data.riderId,
-    }));
-  };
 
   //Here we have created a function getAllTransactions on our front end
   //That grabs our contract through our ether.js library
@@ -113,11 +90,11 @@ export const TransactionsProvider = ({ children }) => {
           })
         );
 
-        console.log("ALL TRANSACTIONS FORMATTED", structuredTransactions);
+        console.log('ALL TRANSACTIONS FORMATTED', structuredTransactions);
 
         setTransactions(structuredTransactions);
       } else {
-        console.log("Ethereum is not present");
+        console.log('Ethereum is not present');
       }
     } catch (error) {
       console.log(error);
@@ -127,16 +104,16 @@ export const TransactionsProvider = ({ children }) => {
   //If there is no ethereum in window.ethereum then the user doesnt have metamask installed
   const checkIfWalletIsConnect = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert('Please install MetaMask.');
 
-      const accounts = await ethereum.request({ method: "eth_accounts" });
+      const accounts = await ethereum.request({ method: 'eth_accounts' });
 
       if (accounts.length) {
         setCurrentAccount(accounts[0]);
 
         getAllTransactions();
       } else {
-        console.log("No accounts found");
+        console.log('No accounts found');
       }
     } catch (error) {
       console.log(error);
@@ -154,14 +131,14 @@ export const TransactionsProvider = ({ children }) => {
 
         //Stores the current transaction count inside of our local storage
         window.localStorage.setItem(
-          "transactionCount",
+          'transactionCount',
           currentTransactionCount
         );
       }
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
@@ -169,11 +146,11 @@ export const TransactionsProvider = ({ children }) => {
   //
   const connectWallet = async () => {
     try {
-      if (!ethereum) return alert("Please install MetaMask.");
+      if (!ethereum) return alert('Please install MetaMask.');
 
       //Request metamask account, get all the account, user chooses which one
       const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
+        method: 'eth_requestAccounts',
       });
       //account saved in local state
       //in this case we chose the first account
@@ -182,13 +159,13 @@ export const TransactionsProvider = ({ children }) => {
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
   //Entire Logic for sending and storing ride Requests
-  const sendRideRequest = async () => {
-    console.log("SEND RIDE REQUEST FUNCITON INVOKED ");
+  const sendRideRequest = async (rideData) => {
+    console.log('SEND RIDE REQUEST FUNCITON INVOKED ');
     try {
       if (ethereum) {
         //First we need to grab all the necessary data before we send any eth
@@ -211,28 +188,28 @@ export const TransactionsProvider = ({ children }) => {
 
         let minutes = 0;
         let hours = 0;
-        if (rideData.duration.split(" ").length === 4) {
-          hours = parseInt(rideData.duration.split(" ")[0]);
-          minutes = parseInt(rideData.duration.split(" ")[2]);
+        if (rideData.duration.split(' ').length === 4) {
+          hours = parseInt(rideData.duration.split(' ')[0]);
+          minutes = parseInt(rideData.duration.split(' ')[2]);
         }
-        if (rideData.duration.split(" ").length === 2) {
-          minutes = parseInt(rideData.duration.split(" ")[0]);
+        if (rideData.duration.split(' ').length === 2) {
+          minutes = parseInt(rideData.duration.split(' ')[0]);
         }
 
         const _duration = hours * 60 + minutes;
 
         const _distance = parseInt(
-          rideData.distance.split(" ")[0].replace(/,/g, "")
+          rideData.distance.split(' ')[0].replace(/,/g, '')
         );
 
         console.log(
-          "CONVERTED DISTANCE",
+          'CONVERTED DISTANCE',
           _distance,
           typeof _distance,
           rideData
         );
         console.log(
-          "CONVERTED RIDE DATA",
+          'CONVERTED RIDE DATA',
           _duration,
           typeof _duration,
           _distance,
@@ -251,10 +228,8 @@ export const TransactionsProvider = ({ children }) => {
         // const options = { value: etherToWei };
         // const options = { value: .000005 };
 
-        console.log("ZE COST", options);
+        console.log('ZE COST', options);
         const blockchainHash = await RideDappContract.addRequest(
-          _distance,
-          _duration,
           rideData.riderId,
           options
         );
@@ -273,12 +248,12 @@ export const TransactionsProvider = ({ children }) => {
         setIsLoading(false);
         // window.location.reload();
       } else {
-        console.log("No ethereum object");
+        console.log('No ethereum object');
       }
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
@@ -301,7 +276,7 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
@@ -320,21 +295,20 @@ export const TransactionsProvider = ({ children }) => {
         //Notify user for success
         console.log(`Success, added Driver to Block - ${blockchainHash.hash}`);
         setIsLoading(false);
-        window.location.reload();
       }
     } catch (error) {
       console.log(error);
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
   //RideId must match the rideId thats in the blockchain
   const sendTransaction = async (rideId, riderId, riderWalletAddress) => {
-    console.log("CURRENT", currentAccount);
-    console.log("YELLO");
+    console.log('CURRENT', currentAccount);
+    console.log('YELLO');
     try {
-      console.log("HELLO");
-      if (!ethereum) return alert("Please install metamask");
+      console.log('HELLO');
+      if (!ethereum) return alert('Please install metamask');
       if (ethereum) {
         const RideDappContract = createEthereumContract();
 
@@ -346,7 +320,7 @@ export const TransactionsProvider = ({ children }) => {
         // const parsedAmount = ethers.utils.parseEther(strCost);
         // console.log("PARSER", parsedAmount);
         // let bool = await RideDappContract.checkDriver();
-        console.log("WALLET", riderWalletAddress);
+        console.log('WALLET', riderWalletAddress);
         //   setIsLoading(true);
         //   console.log(
         //     `Loading, ....checking driver - ${bool.hash}`
@@ -384,6 +358,7 @@ export const TransactionsProvider = ({ children }) => {
           { gasLimit: 6000000 }
         );
         setIsLoading(true);
+        console.log('TRANSACTION HAS ', transactionHash);
         console.log(
           `Loading, ....adding reciept to Blockchain - ${transactionHash.hash}`
         );
@@ -392,15 +367,15 @@ export const TransactionsProvider = ({ children }) => {
           `Success, recipt added to Blockchain! - ${transactionHash.hash}`
         );
         setIsLoading(false);
-        window.location.reload();
+        // window.location.reload();
         // }
       } else {
-        console.log("No ethereum object");
+        console.log('No ethereum object');
       }
     } catch (error) {
       console.log(error);
 
-      throw new Error("No ethereum object");
+      throw new Error('No ethereum object');
     }
   };
 
@@ -465,7 +440,7 @@ export const TransactionsProvider = ({ children }) => {
   //ComponentDidUpdate
   useEffect(() => {
     checkIfWalletIsConnect();
-    dispatch(fetchConversion())
+    dispatch(fetchConversion());
     // checkIfTransactionsExists();
   }, []);
   // transactionCount;
@@ -481,9 +456,7 @@ export const TransactionsProvider = ({ children }) => {
         checkIfWalletIsConnect,
         // handleChange,
         // formData,
-        rideData,
         setIsLoading,
-        handleRideData,
         sendRideRequest,
         setRider,
         setDriver,

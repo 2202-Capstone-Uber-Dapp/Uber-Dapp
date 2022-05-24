@@ -92,7 +92,7 @@ const RiderMap = (props) => {
             <Button
               colorScheme="pink"
               type="submit"
-              onClick={handleRideRequest}
+              onClick={(e) =>handleRideRequest(e)}
             >
               Request Ride
             </Button>
