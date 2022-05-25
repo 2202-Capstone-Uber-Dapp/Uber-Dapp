@@ -1,4 +1,4 @@
-const session = require('express-session');
+const session = require('cookie-session');
 // const MemoryStore = require('express').session.MemoryStore;
 const sessionMiddleware = session({
   secret: 'trolololo',
