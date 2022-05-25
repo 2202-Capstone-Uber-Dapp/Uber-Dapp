@@ -18,7 +18,6 @@ export const fetchConversion = () => {
     const { data } = await axios.get(
       "https://api.coinbase.com/v2/exchange-rates?currency=ETH"
       ); //returns usd rate for 1 ETH
-      console.log('COINBASE DATAAAA', data)
     dispatch(setConversion(Number(data.data.rates.USD)));
   };
 };

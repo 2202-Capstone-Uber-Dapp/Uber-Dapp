@@ -139,8 +139,6 @@ export const Home = (props) => {
   }
 
   function createRideInfo() {
-    console.log("USERREQUESTEDRIDE  FROM STATE", userRideRequest);
-    console.log("REQUESTED RIDE ID ", userRideRequest.requestedRide.id);
     return {
       riderSocketId: socket.id,
       imageUrl: user.profileImage,
@@ -184,7 +182,6 @@ export const Home = (props) => {
         riderId: userId,
       });
     // } catch (e) {
-      console.log(e);
     // } finally {
       socket.emit('GET_ALL_DRIVER');
       socket.once('DRIVER_LIST_RESPONSE', () => {

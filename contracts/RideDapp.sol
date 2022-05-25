@@ -22,18 +22,6 @@ contract RideDapp is Ownable {
 
     mapping(address => uint256) public driverMapping;
     mapping(address => uint256) public riderMapping;
-    //Firebase Auth user_ID is a long string
-    //ex: pOty1mOnGAbj69EfYO3QB5K3EyN2
-    //We can use this for our riding mapping
-    //All we need is a unique identifier, might as well use that!
-    //Mapped top a kev value pair containing wallet address and how much they sent to the contract to be housed
-    //and then accepted by driver
-    //Allows user to use multiple wallets etc. more specficity the better
-    //EXAMPLE  OF MAPPING :
-    // {
-    //     pOty1mOnGAbj69EfYO3QB5K3EyN2: { 0xdB166aCcFdbD22De7A15DC0cCA61577279D57B06 : 150000000 wei}
-    // }
-
     mapping(string => mapping(address => uint256)) rideRequestFares;
 
     uint256 public driverCount;
@@ -60,18 +48,7 @@ contract RideDapp is Ownable {
         address _riderWallet
     ) public {
         require(checkDriver(), "not a valid driver");
-        //msg.sender is already a payable address
-        //Looks at request data to find the cost of the ride to transfer from the SMART Contract to the driver
-        //This should the same amount in the rideRequestFares, if both algorithms match up ==> Very important
-        //If not we'll have to index the mapping the rider auth id and rider wallet to find the amount
-        //Either way works for the latter will need to change arg parameters for this funciton and add riderWallet and rider auth id
-        //Try former first
-        // uint balance = requestData[_requestId].cost;
         uint256 balance = rideRequestFares[_riderId][_riderWallet];
-
-        //Would make it so only on ride request request would be viable upon completion
-        // payable (msg.sender).transfer(address (this).balance);
-        //Change for Deploy
         payable(msg.sender).transfer(balance);
 
         transactionCounter += 1;
@@ -102,8 +79,6 @@ contract RideDapp is Ownable {
         riderMapping[msg.sender] = riderCount;
     }
 
-    //    mapping(string => mapping(address => uint)) rideRequestFares;
-    //add Request needs the distance & duration along with id auth
     function addRequest(string memory _riderId)
         public
         payable
@@ -112,10 +87,6 @@ contract RideDapp is Ownable {
         require(checkRider(), "not a valid rider");
 
         requestCount++;
-        //Checks whether the rider sent the correct amount of money,
-        //which is derived from the front end algorithm
-        //We also have the backend algorithm to match, more transparency for our app
-        //Not Completely Necessary but nice to have
         rideRequestFares[_riderId][msg.sender] += msg.value;
 
         requestData[requestCount] = RideRequest(

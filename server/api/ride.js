@@ -9,17 +9,9 @@ module.exports = router;
 router.use(verifySessionCookie);
 //  Here we are "mounted on" (starts with) /api/ride
 
-//Do we need to use decodeToken here?
-//what is decodeToken?
-
-//Lets have only one requested ride at a time
-//Check in backend for post routes?
-// See if a riderUserId and isCompleted is false, if so they have a requested ride no more post routes
-//send helpful message..
 //Creating initial Ride request
 router.post("/:userId", async (req, res, next) => {
   try {
-    // let { userId } = req.params;
     let userId = req.session.user_id;
     //Check Whether they have a ride already
     const rideBool = await Ride.findOne({
@@ -27,7 +19,6 @@ router.post("/:userId", async (req, res, next) => {
       // explicitly select only the isCompleted field
       attributes: ["isCompleted"],
     });
-    console.log('RIDEBOOL', rideBool)
     //Ride is DNE or completed, allow for a new one
     if (rideBool === null || rideBool === true) {
       let rideRequest = await Ride.create(req.body);
@@ -48,7 +39,6 @@ router.post("/:userId", async (req, res, next) => {
 router.put("/:userId", async (req, res, next) => {
   try {
     let { rideId } = req.body;
-    // let { userId } = req.params;
     let userId = req.session.user_id;
     const ride = await Ride.findByPk(rideId);
     const user = await User.findOne({ where: { user_id: userId } });
@@ -59,37 +49,11 @@ router.put("/:userId", async (req, res, next) => {
   }
 });
 
-
-
-//Rider Fetch their requested rides 
-// router.get("/requested", async (req, res, next) => {
-//   try {
-//       let userId = req.session.user_id;
-//     const requestedRide = await Ride.findOne({
-//       where: {
-//         isCompleted: false,
-//         driverUserId: null,
-//         riderUserId: userId,
-//         attributes: ["id"],
-//       },
-//     });
-//     console.log(requestedRide);
-//     res.status(201).json(requestedRide);
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
-
-
-
-
 //Driver Fetch All Non Fufilled Rides
-//Get All Rides associated w a user
 router.get("/driver", async (req, res, next) => {
   try {
     const requestedRides = await Ride.findAll({
-      where: { isCompleted: false, driverUserId: null},
+      where: { isCompleted: false, driverUserId: null },
     });
     console.log(requestedRides);
     res.status(201).json(requestedRides);
@@ -98,18 +62,11 @@ router.get("/driver", async (req, res, next) => {
   }
 });
 
-
-
-
-
-
-
 //Ride History
-//Get All Rides associated w a user
 router.get("/:userId", async (req, res, next) => {
   try {
     let { userId } = req.params;
-      // let userId = req.session.user_id;
+    // let userId = req.session.user_id;
     const userRides = await Ride.findAll({
       where: { isCompleted: true, riderUserId: userId },
     });
@@ -118,4 +75,3 @@ router.get("/:userId", async (req, res, next) => {
     next(error);
   }
 });
-
