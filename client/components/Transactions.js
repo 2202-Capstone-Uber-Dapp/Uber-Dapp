@@ -7,9 +7,7 @@ const TransactionsCard = ({
   addressFrom,
   timestamp,
   message,
-  keyword,
   amount,
-  url,
 }) => {
   return (
     <div>

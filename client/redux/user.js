@@ -3,8 +3,6 @@ import axios from "axios";
 const GET_RIDES = "GET_RIDES";
 const ACCEPT_RIDE = "ACCEPT_RIDE";
 const REQUEST_RIDE = "REQUEST_RIDE";
-// const GET_REQUESTED_RIDE = "REQUESTED_RIDE";
-
 
 export const getRides = (rides) => {
   return {
@@ -27,13 +25,6 @@ export const _requestRide = (ride) => {
   };
 };
 
-// export const _getRequestRide = (ride) => {
-//   return {
-//     type: GET_REQUESTED_RIDE,
-//     ride,
-//   };
-// };
-
 export const fetchRides = (id) => {
   return async (dispatch) => {
     try {
@@ -44,20 +35,6 @@ export const fetchRides = (id) => {
     }
   };
 };
-
-
-
-
-// export const fetchRequestedRide = () => {
-//   return async (dispatch) => {
-//     try {
-//       const { data } = await axios.get(`/api/ride/requested`);
-//       dispatch(_getRequestRide(data));
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-// };
 
 export const acceptRide = ({ rideId, userId }) => {
   return async (dispatch) => {
@@ -70,12 +47,7 @@ export const acceptRide = ({ rideId, userId }) => {
   };
 };
 
-export const requestRide = ({
-  cost,
-  distance,
-  duration,
-  userId,
-}) => {
+export const requestRide = ({ cost, distance, duration, userId }) => {
   return async (dispatch) => {
     try {
       const { data } = await axios.post(`/api/ride/${userId}`, {
@@ -90,10 +62,6 @@ export const requestRide = ({
   };
 };
 
-//Lets have only one requested ride at a time
-//Check in backend for post routes?
-// See if a riderUserId and isCompleted is false, if so they have a requested ride no more post routes
-//send helpful message...
 const initialState = {
   user: {},
   completedRides: [],
@@ -105,8 +73,6 @@ export default function singleUserReducer(state = initialState, action) {
     case GET_RIDES:
       return { ...state, completedRides: [...action.rides] };
     case ACCEPT_RIDE:
-      //We just want to add an additional completed ride to our ride arr
-      //Be Weary of overwriting the existing rides
       return { ...state, completedRides: [...action.ride] };
     case REQUEST_RIDE:
       return { ...state, requestedRide: action.ride };
