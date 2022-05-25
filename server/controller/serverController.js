@@ -13,7 +13,7 @@ const sessionMiddleware = session({
     sameSite: process.env.ENVIRONMENT === 'production' ? 'none' : 'lax',
   },
 });
-
+//
 const wrap = (expressMiddleware) => (socket, next) =>
   expressMiddleware(socket.request, {}, next);
 module.exports = { sessionMiddleware, wrap };
