@@ -1,7 +1,6 @@
 import { io } from 'socket.io-client';
-const PORT = process.env.PORT || 8080;
 
-const SOCKET_URL = `https://localhost:${PORT}`;
+const SOCKET_URL = `https://https://young-everglades-26931.herokuapp.com`;
 const option = {
   autoConnect: false,
   withCredentials: true,

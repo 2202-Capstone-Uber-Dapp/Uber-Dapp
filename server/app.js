@@ -9,8 +9,9 @@ const app = express();
 const cors = require('cors');
 const server = http.createServer(app);
 const SocketIOController = require('./controller/SocketIOController');
+const PORT = process.env.PORT || 8080;
 const corsConfig = {
-  origin: 'https://localhost:8080',
+  origin: `*`,
   credentials: true,
 };
 const io = new Server(server, {
