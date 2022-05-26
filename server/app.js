@@ -9,11 +9,12 @@ const app = express();
 const cors = require('cors');
 const server = http.createServer(app);
 const SocketIOController = require('./controller/SocketIOController');
+const corsConfig = {
+  origin: 'https://young-everglades-26931.herokuapp.com/:8080',
+  credentials: true,
+};
 const io = new Server(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    credentials: true,
-  },
+  cors: corsConfig,
 });
 
 module.exports = server;
@@ -24,12 +25,8 @@ app.use(morgan('dev'));
 app.use(express.json());
 // static file-serving middleware
 app.use(express.static(path.join(__dirname, '..', 'public')));
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
+
+app.use(cors(corsConfig));
 
 app.use(cookieParser());
 app.use(sessionMiddleware);
