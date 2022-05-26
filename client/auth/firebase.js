@@ -2,12 +2,12 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 
 const app = firebase.initializeApp({
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  apiKey: 'AIzaSyBQYWXRcW7P3OW_ZJqA9MqximaT3hDedFY',
+  authDomain: 'dev-uber-dapp.firebaseapp.com',
+  projectId: 'dev-uber-dapp',
+  storageBucket: 'dev-uber-dapp.appspot.com',
+  messagingSenderId: '718820977569',
+  appId: '1:718820977569:web:25383c86b1f935455279e0',
 });
 
 firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);

@@ -22,17 +22,16 @@ import {
   SkeletonText,
   Text,
   useToast,
-} from "@chakra-ui/react";
-import { FaLocationArrow, FaTimes, FaCompass, FaCarAlt } from "react-icons/fa";
-import mapStyle from "./mapStyle";
-import { TransactionContext } from "../src/ether/TransactionContext";
-import { userContext } from "../context/UserContext";
-import { requestRide } from "../redux/user";
-import { useSocket } from "../context/SocketContext";
-import RideAlert from "./RideAlert";
-import RiderMap from "./RiderMap";
-import DriverMap from "./DriverMap";
-
+} from '@chakra-ui/react';
+import { FaLocationArrow, FaTimes, FaCompass, FaCarAlt } from 'react-icons/fa';
+import mapStyle from './mapStyle';
+import { TransactionContext } from '../src/ether/TransactionContext';
+import { userContext } from '../context/UserContext';
+import { requestRide } from '../redux/user';
+import { useSocket } from '../context/SocketContext';
+import RideAlert from './RideAlert';
+import RiderMap from './RiderMap';
+import DriverMap from './DriverMap';
 
 // Constants: These will be passed in as props to the <GoogleMap> Component
 const initialCenter = { lat: 40.7812, lng: -73.9665 };
@@ -72,7 +71,7 @@ export const Home = (props) => {
 
   const auth = useSelector((state) => state.auth);
   const userRideRequest = useSelector((state) => state.user);
-  
+
   //ComponentDidUpdate
   //Prompt User to Connect Wallet
   useEffect(() => {
@@ -84,11 +83,11 @@ export const Home = (props) => {
   const userId = user.user_id;
 
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    googleMapsApiKey: 'AIzaSyCVZh8a5NUI9hw8KsXiKzPJKPnyg8GmlEc',
     libraries,
   });
 
-  GeoCode.setApiKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+  GeoCode.setApiKey('AIzaSyCVZh8a5NUI9hw8KsXiKzPJKPnyg8GmlEc');
 
   // Hooks to manage state
   const [center, setCenter] = React.useState(initialCenter);
@@ -175,20 +174,20 @@ export const Home = (props) => {
     );
 
     // try {
-      await sendRideRequest({
-        distance: distance,
-        duration: duration,
-        cost: parseInt(cost),
-        riderId: userId,
-      });
+    await sendRideRequest({
+      distance: distance,
+      duration: duration,
+      cost: parseInt(cost),
+      riderId: userId,
+    });
     // } catch (e) {
     // } finally {
-      socket.emit('GET_ALL_DRIVER');
-      socket.once('DRIVER_LIST_RESPONSE', () => {
-        const rideInfoMessage = createRideInfo();
-        setRideMsg(rideInfoMessage);
-        socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
-      });
+    socket.emit('GET_ALL_DRIVER');
+    socket.once('DRIVER_LIST_RESPONSE', () => {
+      const rideInfoMessage = createRideInfo();
+      setRideMsg(rideInfoMessage);
+      socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
+    });
     // }
   }
 
@@ -333,12 +332,12 @@ export const Home = (props) => {
             <Marker
               position={marker}
               icon={{
-                url: '/person.svg', scaledSize: new window.google.maps.Size(50,50)
+                url: '/person.svg',
+                scaledSize: new window.google.maps.Size(50, 50),
               }}
               onClick={() => {
                 setSelected(marker);
               }}
-              
             />
             {/* <Marker
               position={driverLocation}
