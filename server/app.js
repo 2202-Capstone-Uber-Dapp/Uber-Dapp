@@ -10,7 +10,7 @@ const cors = require('cors');
 const server = http.createServer(app);
 const SocketIOController = require('./controller/SocketIOController');
 const corsConfig = {
-  origin: 'https://young-everglades-26931.herokuapp.com/:8080',
+  origin: 'https://localhost:8080',
   credentials: true,
 };
 const io = new Server(server, {
