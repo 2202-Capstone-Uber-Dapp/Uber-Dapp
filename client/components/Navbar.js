@@ -13,3 +13,5 @@ const Navbar = ({ handleClick, isLoggedIn }) => (
     <hr />
   </div>
 );
+
+export default Navbar;
