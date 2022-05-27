@@ -173,22 +173,22 @@ export const Home = (props) => {
       })
     );
 
-    // try {
-    await sendRideRequest({
-      distance: distance,
-      duration: duration,
-      cost: parseInt(cost),
-      riderId: userId,
-    });
-    // } catch (e) {
-    // } finally {
-    socket.emit('GET_ALL_DRIVER');
-    socket.once('DRIVER_LIST_RESPONSE', () => {
-      const rideInfoMessage = createRideInfo();
-      setRideMsg(rideInfoMessage);
-      socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
-    });
-    // }
+    try {
+      await sendRideRequest({
+        distance: distance,
+        duration: duration,
+        cost: parseInt(cost),
+        riderId: userId,
+      });
+    } catch (e) {
+    } finally {
+      socket.emit('GET_ALL_DRIVER');
+      socket.once('DRIVER_LIST_RESPONSE', () => {
+        const rideInfoMessage = createRideInfo();
+        setRideMsg(rideInfoMessage);
+        socket.emit('REQUEST_RIDE_TO_DRIVER', rideInfoMessage);
+      });
+    }
   }
 
   // Directions from Driver location to Rider location
