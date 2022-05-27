@@ -303,7 +303,7 @@ export const Home = (props) => {
         w="100vw"
       >
         <Box position="absolute" left={0} top={0} h="100%" w="100%">
-          <Button
+          {/* <Button
             onClick={() => {
               sendTransaction(
                 1,
@@ -313,7 +313,7 @@ export const Home = (props) => {
             }}
           >
             <Text> Test Transaction</Text>
-          </Button>
+          </Button> */}
           {/* Google Map Box */}
           <GoogleMap
             center={center}
