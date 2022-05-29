@@ -12,7 +12,7 @@ Peer to Peer decentralized ridesharing Progressive Web Application
     <br />
 
 ## Project Site
-https://grace-pokebay.herokuapp.com](https://young-everglades-26931.herokuapp.com/
+https://young-everglades-26931.herokuapp.com/
 
 ## Team Members
 https://www.linkedin.com/in/brianswe/ <br />
