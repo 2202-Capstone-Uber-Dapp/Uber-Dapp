@@ -5,14 +5,14 @@
     <img src="https://github.com/2202-Capstone-Uber-Dapp/uber-dapp/blob/main/public/logo.PNG" alt="Logo" width="120" height="120">
   </a>
 
-  <h3 align="center">Pokebay</h3>
+  <h3 align="center">Uber-Dapp</h3>
 
   <p align="center">
 Peer to Peer decentralized ridesharing Progressive Web Application
     <br />
 
 ## Project Site
-https://grace-pokebay.herokuapp.com
+https://grace-pokebay.herokuapp.com](https://young-everglades-26931.herokuapp.com/
 
 ## Team Members
 https://www.linkedin.com/in/brianswe/ <br />
